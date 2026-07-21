@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>과학탐구실험2 — 관측 스테이션</title>
+<link rel="stylesheet" href="assets/theme.css">
+<style>
+  body { display: block; }
+  .hero { padding: 64px 30px 30px; max-width: 1080px; margin: 0 auto; }
+  .hero .eyebrow { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--teal); font-weight: 700; }
+  .hero h1 { font-size: clamp(30px, 5vw, 46px); margin: 10px 0 14px; text-wrap: balance; }
+  .hero p { color: var(--mist); font-size: 15.5px; line-height: 1.7; max-width: 640px; margin: 0; }
+  .hero a.back { color: var(--mist); font-size: 12.5px; text-decoration: none; }
+  .hero a.back:hover { color: var(--teal); }
+  .grid { max-width: 1080px; margin: 30px auto 80px; padding: 0 30px; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 18px; }
+  .unit-card { display: block; background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 22px; text-decoration: none; color: inherit; transition: border-color .15s, transform .15s; position: relative; overflow: hidden; }
+  .unit-card:hover { border-color: var(--teal-dim); transform: translateY(-2px); }
+  .unit-card .chapter { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--teal); font-weight: 700; margin-bottom: 6px; }
+  .unit-card h3 { font-size: 19px; margin: 0 0 8px; }
+  .unit-card p { color: var(--mist); font-size: 13px; line-height: 1.6; margin: 0 0 14px; min-height: 60px; }
+  .unit-card .topics { display: flex; flex-wrap: wrap; gap: 6px; }
+  .unit-card .topics span { font-size: 10.5px; padding: 3px 8px; border-radius: 999px; background: var(--panel-2); border: 1px solid var(--line); color: var(--mist); }
+  .unit-card .go { position: absolute; top: 22px; right: 22px; color: var(--mist); font-size: 18px; }
+  .part-label { max-width: 1080px; margin: 0 auto; padding: 30px 30px 0; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--mist); font-weight: 700; }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <a class="back" href="https://wmfsljy-coder.github.io/science-inquiry/">← 과학탐구실험</a>
+  <div class="eyebrow" style="margin-top:14px">고등학교 과학탐구실험2 · 인터랙티브 학습 도구</div>
+  <h1 class="display">과학탐구실험2<br>관측 스테이션</h1>
+  <p>생활 속의 과학 탐구, 미래 사회와 첨단 과학 탐구를 직접 조작하며 배웁니다.</p>
+</div>
+
+<div class="part-label">생활 속 과학과 첨단 기술</div>
+<div class="grid">
+  <a class="unit-card" href="2-1/">
+    <div class="chapter">Ⅰ</div>
+    <h3 class="display">일상 속 과학 원리</h3>
+    <p>GPS·전자레인지·에어백 등 생활 기술 속 과학 원리와, 과학적 문제 해결 과정을 다룹니다.</p>
+    <div class="topics"><span>생활 속 과학</span><span>문제 해결 과정</span></div>
+    <div class="go">→</div>
+  </a>
+  <a class="unit-card" href="2-2/">
+    <div class="chapter">Ⅱ</div>
+    <h3 class="display">첨단 과학과 탐구 설계</h3>
+    <p>AI·IoT 등 첨단 과학 기술과, 센서를 활용한 탐구 설계 사례(자동 급수 장치)를 다룹니다.</p>
+    <div class="topics"><span>첨단 기술</span><span>센서 탐구 설계</span></div>
+    <div class="go">→</div>
+  </a>
+</div>
+
+<button class="theme-toggle" id="themeToggle">라이트 모드</button>
+<script src="assets/theme.js"></script>
+</body>
+</html>

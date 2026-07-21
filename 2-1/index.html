@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>생활 속의 과학 탐구 — 관측 스테이션</title>
+<link rel="stylesheet" href="../assets/theme.css">
+</head>
+<body>
+
+<div class="app">
+  <nav class="rail" id="rail">
+    <div class="brand">
+      <a class="home" href="../">← 과학탐구실험2</a>
+      <div class="eyebrow" style="margin-top:8px">Ⅰ · 생활 속의 과학 탐구</div>
+      <h1 class="display">일상 속<br>과학 원리</h1>
+    </div>
+    <button class="tab-btn active" data-tab="0"><span class="num">01</span> 일상 속 과학 원리</button>
+    <button class="tab-btn" data-tab="1"><span class="num">02</span> 과학적 문제 해결 과정</button>
+  </nav>
+
+  <main>
+    <section class="tab-panel" data-panel="0">
+      <div class="stage-head">
+        <div class="eyebrow">01 · 우리 곁의 과학</div>
+        <h2 class="display">일상 속 과학 원리</h2>
+        <p>카드를 클릭해 생활 속 기술 뒤에 숨은 과학 원리를 확인해 보세요.</p>
+      </div>
+      <div class="stage-card">
+        <div class="canvas-wrap"><canvas id="c0" width="900" height="420"></canvas></div>
+        <div class="info-card" id="c0-info">카드를 클릭해 보세요.</div>
+      </div>
+    </section>
+
+    <section class="tab-panel" data-panel="1" hidden>
+      <div class="stage-head">
+        <div class="eyebrow">02 · 문제에서 결론까지</div>
+        <h2 class="display">과학적 문제 해결 과정</h2>
+        <p>단계를 클릭해 일상 속 문제를 과학적으로 해결하는 과정을 확인해 보세요. (예: "겨울철 실내가 건조한 문제를 어떻게 해결할까?")</p>
+      </div>
+      <div class="stage-card">
+        <div class="canvas-wrap"><canvas id="c1" width="900" height="380"></canvas></div>
+        <div class="info-card" id="c1-info">단계를 클릭해 보세요.</div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<button class="theme-toggle" id="themeToggle">라이트 모드</button>
+<script src="../assets/theme.js"></script>
+<script>
+(function () {
+"use strict";
+
+/* TAB0 일상 속 과학원리 */
+(function () {
+  var canvas = document.getElementById("c0");
+  var ctx = setupCanvas(canvas);
+  var W = canvas._w, H = canvas._h;
+  var info = document.getElementById("c0-info");
+  var cards = [
+    { icon: "📡", name: "GPS 내비게이션", desc: "여러 위성에서 신호가 도착하는 시간 차이를 이용해 위치를 계산합니다(삼각 측량 원리).", x: 130, y: 100 },
+    { icon: "🍳", name: "전자레인지", desc: "마이크로파가 물 분자를 빠르게 진동시켜 마찰열로 음식을 데웁니다.", x: 380, y: 100 },
+    { icon: "🚗", name: "자동차 에어백", desc: "충돌 감지 센서가 급감속을 감지하면 화학 반응으로 순식간에 기체를 발생시켜 에어백을 부풀립니다.", x: 630, y: 100 },
+    { icon: "👆", name: "지문 인식", desc: "지문의 융선 패턴을 광학·정전용량 센서로 읽어 개인을 식별합니다.", x: 850, y: 100 },
+    { icon: "🎧", name: "노이즈 캔슬링 이어폰", desc: "주변 소음과 반대 위상의 소리를 만들어 상쇄 간섭으로 소음을 줄입니다.", x: 250, y: 280 },
+    { icon: "🧊", name: "보냉 도시락통", desc: "진공층이나 단열재가 열의 전도·대류를 막아 내부 온도를 오래 유지합니다.", x: 550, y: 280 }
+  ];
+  canvas.addEventListener("click", function (e) {
+    var rect = canvas.getBoundingClientRect();
+    var scaleX = canvas._w / rect.width, scaleY = canvas._h / rect.height;
+    var mx = (e.clientX - rect.left) * scaleX, my = (e.clientY - rect.top) * scaleY;
+    cards.forEach(function (c) { if (mx > c.x - 105 && mx < c.x + 105 && my > c.y - 70 && my < c.y + 70) info.innerHTML = "<b>" + c.icon + " " + c.name + "</b> — " + c.desc; });
+  });
+  function render() {
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = cssVar("--panel"); ctx.fillRect(0, 0, W, H);
+    cards.forEach(function (c) {
+      ctx.save();
+      ctx.strokeStyle = cssVar("--line"); ctx.fillStyle = cssVar("--panel-2");
+      ctx.fillRect(c.x - 105, c.y - 70, 210, 140);
+      ctx.strokeRect(c.x - 105, c.y - 70, 210, 140);
+      ctx.restore();
+      ctx.font = "34px Segoe UI"; ctx.textAlign = "center"; ctx.fillText(c.icon, c.x, c.y - 10);
+      ctx.font = "700 12px Segoe UI"; ctx.fillStyle = cssVar("--foam"); ctx.fillText(c.name, c.x, c.y + 28);
+    });
+  }
+  render();
+})();
+
+/* TAB1 문제해결과정 */
+(function () {
+  var canvas = document.getElementById("c1");
+  var ctx = setupCanvas(canvas);
+  var W = canvas._w, H = canvas._h;
+  var info = document.getElementById("c1-info");
+  var steps = [
+    { name: "문제 인식", desc: "겨울철 실내가 건조해서 목이 아프고 정전기가 자주 발생한다는 문제를 인식합니다." },
+    { name: "가설 설정", desc: "'가습기를 사용하면 실내 습도가 높아져 건조함이 줄어들 것이다'와 같은 검증 가능한 가설을 세웁니다." },
+    { name: "탐구 설계", desc: "가습기 사용 여부(독립변인)에 따른 습도 변화(종속변인)를 측정하는 방법을 계획하고, 실내 온도·크기 등(통제변인)을 동일하게 유지할 방법을 정합니다." },
+    { name: "탐구 수행", desc: "계획대로 습도계를 이용해 일정 시간마다 습도를 측정하고 기록합니다." },
+    { name: "자료 해석 및 결론", desc: "측정한 자료를 정리하고 그래프로 나타내어, 가설이 지지되는지 판단하고 결론을 도출합니다." }
+  ];
+  canvas.addEventListener("click", function (e) {
+    var rect = canvas.getBoundingClientRect();
+    var scaleX = canvas._w / rect.width;
+    var mx = (e.clientX - rect.left) * scaleX;
+    var x0 = 60, x1 = W - 60;
+    steps.forEach(function (s, i) {
+      var x = x0 + (i / (steps.length - 1)) * (x1 - x0);
+      if (Math.abs(x - mx) < 45) info.innerHTML = "<b>" + s.name + "</b> — " + s.desc;
+    });
+  });
+  function render() {
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = cssVar("--panel"); ctx.fillRect(0, 0, W, H);
+    var x0 = 60, x1 = W - 60, y = H / 2;
+    ctx.strokeStyle = cssVar("--line"); ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(x0, y); ctx.lineTo(x1, y); ctx.stroke();
+    steps.forEach(function (s, i) {
+      var x = x0 + (i / (steps.length - 1)) * (x1 - x0);
+      var up = i % 2 === 0;
+      ctx.save(); ctx.fillStyle = cssVar("--teal"); ctx.beginPath(); ctx.arc(x, y, 10, 0, 7); ctx.fill(); ctx.restore();
+      ctx.font = "700 11px Segoe UI"; ctx.fillStyle = cssVar("--foam"); ctx.textAlign = "center";
+      ctx.fillText((i + 1) + ". " + s.name, x, up ? y - 24 : y + 34);
+    });
+  }
+  render();
+})();
+
+})();
+</script>
+</body>
+</html>
