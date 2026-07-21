@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ⅱ. 미래 사회와 첨단 과학 탐구 — 관측 스테이션</title>
+<link rel="stylesheet" href="../assets/theme.css">
+</head>
+<body>
+
+<div class="app">
+  <nav class="rail" id="rail">
+    <div class="brand">
+      <a class="home" href="../">← 과학탐구실험2</a>
+      <div class="eyebrow" style="margin-top:8px">Ⅱ · 미래 사회와 첨단 과학 탐구</div>
+      <h1 class="display">미래 사회와<br>첨단 과학 탐구</h1>
+    </div>
+    <button class="tab-btn active" data-tab="0"><span class="num">01</span> 스마트 온실 설계</button>
+    <button class="tab-btn" data-tab="1"><span class="num">02</span> 센서 활용 생활 발명품</button>
+    <button class="tab-btn" data-tab="2"><span class="num">03</span> 우주 개발 사례 평가</button>
+  </nav>
+
+  <main>
+    <!-- 01 스마트 온실 -->
+    <section class="tab-panel" data-panel="0">
+      <div class="stage-head">
+        <div class="eyebrow">01 · 프로젝트 · 마이크로컨트롤러를 활용하여 스마트 온실 설계하기</div>
+        <h2 class="display">센서가 스스로 판단하는 온실</h2>
+        <p>환경 상황을 바꿔 보면서, 마이크로컨트롤러가 센서 값을 어떻게 판단해 장치를 자동으로 작동시키는지 확인해 보세요.</p>
+      </div>
+      <div class="stage-card">
+        <div class="canvas-wrap"><canvas id="c0" width="900" height="420"></canvas></div>
+        <div class="controls">
+          <div class="ctrl-group">
+            <div class="ctrl-label">시간대</div>
+            <div class="seg" id="c0-time">
+              <button class="on" data-t="day">낮 (조도 높음)</button>
+              <button data-t="night">밤 (조도 낮음)</button>
+            </div>
+          </div>
+          <div class="ctrl-group">
+            <div class="ctrl-label">토양 상태</div>
+            <div class="seg" id="c0-soil">
+              <button class="on" data-s="dry">건조</button>
+              <button data-s="wet">촉촉함</button>
+            </div>
+          </div>
+          <div class="ctrl-group">
+            <div class="ctrl-label">온실 내부 온도</div>
+            <div class="seg" id="c0-temp">
+              <button data-p="hot">높음(30℃+)</button>
+              <button class="on" data-p="normal">적정(20~28℃)</button>
+            </div>
+          </div>
+        </div>
+        <div class="info-card" id="c0-info"></div>
+      </div>
+      <p class="foot-note">실제 스마트 온실은 온습도 센서·조도 센서·토양 수분 센서의 값을 마이크로컨트롤러(예: 아두이노)가 읽어, 미리 정한 기준값과 비교해 창문 개폐 모터·물펌프·LED 조명 등을 자동으로 제어합니다.</p>
+    </section>
+
+    <!-- 02 센서 생활 발명품 -->
+    <section class="tab-panel" data-panel="1" hidden>
+      <div class="stage-head">
+        <div class="eyebrow">02 · 프로젝트 · 각종 센서를 활용한 생활 발명품 아이디어 고안 및 시제품 발표하기</div>
+        <h2 class="display">센서로 만드는 생활 발명품</h2>
+        <p>발명품 카드를 눌러, 어떤 센서와 원리로 문제를 해결하는지 살펴보세요.</p>
+      </div>
+      <div class="stage-card">
+        <div class="card-grid" id="c1-grid" style="padding-top:18px;"></div>
+        <div class="detail-panel" id="c1-detail"><span class="hint">위에서 발명품 카드를 하나 선택해 보세요.</span></div>
+      </div>
+      <p class="foot-note">발명품을 설계할 때는 <b>어떤 문제를 해결할 것인지</b>, <b>어떤 센서로 상황을 감지할 것인지</b>, <b>감지된 값에 따라 무엇을 작동시킬 것인지</b>의 세 단계로 아이디어를 구체화하면 도움이 됩니다.</p>
+    </section>
+
+    <!-- 03 우주 개발 사례 평가 -->
+    <section class="tab-panel" data-panel="2" hidden>
+      <div class="stage-head">
+        <div class="eyebrow">03 · 우주 개발 사례 조사를 통해 과학 기술의 발전 방향 평가하기</div>
+        <h2 class="display">우주 개발, 어떻게 평가할까?</h2>
+        <p>우주 개발의 주요 사건을 시간순으로 살펴보고, 평가 관점을 바꿔가며 같은 사건도 어떻게 다르게 평가할 수 있는지 확인해 보세요.</p>
+      </div>
+      <div class="stage-card">
+        <div class="controls" style="padding-bottom:0;">
+          <div class="ctrl-group">
+            <div class="ctrl-label">평가 관점</div>
+            <div class="seg" id="c2-lens">
+              <button class="on" data-l="tech">기술 파급 효과</button>
+              <button data-l="cost">비용과 실효성</button>
+              <button data-l="coop">국제 협력</button>
+            </div>
+          </div>
+        </div>
+        <div class="timeline-wrap">
+          <div class="timeline-track"><div class="timeline-fill" id="c2-fill"></div></div>
+          <input type="range" id="c2-slider" min="0" max="4" step="1" value="0" style="width:100%">
+          <div class="timeline-ticks">
+            <span>1957 스푸트니크</span><span>1969 아폴로11호</span><span>1998 국제우주정거장</span><span>2008 재사용로켓 개발</span><span>2020년대 위성 인터넷</span>
+          </div>
+        </div>
+        <div class="detail-panel" id="c2-detail"></div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<button class="theme-toggle" id="themeToggle">라이트 모드</button>
+<script src="../assets/theme.js"></script>
+<script>
+"use strict";
+
+/* 01 스마트 온실 */
+(function () {
+  var canvas = document.getElementById("c0");
+  var ctx = window.setupCanvas(canvas);
+  var W = canvas._w, H = canvas._h;
+  var info = document.getElementById("c0-info");
+  var state = { time: "day", soil: "dry", temp: "normal" };
+
+  function bindSeg(id, key, attr) {
+    var seg = document.getElementById(id);
+    seg.querySelectorAll("button").forEach(function (b) {
+      b.addEventListener("click", function () {
+        seg.querySelectorAll("button").forEach(function (x) { x.classList.remove("on"); });
+        b.classList.add("on");
+        state[key] = b.getAttribute(attr);
+        render();
+      });
+    });
+  }
+  bindSeg("c0-time", "time", "data-t");
+  bindSeg("c0-soil", "soil", "data-s");
+  bindSeg("c0-temp", "temp", "data-p");
+
+  function actuators() {
+    return {
+      light: state.time === "night",
+      pump: state.soil === "dry",
+      window: state.temp === "hot"
+    };
+  }
+
+  function render() {
+    var a = actuators();
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = cssVar("--panel"); ctx.fillRect(0, 0, W, H);
+
+    // greenhouse outline
+    var x0 = 260, x1 = 640, y0 = 60, y1 = H - 60;
+    ctx.strokeStyle = cssVar("--line"); ctx.lineWidth = 3;
+    ctx.strokeRect(x0, y0, x1 - x0, y1 - y0);
+    ctx.fillStyle = cssVar("--panel-2"); ctx.globalAlpha = 0.4; ctx.fillRect(x0, y0, x1 - x0, y1 - y0); ctx.globalAlpha = 1;
+
+    // plant
+    ctx.strokeStyle = cssVar("--teal"); ctx.lineWidth = 4;
+    ctx.beginPath(); ctx.moveTo((x0 + x1) / 2, y1 - 10); ctx.lineTo((x0 + x1) / 2, y1 - 70); ctx.stroke();
+    ctx.beginPath(); ctx.arc((x0 + x1) / 2, y1 - 80, 20, 0, Math.PI * 2); ctx.fillStyle = cssVar("--teal"); ctx.fill();
+
+    // window (top)
+    var winOpen = a.window;
+    ctx.strokeStyle = winOpen ? cssVar("--coral") : cssVar("--mist"); ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(x0 + 30, y0);
+    ctx.lineTo(x0 + 30, winOpen ? y0 - 30 : y0);
+    ctx.stroke();
+    ctx.font = "11px Segoe UI"; ctx.textAlign = "center"; ctx.fillStyle = winOpen ? cssVar("--coral") : cssVar("--mist");
+    ctx.fillText("창문: " + (winOpen ? "열림" : "닫힘"), x0 + 30, y0 - 40);
+
+    // LED light (top right)
+    ctx.beginPath(); ctx.arc(x1 - 40, y0 + 30, 14, 0, Math.PI * 2);
+    ctx.fillStyle = a.light ? "#eede4e" : cssVar("--panel-2");
+    ctx.fill(); ctx.strokeStyle = cssVar("--line"); ctx.stroke();
+    ctx.fillStyle = cssVar("--mist"); ctx.fillText("LED: " + (a.light ? "켜짐" : "꺼짐"), x1 - 40, y0 + 60);
+
+    // water pump (bottom left)
+    ctx.beginPath(); ctx.rect(x0 + 10, y1 - 30, 24, 20);
+    ctx.fillStyle = a.pump ? cssVar("--cold") : cssVar("--panel-2"); ctx.fill(); ctx.strokeStyle = cssVar("--line"); ctx.stroke();
+    ctx.fillStyle = cssVar("--mist"); ctx.fillText("펌프: " + (a.pump ? "작동" : "정지"), x0 + 22, y1 + 20);
+
+    ctx.font = "700 12px Segoe UI"; ctx.fillStyle = cssVar("--foam"); ctx.textAlign = "center";
+    ctx.fillText("마이크로컨트롤러 제어 스마트 온실", (x0 + x1) / 2, y0 - 15);
+
+    var lines = [];
+    lines.push(state.time === "night" ? "🌙 조도 센서 값이 낮음 → LED 조명 <b>ON</b>" : "☀️ 조도 센서 값이 충분함 → LED 조명 OFF");
+    lines.push(state.soil === "dry" ? "🌱 토양 수분 센서 값이 기준 이하 → 물펌프 <b>작동</b>" : "🌱 토양 수분 센서 값이 충분함 → 물펌프 정지");
+    lines.push(state.temp === "hot" ? "🌡️ 온습도 센서 값이 30℃ 초과 → 환기 창문 <b>개방</b>" : "🌡️ 온습도 센서 값이 적정 범위 → 창문 닫힘 유지");
+    info.innerHTML = lines.join("<br>");
+  }
+  render();
+})();
+
+/* 02 센서 생활 발명품 */
+(function () {
+  var items = [
+    { ico: "☂️", name: "우산 놓고가기 방지 알림", desc: "우산 손잡이에 근접 센서를 달아, 스마트폰과의 거리가 일정 이상 멀어지면 블루투스 신호가 끊기며 스마트폰에 알림을 보냅니다." },
+    { ico: "🐾", name: "반려동물 자동 급식기", desc: "무게 센서로 사료가 얼마나 남았는지 감지하고, 실시간 시계와 연동해 정해진 시간에 정해진 양만큼 자동으로 배급합니다." },
+    { ico: "🚪", name: "환기 알림 이산화 탄소 센서", desc: "실내 이산화 탄소 농도 센서로 공기 질을 측정해, 기준치를 넘으면 환기하라는 알림을 보내고 자동으로 환풍기를 작동시킵니다." },
+    { ico: "🧴", name: "손 소독 자동 분사기", desc: "적외선 근접 센서로 손이 다가오는 것을 감지해 자동으로 일정량의 소독제를 분사합니다. 접촉 없이 사용할 수 있어 위생적입니다." },
+    { ico: "🛏️", name: "수면 자세 교정 베개", desc: "압력 센서로 뒤척임과 자는 자세를 감지해, 코골이가 심해지는 자세가 되면 베개 내부 공기주머니를 조절해 자세를 자연스럽게 바꿔 줍니다." },
+    { ico: "🔥", name: "화재 조기 감지 콘센트", desc: "온도 센서와 전류 센서로 콘센트의 과열·과부하를 감지해, 위험 수준이 되면 스스로 전원을 차단하고 경보를 울립니다." }
+  ];
+  var grid = document.getElementById("c1-grid");
+  var detail = document.getElementById("c1-detail");
+  items.forEach(function (it) {
+    var btn = document.createElement("button");
+    btn.className = "pick-card";
+    btn.innerHTML = '<span class="ico">' + it.ico + '</span><div class="t">' + it.name + '</div>';
+    btn.addEventListener("click", function () {
+      grid.querySelectorAll(".pick-card").forEach(function (c) { c.classList.remove("on"); });
+      btn.classList.add("on");
+      detail.innerHTML = "<h4>" + it.ico + " " + it.name + "</h4>" + it.desc;
+    });
+    grid.appendChild(btn);
+  });
+})();
+
+/* 03 우주 개발 사례 평가 */
+(function () {
+  var slider = document.getElementById("c2-slider");
+  var fill = document.getElementById("c2-fill");
+  var lensSeg = document.getElementById("c2-lens");
+  var detail = document.getElementById("c2-detail");
+  var lens = "tech";
+
+  var events = [
+    {
+      name: "1957 · 스푸트니크 1호 발사",
+      tech: "인류 최초의 인공위성 발사로, 이후 통신·기상·항법(GPS) 위성 산업 전체의 출발점이 되었습니다.",
+      cost: "체제 경쟁 속에서 막대한 비용이 투입되었지만, 이후 위성 통신 산업이 그 비용을 여러 배로 회수하는 기반이 되었습니다.",
+      coop: "당시에는 냉전 경쟁의 산물로 국제 협력과는 거리가 멀었으며, 오히려 우주 개발 경쟁을 촉발했습니다."
+    },
+    {
+      name: "1969 · 아폴로 11호 유인 달 착륙",
+      tech: "정밀 유도 항법, 소형 컴퓨터, 신소재 등 이후 민간 산업에 파급된 기술이 다수 개발되었습니다.",
+      cost: "당시 미국 GDP의 상당 부분을 차지할 정도로 천문학적 비용이 들어, 실효성 논쟁이 꾸준히 제기되었습니다.",
+      coop: "미국 단독 프로젝트로 진행되어 국제 협력보다는 냉전 시대 국가 간 경쟁을 상징하는 사건이었습니다."
+    },
+    {
+      name: "1998 · 국제 우주 정거장(ISS) 건설 시작",
+      tech: "미세중력 환경 실험을 통해 신약·신소재 연구 등 다양한 과학 기술이 발전했습니다.",
+      cost: "여러 나라가 비용을 분담했지만, 유지·보수에 지속적으로 막대한 비용이 들어가는 점이 과제로 지적됩니다.",
+      coop: "미국·러시아·유럽·일본·캐나다 등 여러 나라가 함께 참여한 대표적인 <b>국제 협력</b> 우주 프로젝트입니다."
+    },
+    {
+      name: "2008~ · 재사용 로켓 기술 개발",
+      tech: "로켓 1단을 회수해 재사용하는 기술이 발전하며 발사 비용을 획기적으로 낮추는 계기가 되었습니다.",
+      cost: "초기 개발 비용은 컸지만, 장기적으로 발사 1회당 비용을 크게 낮춰 <b>실효성</b>을 높인 사례로 평가받습니다.",
+      coop: "민간 기업이 주도하며 여러 나라의 위성을 함께 실어 발사하는 상업적 협력 모델을 만들었습니다."
+    },
+    {
+      name: "2020년대 · 저궤도 위성 인터넷망 구축",
+      tech: "수천 개의 소형 위성을 저궤도에 배치해, 지상 통신망이 닿지 않는 지역까지 인터넷을 공급하는 기술이 발전했습니다.",
+      cost: "초기 막대한 투자가 필요하지만, 오지·해상·항공 통신 등 새로운 수요를 창출하며 사업성을 검증받는 중입니다.",
+      coop: "동시에 급증한 위성 수만큼 <b>우주 쓰레기</b>와 전파 간섭 문제로 국제적인 규범 마련 논의가 활발합니다."
+    }
+  ];
+
+  lensSeg.querySelectorAll("button").forEach(function (b) {
+    b.addEventListener("click", function () {
+      lensSeg.querySelectorAll("button").forEach(function (x) { x.classList.remove("on"); });
+      b.classList.add("on");
+      lens = b.getAttribute("data-l");
+      render();
+    });
+  });
+  slider.addEventListener("input", render);
+
+  function render() {
+    var i = +slider.value;
+    fill.style.width = (i / (events.length - 1) * 100) + "%";
+    var e = events[i];
+    detail.innerHTML = "<h4>" + e.name + "</h4>" + e[lens];
+  }
+  render();
+})();
+</script>
+</body>
+</html>
