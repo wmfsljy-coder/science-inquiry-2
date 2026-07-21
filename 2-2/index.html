@@ -36,11 +36,20 @@
       <div class="stage-head">
         <div class="eyebrow">02 · 센서로 문제를 해결하는 프로젝트</div>
         <h2 class="display">센서를 활용한 탐구 설계 — 자동 급수 장치</h2>
-        <p>토양 수분 센서로 식물에 자동으로 물을 주는 장치를 설계하는 과정을 단계별로 확인해 보세요.</p>
+        <p>토양 수분 센서로 식물에 자동으로 물을 주는 장치를 설계하는 과정을 단계별로 확인해 보세요. 아래에서 토양 수분 값을 직접 조절하며 제어 장치가 언제 펌프를 작동시키는지 실험해 볼 수 있습니다.</p>
       </div>
       <div class="stage-card">
         <div class="canvas-wrap"><canvas id="c1" width="900" height="380"></canvas></div>
         <div class="info-card" id="c1-info">단계를 클릭해 보세요.</div>
+
+        <div class="controls" style="margin-top:18px">
+          <div class="ctrl-group">
+            <div class="ctrl-label">토양 수분 센서 값 (%)<span class="val" id="c1-moist-val">50</span></div>
+            <input type="range" id="c1-moist" min="0" max="100" step="1" value="50">
+          </div>
+        </div>
+        <div class="canvas-wrap" style="margin-top:10px; height:120px"><canvas id="c1-sim" width="900" height="120"></canvas></div>
+        <div class="detail-panel" id="c1-sim-info"></div>
       </div>
     </section>
   </main>
@@ -135,6 +144,51 @@
     }
   }
   render();
+})();
+
+/* TAB1 부속: 토양 수분 -> 펌프 작동 시뮬레이션 */
+(function () {
+  var THRESHOLD = 30;
+  var canvas = document.getElementById("c1-sim");
+  var ctx = setupCanvas(canvas);
+  var W = canvas._w, H = canvas._h;
+  var slider = document.getElementById("c1-moist");
+  var valEl = document.getElementById("c1-moist-val");
+  var info = document.getElementById("c1-sim-info");
+
+  function render(moist) {
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = cssVar("--panel"); ctx.fillRect(0, 0, W, H);
+    var barX = 60, barW = W - 260, barY = H / 2 - 12, barH = 24;
+    ctx.strokeStyle = cssVar("--line"); ctx.strokeRect(barX, barY, barW, barH);
+    ctx.fillStyle = moist < THRESHOLD ? cssVar("--coral") : cssVar("--teal");
+    ctx.fillRect(barX, barY, barW * (moist / 100), barH);
+    ctx.strokeStyle = cssVar("--foam"); ctx.lineWidth = 2;
+    var tx = barX + barW * (THRESHOLD / 100);
+    ctx.beginPath(); ctx.moveTo(tx, barY - 10); ctx.lineTo(tx, barY + barH + 10); ctx.stroke();
+    ctx.fillStyle = cssVar("--mist"); ctx.font = "11px Segoe UI"; ctx.textAlign = "center";
+    ctx.fillText("기준값 " + THRESHOLD + "%", tx, barY - 16);
+
+    var pumpOn = moist < THRESHOLD;
+    ctx.font = "34px Segoe UI"; ctx.textAlign = "left";
+    ctx.fillText(pumpOn ? "💧" : "⏸️", W - 170, H / 2 + 12);
+    ctx.font = "700 13px Segoe UI"; ctx.fillStyle = pumpOn ? cssVar("--coral") : cssVar("--teal");
+    ctx.fillText(pumpOn ? "펌프 작동 중" : "펌프 대기", W - 120, H / 2 + 10);
+  }
+
+  function update() {
+    var moist = +slider.value;
+    valEl.textContent = moist;
+    render(moist);
+    if (moist < THRESHOLD) {
+      info.innerHTML = "토양 수분이 기준값(" + THRESHOLD + "%)보다 <b>건조</b>하므로, 제어 장치가 '물 주기' 신호를 내려 <b>펌프가 작동</b>합니다.";
+    } else {
+      info.innerHTML = "토양 수분이 기준값(" + THRESHOLD + "%) 이상으로 <b>충분</b>하므로, 제어 장치가 '대기' 신호를 유지해 펌프는 작동하지 않습니다.";
+    }
+  }
+  slider.addEventListener("input", update);
+  window.addEventListener("resize", function () { render(+slider.value); });
+  update();
 })();
 
 })();
