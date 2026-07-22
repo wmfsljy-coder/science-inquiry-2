@@ -30,6 +30,21 @@
         <div class="canvas-wrap"><canvas id="c0" width="900" height="420"></canvas></div>
         <div class="info-card" id="c0-info">카드를 클릭해 보세요.</div>
       </div>
+
+      <div class="stage-card" style="margin-top:14px;">
+        <div class="stage-head" style="padding:16px 20px 0;">
+          <div class="eyebrow">심화 · 노이즈 캔슬링은 어떻게 소음을 없앨까?</div>
+          <h2 class="display" style="font-size:20px;">파동의 간섭 시뮬레이터</h2>
+        </div>
+        <div class="canvas-wrap"><canvas id="c0b" width="900" height="300"></canvas></div>
+        <div class="controls">
+          <div class="ctrl-group">
+            <div class="ctrl-label">두 파동의 위상차(°)<span class="val" id="c0b-phi-val">0</span></div>
+            <input type="range" id="c0b-phi" min="0" max="180" step="1" value="0">
+          </div>
+        </div>
+        <div class="info-card" id="c0b-info"></div>
+      </div>
     </section>
 
     <section class="tab-panel" data-panel="1" hidden>
@@ -41,6 +56,21 @@
       <div class="stage-card">
         <div class="canvas-wrap"><canvas id="c1" width="900" height="380"></canvas></div>
         <div class="info-card" id="c1-info">단계를 클릭해 보세요.</div>
+      </div>
+
+      <div class="stage-card" style="margin-top:14px;">
+        <div class="stage-head" style="padding:16px 20px 0;">
+          <div class="eyebrow">심화 · 가설 검증하기 — 가습기를 켜면 습도는 얼마나, 얼마나 빨리 오를까?</div>
+          <h2 class="display" style="font-size:20px;">가습기 가동 시간과 실내 습도</h2>
+        </div>
+        <div class="canvas-wrap"><canvas id="c1b" width="900" height="300"></canvas></div>
+        <div class="controls">
+          <div class="ctrl-group">
+            <div class="ctrl-label">가습기 가동 시간(분)<span class="val" id="c1b-t-val">0</span></div>
+            <input type="range" id="c1b-t" min="0" max="120" step="1" value="0">
+          </div>
+        </div>
+        <div class="info-card" id="c1b-info"></div>
       </div>
     </section>
   </main>
@@ -126,6 +156,105 @@
     });
   }
   render();
+})();
+
+/* TAB0-b 파동 간섭 시뮬레이터 */
+(function () {
+  var canvas = document.getElementById("c0b");
+  var ctx = setupCanvas(canvas);
+  var W = canvas._w, H = canvas._h;
+  var slider = document.getElementById("c0b-phi");
+  var val = document.getElementById("c0b-phi-val");
+  var info = document.getElementById("c0b-info");
+
+  function render(phiDeg) {
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = cssVar("--panel"); ctx.fillRect(0, 0, W, H);
+    var x0 = 40, x1 = W - 40;
+    var phi = phiDeg * Math.PI / 180;
+    var A = 40;
+    var rows = [
+      { y: 60, label: "원래 소음", color: "--coral", ph: 0 },
+      { y: 150, label: "노이즈 캔슬링 파동", color: "--cold", ph: phi },
+      { y: 240, label: "합성 결과(사람이 듣는 소리)", color: "--foam", ph: null }
+    ];
+    rows.forEach(function (row) {
+      ctx.beginPath();
+      for (var px = 0; px <= x1 - x0; px += 2) {
+        var xFrac = px / (x1 - x0) * 4 * Math.PI;
+        var y;
+        if (row.ph === null) {
+          y = A * Math.sin(xFrac) + A * Math.sin(xFrac + phi);
+        } else {
+          y = A * Math.sin(xFrac + row.ph);
+        }
+        var xx = x0 + px, yy = row.y - y;
+        if (px === 0) ctx.moveTo(xx, yy); else ctx.lineTo(xx, yy);
+      }
+      ctx.strokeStyle = cssVar(row.color); ctx.lineWidth = 2; ctx.stroke();
+      ctx.font = "11px Segoe UI"; ctx.fillStyle = cssVar(row.color); ctx.textAlign = "left";
+      ctx.fillText(row.label, x0, row.y - A - 10);
+    });
+  }
+
+  function update() {
+    var phi = +slider.value;
+    val.textContent = phi;
+    render(phi);
+    var amp = 2 * Math.abs(Math.cos((phi * Math.PI / 180) / 2));
+    var pct = (amp / 2 * 100).toFixed(0);
+    info.innerHTML = "두 파동의 진폭이 같을 때, 합성파의 진폭은 <b>2A·cos(위상차/2)</b>로 계산됩니다. 위상차가 <b>" + phi + "°</b>일 때 합성 소음의 크기는 원래의 약 <b>" + pct + "%</b>입니다. 위상차 0°(같은 위상)에서는 두 파동이 겹쳐져 소리가 더 커지는 <b>보강 간섭</b>이 일어나고, 위상차 180°(반대 위상)에서는 두 파동이 정확히 상쇄되어 소리가 사라지는 <b>상쇄 간섭</b>이 일어납니다. 노이즈 캔슬링 이어폰은 마이크로 주변 소음을 감지해 정확히 <b>180° 반대 위상</b>의 소리를 만들어 냄으로써 소음을 상쇄시킵니다.";
+  }
+  slider.addEventListener("input", update);
+  update();
+})();
+
+/* TAB1-b 가습기 습도 변화 모델 */
+(function () {
+  var canvas = document.getElementById("c1b");
+  var ctx = setupCanvas(canvas);
+  var W = canvas._w, H = canvas._h;
+  var slider = document.getElementById("c1b-t");
+  var val = document.getElementById("c1b-t-val");
+  var info = document.getElementById("c1b-info");
+  var H_START = 25, H_FINAL = 55, TAU = 30;
+
+  function humidityAt(t) { return H_FINAL - (H_FINAL - H_START) * Math.exp(-t / TAU); }
+
+  function render(tSel) {
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = cssVar("--panel"); ctx.fillRect(0, 0, W, H);
+    var x0 = 60, x1 = W - 40, y0 = 30, y1 = H - 40;
+    ctx.strokeStyle = cssVar("--line"); ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x0, y1); ctx.lineTo(x1, y1); ctx.stroke();
+    ctx.font = "11px Segoe UI"; ctx.fillStyle = cssVar("--mist"); ctx.textAlign = "center";
+    ctx.fillText("가습기 가동 시간(분) →", (x0 + x1) / 2, y1 + 26);
+    ctx.save(); ctx.translate(20, (y0 + y1) / 2); ctx.rotate(-Math.PI / 2); ctx.fillText("실내 습도(%)", 0, 0); ctx.restore();
+
+    ctx.beginPath();
+    for (var t = 0; t <= 120; t++) {
+      var h = humidityAt(t);
+      var xx = x0 + t / 120 * (x1 - x0);
+      var yy = y1 - ((h - 20) / 50) * (y1 - y0);
+      if (t === 0) ctx.moveTo(xx, yy); else ctx.lineTo(xx, yy);
+    }
+    ctx.strokeStyle = cssVar("--cold"); ctx.lineWidth = 2.5; ctx.stroke();
+
+    var hSel = humidityAt(tSel);
+    var selX = x0 + tSel / 120 * (x1 - x0);
+    var selY = y1 - ((hSel - 20) / 50) * (y1 - y0);
+    ctx.fillStyle = cssVar("--coral");
+    ctx.beginPath(); ctx.arc(selX, selY, 6, 0, Math.PI * 2); ctx.fill();
+  }
+
+  function update() {
+    var t = +slider.value;
+    val.textContent = t;
+    var h = humidityAt(t);
+    render(t);
+    info.innerHTML = "가습기를 켠 뒤 습도는 곧바로 목표값에 도달하지 않고, <b>목표 습도에 점점 가까워지는(지수적으로 접근하는)</b> 방식으로 변합니다(습도(t) = 최종습도 − (최종습도−시작습도)×e^(−t/τ)). 가동 <b>" + t + "분</b> 후 예상 습도는 약 <b>" + h.toFixed(1) + "%</b>입니다. 이렇게 독립변인(가동 시간)에 따른 종속변인(습도)의 변화를 실제로 측정하고 그래프로 나타내는 것이, '가습기를 켜면 습도가 오를 것이다'라는 가설을 검증하는 탐구 과정입니다.";
+  }
+  slider.addEventListener("input", update);
+  update();
 })();
 
 })();
