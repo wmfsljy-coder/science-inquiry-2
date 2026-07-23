@@ -66,6 +66,23 @@
         <div class="canvas-wrap" style="margin-top:10px; height:120px"><canvas id="c1-sim" width="900" height="120"></canvas></div>
         <div class="detail-panel" id="c1-sim-info"></div>
       </div>
+
+      <div class="stage-head">
+        <div class="eyebrow">🔎 미션 · 센서 값으로 펌프 동작 예측하기</div>
+        <h2 class="display" style="font-size:18px;">이 토양 수분 값이면 펌프는 작동할까?</h2>
+      </div>
+      <div class="stage-card">
+        <div class="info-card" id="c1m-data"></div>
+        <div class="seg" id="c1m-choices">
+          <button data-c="on">펌프가 작동한다(물을 준다)</button>
+          <button data-c="off">펌프가 대기한다(물을 주지 않는다)</button>
+        </div>
+        <div class="toggle-row" style="margin:14px 20px;">
+          <button class="btn" id="c1m-check">정답 확인</button>
+          <button class="btn" id="c1m-new">새 문제</button>
+        </div>
+        <div class="info-card" id="c1m-info"></div>
+      </div>
     </section>
   </main>
 </div>
@@ -261,6 +278,48 @@
   slider.addEventListener("input", update);
   window.addEventListener("resize", function () { render(+slider.value); });
   update();
+})();
+
+/* TAB1 미션 — 센서 값으로 펌프 동작 예측 */
+(function () {
+  var THRESHOLD = 30;
+  var dataBox = document.getElementById("c1m-data");
+  var seg = document.getElementById("c1m-choices");
+  var checkBtn = document.getElementById("c1m-check");
+  var newBtn = document.getElementById("c1m-new");
+  var info = document.getElementById("c1m-info");
+  var moist, key, picked = null;
+
+  function newQuestion() {
+    moist = Math.floor(Math.random() * 101);
+    key = moist < THRESHOLD ? "on" : "off";
+    picked = null;
+    dataBox.innerHTML = "토양 수분 센서 값이 <b>" + moist + "%</b>이고, 기준값은 " + THRESHOLD + "%입니다. 펌프는 어떻게 될까요?";
+    seg.querySelectorAll("button").forEach(function (x) { x.classList.remove("on"); });
+    info.innerHTML = "";
+    info.style.color = "";
+  }
+
+  seg.querySelectorAll("button").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      picked = btn.dataset.c;
+      seg.querySelectorAll("button").forEach(function (x) { x.classList.toggle("on", x === btn); });
+    });
+  });
+
+  checkBtn.addEventListener("click", function () {
+    if (!picked) { info.innerHTML = "먼저 보기를 하나 선택하세요."; info.style.color = "var(--coral)"; return; }
+    if (picked === key) {
+      info.innerHTML = "✅ 정답! 수분 " + moist + "%는 기준값 " + THRESHOLD + "%보다 " + (key === "on" ? "낮아 펌프가 작동합니다." : "높거나 같아 펌프가 대기합니다.");
+      info.style.color = "var(--teal)";
+    } else {
+      info.innerHTML = "❌ 틀렸습니다. 수분 " + moist + "%는 기준값 " + THRESHOLD + "%보다 " + (key === "on" ? "낮아 펌프가 작동합니다." : "높거나 같아 펌프가 대기합니다.");
+      info.style.color = "var(--coral)";
+    }
+  });
+
+  newBtn.addEventListener("click", newQuestion);
+  newQuestion();
 })();
 
 })();

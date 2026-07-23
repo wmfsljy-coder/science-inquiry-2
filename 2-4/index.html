@@ -56,6 +56,20 @@
         <div class="info-card" id="c0-info"></div>
       </div>
       <p class="foot-note">실제 스마트 온실은 온습도 센서·조도 센서·토양 수분 센서의 값을 마이크로컨트롤러(예: 아두이노)가 읽어, 미리 정한 기준값과 비교해 창문 개폐 모터·물펌프·LED 조명 등을 자동으로 제어합니다.</p>
+
+      <div class="stage-head">
+        <div class="eyebrow">🔎 미션 · 센서 조건으로 장치 동작 예측하기</div>
+        <h2 class="display" style="font-size:18px;">이 조건에서 이 장치는 어떻게 될까?</h2>
+      </div>
+      <div class="stage-card">
+        <div class="info-card" id="c0m-data"></div>
+        <div class="seg" id="c0m-choices"></div>
+        <div class="toggle-row" style="margin:14px 20px;">
+          <button class="btn" id="c0m-check">정답 확인</button>
+          <button class="btn" id="c0m-new">새 문제</button>
+        </div>
+        <div class="info-card" id="c0m-info"></div>
+      </div>
     </section>
 
     <!-- 02 센서 생활 발명품 -->
@@ -186,6 +200,63 @@
     info.innerHTML = lines.join("<br>");
   }
   render();
+})();
+
+/* 01 미션 — 센서 조건으로 장치 동작 예측 */
+(function () {
+  var devices = [
+    { key: "led", name: "LED 조명", cond: "time", onVal: "night", onDesc: "낮 (조도 높음)", offDesc: "밤 (조도 낮음)" },
+    { key: "pump", name: "물펌프", cond: "soil", onVal: "dry", onDesc: "건조", offDesc: "촉촉함" },
+    { key: "win", name: "환기 창문", cond: "temp", onVal: "hot", onDesc: "높음(30℃+)", offDesc: "적정(20~28℃)" }
+  ];
+  var timeLabel = { day: "낮 (조도 높음)", night: "밤 (조도 낮음)" };
+  var soilLabel = { dry: "건조", wet: "촉촉함" };
+  var tempLabel = { normal: "적정(20~28℃)", hot: "높음(30℃+)" };
+  var dataBox = document.getElementById("c0m-data");
+  var seg = document.getElementById("c0m-choices");
+  var checkBtn = document.getElementById("c0m-check");
+  var newBtn = document.getElementById("c0m-new");
+  var info = document.getElementById("c0m-info");
+  var state, device, key, picked = null;
+
+  function newQuestion() {
+    state = {
+      time: Math.random() < 0.5 ? "day" : "night",
+      soil: Math.random() < 0.5 ? "dry" : "wet",
+      temp: Math.random() < 0.5 ? "normal" : "hot"
+    };
+    device = devices[Math.floor(Math.random() * devices.length)];
+    key = state[device.cond] === device.onVal ? "on" : "off";
+    picked = null;
+    dataBox.innerHTML = "시간대: <b>" + timeLabel[state.time] + "</b> · 토양 상태: <b>" + soilLabel[state.soil] + "</b> · 온실 내부 온도: <b>" + tempLabel[state.temp] + "</b><br>이 조건에서 <b>" + device.name + "</b>는 어떻게 될까요?";
+    seg.innerHTML = "";
+    [["on", device.name + " 작동/켜짐"], ["off", device.name + " 정지/꺼짐"]].forEach(function (pair) {
+      var b = document.createElement("button");
+      b.textContent = pair[1];
+      b.dataset.c = pair[0];
+      b.addEventListener("click", function () {
+        picked = pair[0];
+        seg.querySelectorAll("button").forEach(function (x) { x.classList.toggle("on", x === b); });
+      });
+      seg.appendChild(b);
+    });
+    info.innerHTML = "";
+    info.style.color = "";
+  }
+
+  checkBtn.addEventListener("click", function () {
+    if (!picked) { info.innerHTML = "먼저 보기를 하나 선택하세요."; info.style.color = "var(--coral)"; return; }
+    if (picked === key) {
+      info.innerHTML = "✅ 정답! " + device.name + "는 '" + (key === "on" ? "작동/켜짐" : "정지/꺼짐") + "' 상태입니다.";
+      info.style.color = "var(--teal)";
+    } else {
+      info.innerHTML = "❌ 틀렸습니다. 정답은 '" + (key === "on" ? "작동/켜짐" : "정지/꺼짐") + "' 입니다.";
+      info.style.color = "var(--coral)";
+    }
+  });
+
+  newBtn.addEventListener("click", newQuestion);
+  newQuestion();
 })();
 
 /* 02 센서 생활 발명품 */

@@ -88,6 +88,24 @@
         <div class="stat-row"><div class="stat-box"><div class="lbl">측정된 최대 가속도</div><div class="num" id="c2-max">—</div></div></div>
         <div class="info-card" id="c2-info"></div>
       </div>
+
+      <div class="stage-head">
+        <div class="eyebrow">🔎 미션 · 가속도 패턴으로 놀이기구 맞히기</div>
+        <h2 class="display" style="font-size:18px;">이 가속도 패턴은 어떤 놀이기구일까?</h2>
+      </div>
+      <div class="stage-card">
+        <div class="info-card" id="c2m-data"></div>
+        <div class="seg" id="c2m-choices">
+          <button data-c="bumper">범퍼카(충돌)</button>
+          <button data-c="coaster">롤러코스터(곡선 주행)</button>
+          <button data-c="drop">자이로드롭(자유낙하)</button>
+        </div>
+        <div class="toggle-row" style="margin:14px 20px;">
+          <button class="btn" id="c2m-check">정답 확인</button>
+          <button class="btn" id="c2m-new">새 문제</button>
+        </div>
+        <div class="info-card" id="c2m-info"></div>
+      </div>
     </section>
 
     <!-- 04 건축물 내진 설계 -->
@@ -330,6 +348,52 @@
     ctx.strokeStyle = cssVar("--teal"); ctx.lineWidth = 2.5; ctx.stroke();
   }
   render();
+})();
+
+/* 03 미션 — 가속도 패턴으로 놀이기구 맞히기 */
+(function () {
+  var qa = [
+    { txt: "충돌 순간에만 짧고 뾰족한 큰 가속도가 발생하고, 그 외에는 낮고 일정하다.", key: "bumper" },
+    { txt: "곡선 구간(커브·루프)마다 가속도가 주기적으로 오르내리며, 원운동에 의한 구심 가속도가 계속 나타난다.", key: "coaster" },
+    { txt: "자유 낙하 구간에서 중력 가속도(약 1g)까지 순간적으로 떨어졌다가, 감속 구간에서 매우 큰 가속도가 짧게 나타난다.", key: "drop" }
+  ];
+  var labels = { bumper: "범퍼카(충돌)", coaster: "롤러코스터(곡선 주행)", drop: "자이로드롭(자유낙하)" };
+  var dataBox = document.getElementById("c2m-data");
+  var seg = document.getElementById("c2m-choices");
+  var checkBtn = document.getElementById("c2m-check");
+  var newBtn = document.getElementById("c2m-new");
+  var info = document.getElementById("c2m-info");
+  var current = null, picked = null;
+
+  function newQuestion() {
+    current = qa[Math.floor(Math.random() * qa.length)];
+    picked = null;
+    dataBox.innerHTML = current.txt;
+    seg.querySelectorAll("button").forEach(function (x) { x.classList.remove("on"); });
+    info.innerHTML = "";
+    info.style.color = "";
+  }
+
+  seg.querySelectorAll("button").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      picked = btn.dataset.c;
+      seg.querySelectorAll("button").forEach(function (x) { x.classList.toggle("on", x === btn); });
+    });
+  });
+
+  checkBtn.addEventListener("click", function () {
+    if (!picked) { info.innerHTML = "먼저 보기를 하나 선택하세요."; info.style.color = "var(--coral)"; return; }
+    if (picked === current.key) {
+      info.innerHTML = "✅ 정답! '" + labels[current.key] + "'의 가속도 패턴입니다.";
+      info.style.color = "var(--teal)";
+    } else {
+      info.innerHTML = "❌ 틀렸습니다. 정답은 '" + labels[current.key] + "' 입니다.";
+      info.style.color = "var(--coral)";
+    }
+  });
+
+  newBtn.addEventListener("click", newQuestion);
+  newQuestion();
 })();
 
 /* 04 건축물 내진 설계 */

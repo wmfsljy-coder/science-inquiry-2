@@ -45,6 +45,24 @@
         </div>
         <div class="info-card" id="c0b-info"></div>
       </div>
+
+      <div class="stage-head">
+        <div class="eyebrow">🔎 미션 · 위상차로 간섭 종류 맞히기</div>
+        <h2 class="display" style="font-size:18px;">이 위상차에서는 어떤 간섭이 일어날까?</h2>
+      </div>
+      <div class="stage-card">
+        <div class="info-card" id="c0m-data"></div>
+        <div class="seg" id="c0m-choices">
+          <button data-c="con">보강 간섭(소리가 커짐)</button>
+          <button data-c="partial">부분 간섭(소리가 약간 줄어듦)</button>
+          <button data-c="des">상쇄 간섭(소리가 거의 사라짐)</button>
+        </div>
+        <div class="toggle-row" style="margin:14px 20px;">
+          <button class="btn" id="c0m-check">정답 확인</button>
+          <button class="btn" id="c0m-new">새 문제</button>
+        </div>
+        <div class="info-card" id="c0m-info"></div>
+      </div>
     </section>
 
     <section class="tab-panel" data-panel="1" hidden>
@@ -116,6 +134,53 @@
     });
   }
   render();
+})();
+
+/* TAB0 미션 — 위상차로 간섭 종류 맞히기 */
+(function () {
+  var dataBox = document.getElementById("c0m-data");
+  var seg = document.getElementById("c0m-choices");
+  var checkBtn = document.getElementById("c0m-check");
+  var newBtn = document.getElementById("c0m-new");
+  var info = document.getElementById("c0m-info");
+  var phi, key, picked = null;
+
+  function classify(p) {
+    if (p <= 30 || p >= 150) return p <= 30 ? "con" : "des";
+    return "partial";
+  }
+
+  function newQuestion() {
+    var vals = [0, 15, 30, 60, 90, 120, 150, 165, 180];
+    phi = vals[Math.floor(Math.random() * vals.length)];
+    key = classify(phi);
+    picked = null;
+    dataBox.innerHTML = "두 파동의 위상차가 <b>" + phi + "°</b>일 때, 어떤 간섭이 일어날까요?";
+    seg.querySelectorAll("button").forEach(function (x) { x.classList.remove("on"); });
+    info.innerHTML = "";
+    info.style.color = "";
+  }
+
+  seg.querySelectorAll("button").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      picked = btn.dataset.c;
+      seg.querySelectorAll("button").forEach(function (x) { x.classList.toggle("on", x === btn); });
+    });
+  });
+
+  checkBtn.addEventListener("click", function () {
+    if (!picked) { info.innerHTML = "먼저 보기를 하나 선택하세요."; info.style.color = "var(--coral)"; return; }
+    if (picked === key) {
+      info.innerHTML = "✅ 정답! 위상차 " + phi + "°는 " + (key === "con" ? "0°에 가까워 보강 간섭" : key === "des" ? "180°에 가까워 상쇄 간섭" : "중간 범위라 부분 간섭") + "이 일어납니다.";
+      info.style.color = "var(--teal)";
+    } else {
+      info.innerHTML = "❌ 틀렸습니다. 위상차 " + phi + "°에서는 " + (key === "con" ? "보강 간섭" : key === "des" ? "상쇄 간섭" : "부분 간섭") + "이 일어납니다.";
+      info.style.color = "var(--coral)";
+    }
+  });
+
+  newBtn.addEventListener("click", newQuestion);
+  newQuestion();
 })();
 
 /* TAB1 문제해결과정 */
