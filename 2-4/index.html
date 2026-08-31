@@ -18,6 +18,7 @@
     <button class="tab-btn active" data-tab="0"><span class="num">01</span> 스마트 온실 설계</button>
     <button class="tab-btn" data-tab="1"><span class="num">02</span> 센서 활용 생활 발명품</button>
     <button class="tab-btn" data-tab="2"><span class="num">03</span> 우주 개발 사례 평가</button>
+    <button class="tab-btn" data-tab="3"><span class="num">04</span> 정리하기</button>
   </nav>
 
   <main>
@@ -27,6 +28,8 @@
         <div class="eyebrow">01 · 프로젝트 · 마이크로컨트롤러를 활용하여 스마트 온실 설계하기</div>
         <h2 class="display">센서가 스스로 판단하는 온실</h2>
         <p>환경 상황을 바꿔 보면서, 마이크로컨트롤러가 센서 값을 어떻게 판단해 장치를 자동으로 작동시키는지 확인해 보세요.</p>
+      
+        <span class="std-chip">10과탐2-02-01</span><span class="std-chip">10과탐2-02-02</span><span class="std-chip">10과탐2-02-03</span><div class="std-note"><b>[10과탐2-02-01]</b> 첨단 과학 기술 속의 과학 원리를 찾아내는 탐구 활동을 통해 과학 지식이 활용된 사례를 추론할 수 있다.<br><b>[10과탐2-02-02]</b> 과학 원리가 적용된 첨단 과학 기술 및 탐구 산출물을 발표하고 공유하며, 이를 확산할 수 있다.<br><b>[10과탐2-02-03]</b> 탐구 활동 과정에서 지켜야 할 생명 존중, 연구 진실성, 지식 재산권 존중 등과 같은 연구 윤리를 준수할 수 있다.</div><div class="terms"><b>스마트 온실</b><b>센서 발명품</b><b>연구 윤리</b></div>
       </div>
       <div class="stage-card">
         <div class="canvas-wrap"><canvas id="c0" width="900" height="420"></canvas></div>
@@ -113,6 +116,15 @@
         </div>
         <div class="detail-panel" id="c2-detail"></div>
       </div>
+    </section>
+
+    <section class="tab-panel" data-panel="3" hidden>
+      <div class="stage-head">
+        <div class="eyebrow">04 · 오늘 알아낸 것을 문장으로</div>
+        <h2 class="display">정리하기</h2>
+        <p>조작한 것을 말이나 글로 옮기지 않으면 남지 않습니다. 아래를 채우고 <b>답안 복사</b>를 눌러 제출하세요. 쓰는 동안 자동으로 저장됩니다.</p>
+      </div>
+      <div class="stage-card" style="padding:6px 0 4px"><div id="wk"></div></div>
     </section>
   </main>
 </div>
@@ -342,6 +354,36 @@
     detail.innerHTML = "<h4>" + e.name + "</h4>" + e[lens];
   }
   render();
+})();
+</script>
+
+<script>
+(function () {
+  window.sthUnit("gt2-2-4");
+  window.sthWork({
+    mount: "wk",
+    unitLabel: "[과학탐구실험2 Ⅱ] 미래 사회와 첨단 과학 탐구",
+    items: [
+      {
+            "id": "w1",
+            "label": "제어의 조건",
+            "hint": "스마트 온실에서 어떤 값이 얼마를 넘으면 무엇이 작동하도록 정했는지, 그 기준을 정한 근거와 함께 쓰세요.",
+            "ph": ""
+      },
+      {
+            "id": "w2",
+            "label": "연구 윤리",
+            "hint": "내 탐구에서 지켜야 할 윤리 항목을 하나 고르고, 구체적으로 무엇을 하겠다는 것인지 쓰세요.",
+            "ph": ""
+      },
+      {
+            "id": "w3",
+            "label": "아직 헷갈리는 것",
+            "hint": "다음 시간에 여기서부터 시작합니다.",
+            "ph": ""
+      }
+]
+  });
 })();
 </script>
 </body>

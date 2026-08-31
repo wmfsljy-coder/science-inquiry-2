@@ -17,6 +17,7 @@
     </div>
     <button class="tab-btn active" data-tab="0"><span class="num">01</span> 일상 속 과학 원리</button>
     <button class="tab-btn" data-tab="1"><span class="num">02</span> 과학적 문제 해결 과정</button>
+    <button class="tab-btn" data-tab="2"><span class="num">03</span> 정리하기</button>
   </nav>
 
   <main>
@@ -25,6 +26,8 @@
         <div class="eyebrow">01 · 우리 곁의 과학</div>
         <h2 class="display">일상 속 과학 원리</h2>
         <p>카드를 클릭해 생활 속 기술 뒤에 숨은 과학 원리를 확인해 보세요.</p>
+      
+        <span class="std-chip">10과탐2-01-01</span><div class="std-note"><b>[10과탐2-01-01]</b> 영화, 건축, 요리, 스포츠, 미디어 등 생활 속의 과학 원리를 실험 등을 통해 탐구하고, 과학 원리를 설명할 수 있다.</div><p class="std-note" style="margin-top:6px">※ 실습편은 <b>Ⅰ. 생활 속의 과학 탐구</b>(2-3)에 있습니다.</p><div class="terms"><b>생활 속 과학</b><b>문제 발견</b><b>탐구 설계</b></div>
       </div>
       <div class="stage-card">
         <div class="canvas-wrap"><canvas id="c0" width="900" height="420"></canvas></div>
@@ -90,6 +93,15 @@
         </div>
         <div class="info-card" id="c1b-info"></div>
       </div>
+    </section>
+
+    <section class="tab-panel" data-panel="2" hidden>
+      <div class="stage-head">
+        <div class="eyebrow">03 · 오늘 알아낸 것을 문장으로</div>
+        <h2 class="display">정리하기</h2>
+        <p>조작한 것을 말이나 글로 옮기지 않으면 남지 않습니다. 아래를 채우고 <b>답안 복사</b>를 눌러 제출하세요. 쓰는 동안 자동으로 저장됩니다.</p>
+      </div>
+      <div class="stage-card" style="padding:6px 0 4px"><div id="wk"></div></div>
     </section>
   </main>
 </div>
@@ -322,6 +334,36 @@
   update();
 })();
 
+})();
+</script>
+
+<script>
+(function () {
+  window.sthUnit("gt2-2-1");
+  window.sthWork({
+    mount: "wk",
+    unitLabel: "[과학탐구실험2 Ⅰ] 생활 속의 과학 탐구 — 개관",
+    items: [
+      {
+            "id": "w1",
+            "label": "내 주변의 과학 원리",
+            "hint": "일상에서 고른 장면 하나에 어떤 과학 원리가 숨어 있는지 쓰세요.",
+            "ph": ""
+      },
+      {
+            "id": "w2",
+            "label": "확인할 방법",
+            "hint": "그 원리가 맞는지 확인하려면 무엇을 어떻게 재야 하는지 쓰세요.",
+            "ph": ""
+      },
+      {
+            "id": "w3",
+            "label": "아직 헷갈리는 것",
+            "hint": "다음 시간에 여기서부터 시작합니다.",
+            "ph": ""
+      }
+]
+  });
 })();
 </script>
 </body>
