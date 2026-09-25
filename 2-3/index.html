@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Ⅰ. 생활 속의 과학 탐구 — 관측 스테이션</title>
 <link rel="stylesheet" href="../assets/theme.css">
+<link rel="stylesheet" href="../assets/share.css">
 <style>
   .gauge-wrap { padding: 10px 20px 6px; }
   .gauge-track { position: relative; height: 22px; border-radius: 11px; background: linear-gradient(90deg, var(--teal) 0%, var(--teal) 40%, var(--coral) 65%, #e8483a 100%); overflow: hidden; }
@@ -29,6 +30,7 @@
     <button class="tab-btn" data-tab="6"><span class="num">07</span> 학교 주변 오염 측정</button>
     <button class="tab-btn" data-tab="7"><span class="num">08</span> 운동 안전사고 예방</button>
     <button class="tab-btn" data-tab="8"><span class="num">09</span> 정리하기</button>
+    <button class="tab-btn" data-tab="9"><span class="num">10</span> 우리 반</button>
   </nav>
 
   <main>
@@ -216,11 +218,24 @@
       </div>
       <div class="stage-card" style="padding:6px 0 4px"><div id="wk"></div></div>
     </section>
+  
+    <!-- ===================================================================== 10 우리 반 -->
+    <section class="tab-panel" data-panel="9" hidden>
+      <div class="stage-head">
+        <div class="eyebrow">10 · 같은 반 친구들과 나누기</div>
+        <h2 class="display">우리 반</h2>
+        <p>정리하기에 쓴 것을 우리 반에 올리고, 같은 반 친구들이 어디까지 했는지 함께 보세요. <b>올리기 버튼을 눌렀을 때만</b> 공유됩니다. 실명 대신 별명을 쓰고, 글까지 올릴지는 직접 고르세요.</p>
+      </div>
+      <div class="stage-card"><div id="share"></div></div>
+    </section>
+
   </main>
 </div>
 
 <button class="theme-toggle" id="themeToggle">라이트 모드</button>
 <script src="../assets/theme.js"></script>
+<script src="../assets/share-config.js"></script>
+<script src="../assets/share.js"></script>
 <script>
 "use strict";
 
@@ -610,6 +625,16 @@
             "ph": ""
       }
 ]
+  });
+  window.sthShare({
+    mount: "share",
+    unit: "gt2-2-3",
+    unitLabel: "[과학탐구실험2 Ⅰ] 생활 속의 과학 탐구",
+    works: [
+      { id: "w1", label: "고른 탐구 하나" },
+      { id: "w2", label: "내진·면진·제진" },
+      { id: "w3", label: "유사과학을 가르는 기준" }
+    ]
   });
 })();
 </script>
