@@ -5,12 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Ⅰ. 생활 속의 과학 탐구 — 관측 스테이션</title>
 <link rel="stylesheet" href="../assets/theme.css">
-<link rel="stylesheet" href="../assets/share.css">
-<style>
-  .gauge-wrap { padding: 10px 20px 6px; }
-  .gauge-track { position: relative; height: 22px; border-radius: 11px; background: linear-gradient(90deg, var(--teal) 0%, var(--teal) 40%, var(--coral) 65%, #e8483a 100%); overflow: hidden; }
-  .gauge-marker { position: absolute; top: -6px; width: 4px; height: 34px; background: var(--foam); border-radius: 2px; transform: translateX(-2px); }
-</style>
+<link rel="stylesheet" href="../assets/story.css">
 </head>
 <body>
 
@@ -21,622 +16,371 @@
       <div class="eyebrow" style="margin-top:8px">Ⅰ · 생활 속의 과학 탐구</div>
       <h1 class="display">생활 속의<br>과학 탐구</h1>
     </div>
-    <button class="tab-btn active" data-tab="0"><span class="num">01</span> 동결 건조 식품</button>
-    <button class="tab-btn" data-tab="1"><span class="num">02</span> 생활 제품 속 과학</button>
-    <button class="tab-btn" data-tab="2"><span class="num">03</span> 놀이공원 가속도</button>
-    <button class="tab-btn" data-tab="3"><span class="num">04</span> 건축물 내진 설계</button>
-    <button class="tab-btn" data-tab="4"><span class="num">05</span> 유사과학 비평</button>
-    <button class="tab-btn" data-tab="5"><span class="num">06</span> 외래종과 생물다양성</button>
-    <button class="tab-btn" data-tab="6"><span class="num">07</span> 학교 주변 오염 측정</button>
-    <button class="tab-btn" data-tab="7"><span class="num">08</span> 운동 안전사고 예방</button>
-    <button class="tab-btn" data-tab="8"><span class="num">09</span> 정리하기</button>
-    <button class="tab-btn" data-tab="9"><span class="num">10</span> 우리 반</button>
+    <button class="tab-btn active" data-tab="0"><span class="num">01</span> 동결 건조와 생활 제품</button>
+    <button class="tab-btn" data-tab="1"><span class="num">02</span> 놀이공원과 운동 안전</button>
+    <button class="tab-btn" data-tab="2"><span class="num">03</span> 건축물 내진 설계</button>
+    <button class="tab-btn" data-tab="3"><span class="num">04</span> 우리 동네 환경과 유사과학</button>
+    <button class="tab-btn" data-tab="4"><span class="num">05</span> 수준별 문제</button>
+    <button class="tab-btn" data-tab="5"><span class="num">06</span> 응용 실험실</button>
+    <button class="tab-btn" data-tab="6"><span class="num">07</span> 정리하기</button>
+    <button class="tab-btn" data-tab="7"><span class="num">08</span> 우리 반</button>
   </nav>
 
   <main>
-    <!-- 01 동결 건조 식품 -->
+    <!-- =====================================================================
+         01 동결 건조와 생활 제품 — 이야기 「우주로 가는 딸기」
+         ===================================================================== -->
     <section class="tab-panel" data-panel="0">
       <div class="stage-head">
-        <div class="eyebrow">01 · 동결 건조 식품에 적용된 과학 원리 알아보기</div>
-        <h2 class="display">얼려서 말리면 무엇이 다를까?</h2>
-        <p>건조 방식을 전환해 보면서, 딸기의 모양과 영양이 어떻게 달라지는지 비교해 보세요.</p>
-      
+        <div class="eyebrow">01 · 동결 건조 식품에 적용된 과학 원리 · 생활 제품 속 과학의 유용성 · 이야기 한 편</div>
+        <h2 class="display">우주로 가는 딸기</h2>
+        <p>우주 정거장에 보낼 간식으로 우리 지역 딸기가 뽑혔습니다. 조건은 셋, 가볍고, 오래가고, 모양과 영양이 그대로일 것. 식품 연구원이 되어 압력과 온도를 조절해 얼음을 바로 수증기로 바꾸고, 생활 제품 속에 숨은 같은 원리들을 찾아냅니다.</p>
         <span class="std-chip">10과탐2-01-01</span><span class="std-chip">10과탐2-01-02</span><span class="std-chip">10과탐2-01-03</span><div class="std-note"><b>[10과탐2-01-01]</b> 영화, 건축, 요리, 스포츠, 미디어 등 생활 속의 과학 원리를 실험 등을 통해 탐구하고, 과학 원리를 설명할 수 있다.<br><b>[10과탐2-01-02]</b> 사회적 이슈나 생활 속에서 과학 탐구 문제를 발견하고, 이를 해결하기 위한 과학 탐구 활동을 계획하고 수행할 수 있다.<br><b>[10과탐2-01-03]</b> 과학 개념을 적용하여 실생활 문제의 해결 방안을 창의적으로 고안하고, 필요한 도구를 설계·제작할 수 있다.</div><div class="terms"><b>동결 건조</b><b>내진 설계</b><b>유사과학</b><b>외래종</b></div>
       </div>
-      <div class="stage-card">
-        <div class="canvas-wrap"><canvas id="c0" width="900" height="360"></canvas></div>
-        <div class="controls">
-          <div class="ctrl-group">
-            <div class="ctrl-label">건조 방식</div>
-            <div class="seg" id="c0-mode">
-              <button class="on" data-m="hot">열풍 건조</button>
-              <button data-m="freeze">동결 건조</button>
+
+      <div class="episode" id="ep1">
+        <section class="scene" data-title="우주 간식 선발 대회">
+          <div class="story narr"><div class="who">🍓</div><div class="say"><span class="name">이야기</span>우주 정거장의 우주인에게 보낼 간식으로 우리 지역 딸기가 뽑혔습니다. 그런데 딸기는 90% 가 물이라 무겁고 금방 무릅니다. 로켓으로 1 kg 을 올리는 데 수천만 원이 든다니, 물을 빼야 합니다.</div></div>
+          <div class="story"><div class="who">👩‍🔬</div><div class="say"><span class="name">식품 연구소장</span>“햇볕에 말리거나 뜨거운 바람으로 말리면 쭈글쭈글해지고 비타민이 사라져. 모양과 영양을 지키며 물만 빼는 방법이 없을까?”</div></div>
+          <div class="gate loose" id="g1"></div>
+        </section>
+
+        <section class="scene" data-title="얼음이 곧바로 수증기로">
+          <div class="story"><div class="who">❄️</div><div class="say"><span class="name">식품 연구소장</span>“물은 온도와 압력에 따라 얼음·물·수증기가 돼. 압력을 아주 낮추면 얼음이 녹지 않고 곧바로 수증기가 되는 <b>승화</b>가 일어나지. 딸기를 얼린 채로(<b>−10 °C 이하</b>) 얼음을 승화시킬 수 있는 온도와 압력을 찾아 줘.”</div></div>
+          <div class="stage-card">
+            <div class="canvas-wrap"><canvas id="a-c-ph" width="900" height="300"></canvas></div>
+            <div class="controls">
+              <div class="ctrl-group">
+                <div class="ctrl-label">건조실 온도<span class="val" id="a-t-val">20 °C</span></div>
+                <input type="range" id="a-t" min="-40" max="60" step="5" value="20">
+              </div>
+              <div class="ctrl-group">
+                <div class="ctrl-label">건조실 압력<span class="val" id="a-p-val">101 325 Pa (1기압)</span></div>
+                <input type="range" id="a-p" min="0" max="7" step="1" value="7">
+              </div>
             </div>
+            <div class="info-card" id="a-ph-info"></div>
           </div>
-        </div>
-        <div class="info-card" id="c0-info"></div>
+          <div class="mission" id="m1-2">딸기가 −10 °C 이하로 언 채, 얼음이 승화하는 온도와 압력을 찾으세요.</div>
+        </section>
+
+        <section class="scene" data-title="열풍 건조와 동결 건조">
+          <div class="story"><div class="who">⚖️</div><div class="say"><span class="name">우주 식량 심사관</span>“두 방법으로 말린 딸기를 비교해 봅시다. 우주 식량 합격 기준은 <b>비타민 C 80% 이상, 원래 부피 90% 이상</b>. 열풍 건조는 온도를 바꿔 가며 확인하고, 동결 건조와도 비교해 주세요.”</div></div>
+          <div class="stage-card">
+            <div class="canvas-wrap"><canvas id="a-c-dry" width="900" height="270"></canvas></div>
+            <div class="controls">
+              <div class="ctrl-group">
+                <div class="ctrl-label">건조 방식</div>
+                <div class="seg" id="a-method"><button class="on" data-v="hot">열풍 건조</button><button data-v="freeze">동결 건조</button></div>
+              </div>
+              <div class="ctrl-group">
+                <div class="ctrl-label">열풍 온도<span class="val" id="a-ht-val">60 °C</span></div>
+                <input type="range" id="a-ht" min="40" max="90" step="10" value="60">
+              </div>
+            </div>
+            <div class="info-card" id="a-dry-info"></div>
+          </div>
+          <div id="a-dry-pick"></div>
+          <div class="mission" id="m1-3"><ul><li id="m1-3a">열풍 건조를 두 가지 이상의 온도로 확인하기</li><li id="m1-3b">합격 기준을 넘는 건조 방식 찾기</li><li id="m1-3c">동결 건조 딸기가 모양을 지키는 까닭 고르기</li></ul></div>
+        </section>
+
+        <section class="scene" data-title="생활 제품 속 과학">
+          <div class="story"><div class="who">🛒</div><div class="say"><span class="name">식품 연구소장</span>“압력과 상태 변화처럼, 마트에 있는 물건에도 과학 원리가 가득해. 원리에 따라 나눠 볼까?”</div></div>
+          <div class="stage-card"><div id="a-sort"></div></div>
+          <div class="mission" id="m1-4">여덟 가지 생활 제품을 과학 원리에 따라 나누세요.</div>
+        </section>
+
+        <section class="scene" data-title="결말 — 우주 정거장의 간식 시간">
+          <div class="ending">
+            <h4>🚀 액체를 거치지 않고 물만 빼다</h4>
+            <p>딸기를 얼린 뒤 압력을 아주 낮추자 얼음이 녹지 않고 곧바로 수증기가 되었습니다(<b>승화</b>). 액체 물이 흐르며 세포를 무너뜨리는 일이 없으니, 얼음 결정이 있던 자리는 작은 구멍으로 남아 모양이 그대로이고, 열을 거의 쓰지 않아 비타민도 지켜졌지요. 무게는 10분의 1, 물을 부으면 금세 원래대로 돌아옵니다. 압력밥솥이 압력을 높여 끓는점을 올리듯, 동결 건조는 압력을 낮춰 상태 변화를 조절합니다. 생활 제품은 <b>과학 원리를 쓸모 있게 바꾼 것</b>입니다.</p>
+            <div class="vs" id="e1-vs"></div>
+            <span class="stamp">생활 탐구 ① 완성</span>
+          </div>
+          <div class="info-card" style="margin:14px 0">📎 과학자의 눈: 물의 세 상태가 함께 있을 수 있는 삼중점은 약 0.01 °C, 611 Pa 입니다. 이보다 낮은 압력에서는 얼음이 액체를 거치지 않고 승화합니다. 비타민 C 와 부피 값은 원리를 보이기 위한 모형 값이에요.</div>
+          <div class="stage-card" style="padding:6px 0 4px;margin-top:16px"><div id="wk1"></div></div>
+        </section>
       </div>
+      <p class="teacher-note">교사용: 주소 끝에 <a href="?open=1">?open=1</a> 을 붙이면 모든 장면이 열립니다.</p>
     </section>
 
-    <!-- 02 생활 제품 속 과학 -->
+    <!-- =====================================================================
+         02 놀이공원과 운동 안전 — 이야기 「스마트폰을 태운 롤러코스터」
+         ===================================================================== -->
     <section class="tab-panel" data-panel="1" hidden>
       <div class="stage-head">
-        <div class="eyebrow">02 · 생활 제품 속 과학의 유용성 인식하기</div>
-        <h2 class="display">우리 주변 제품 속 과학 원리</h2>
-        <p>제품 카드를 눌러 어떤 과학 원리가 숨어 있는지 확인해 보세요.</p>
+        <div class="eyebrow">02 · 스마트 기기로 놀이공원의 가속도 비교 · 운동 관련 안전사고 예방 장치 고안 · 이야기 한 편</div>
+        <h2 class="display">스마트폰을 태운 롤러코스터</h2>
+        <p>현장 체험 학습 날, 물리 동아리는 스마트폰 가속도 센서를 몸에 달고 놀이기구를 탑니다. 기록한 그래프로 놀이기구마다의 운동을 읽어 내고, 안전한 루프를 설계하며, 같은 센서로 운동 중 사고를 막는 장치를 떠올립니다.</p>
+        <span class="std-chip">10과탐2-01-02</span><span class="std-chip">10과탐2-01-03</span><div class="std-note"><b>[10과탐2-01-02]</b> 사회적 이슈나 생활 속에서 과학 탐구 문제를 발견하고, 이를 해결하기 위한 과학 탐구 활동을 계획하고 수행할 수 있다.<br><b>[10과탐2-01-03]</b> 과학 개념을 적용하여 실생활 문제의 해결 방안을 창의적으로 고안하고, 필요한 도구를 설계·제작할 수 있다.</div><div class="terms"><b>가속도 센서</b><b>무중력</b><b>구심 가속도</b><b>안전 장치</b></div>
       </div>
-      <div class="stage-card">
-        <div class="card-grid" id="c1-grid" style="padding-top:18px;"></div>
-        <div class="detail-panel" id="c1-detail"><span class="hint">위에서 제품 카드를 하나 선택해 보세요.</span></div>
+
+      <div class="episode" id="ep2">
+        <section class="scene" data-title="체험 학습 탐구 계획">
+          <div class="story narr"><div class="who">🎢</div><div class="say"><span class="name">이야기</span>놀이공원 체험 학습을 앞두고 물리 선생님이 과제를 냈습니다. “어떤 놀이기구가 몸에 가장 큰 힘을 줄까? 느낌이 아니라 자료로 답해 보자.”</div></div>
+          <div class="story"><div class="who">🧑‍🎓</div><div class="say"><span class="name">동아리 부원</span>“스마트폰에 가속도 센서가 있다던데… 어떻게 재야 할까?”</div></div>
+          <div class="gate loose" id="g2"></div>
+        </section>
+
+        <section class="scene" data-title="세 놀이기구의 그래프">
+          <div class="story"><div class="who">📱</div><div class="say"><span class="name">물리 선생님</span>“스마트폰 가속도 센서는 몸이 느끼는 무게를 ‘g’ 로 알려 줘요. 가만히 서 있으면 1 g, 몸이 두 배로 무겁게 느껴지면 2 g 이지요. 세 놀이기구의 기록을 <b>모두</b> 살펴보고, 자이로드롭에서 센서가 <b>거의 0 g</b> 를 가리킨 구간이 무엇을 뜻하는지 생각해 보세요.”</div></div>
+          <div class="stage-card">
+            <div class="canvas-wrap"><canvas id="b-c-acc" width="900" height="290"></canvas></div>
+            <div class="controls">
+              <div class="ctrl-group" style="flex:1 1 100%">
+                <div class="ctrl-label">놀이기구</div>
+                <div class="seg" id="b-ride"><button class="on" data-v="bumper">범퍼카</button><button data-v="coaster">롤러코스터</button><button data-v="drop">자이로드롭</button></div>
+              </div>
+            </div>
+            <div class="info-card" id="b-acc-info"></div>
+          </div>
+          <div id="b-acc-pick"></div>
+          <div class="mission" id="m2-2"><ul><li id="m2-2a">세 놀이기구의 기록 모두 살펴보기</li><li id="m2-2b">0 g 구간의 뜻 고르기</li></ul></div>
+        </section>
+
+        <section class="scene" data-title="안전한 루프 설계">
+          <div class="story"><div class="who">🌀</div><div class="say"><span class="name">놀이기구 설계자 (인터뷰)</span>“루프 꼭대기에서는 몸이 좌석 쪽으로 <b>0.3 g 이상</b> 눌려야 안정감이 있고, 루프 바닥에서는 <b>5 g 를 넘으면</b> 위험해요. 꼭대기 속력과 루프 크기, 모양을 정해 두 조건을 모두 맞춰 보세요. 둥근 루프로도 될까요?”</div></div>
+          <div class="stage-card">
+            <div class="canvas-wrap"><canvas id="b-c-loop" width="900" height="280"></canvas></div>
+            <div class="controls">
+              <div class="ctrl-group">
+                <div class="ctrl-label">루프 모양</div>
+                <div class="seg" id="b-shape"><button class="on" data-v="circle">동그란 루프</button><button data-v="drop">물방울 모양 루프</button></div>
+              </div>
+              <div class="ctrl-group">
+                <div class="ctrl-label">꼭대기에서의 속력<span class="val" id="b-v-val">10 m/s</span></div>
+                <input type="range" id="b-v" min="5" max="25" step="1" value="10">
+              </div>
+              <div class="ctrl-group">
+                <div class="ctrl-label">꼭대기 곡률 반지름<span class="val" id="b-r-val">10 m</span></div>
+                <input type="range" id="b-r" min="5" max="20" step="1" value="10">
+              </div>
+            </div>
+            <div class="info-card" id="b-loop-info"></div>
+          </div>
+          <div id="b-loop-pick"></div>
+          <div class="mission" id="m2-3"><ul><li id="m2-3a">꼭대기 0.3 g 이상, 바닥 5 g 이하인 루프 설계하기</li><li id="m2-3b">요즘 롤러코스터가 물방울 모양 루프를 쓰는 까닭 고르기</li></ul></div>
+        </section>
+
+        <section class="scene" data-title="같은 센서, 다른 쓰임">
+          <div class="story"><div class="who">⛑️</div><div class="say"><span class="name">체육 선생님</span>“놀이기구에서 쓴 센서들로 운동 중 사고도 막을 수 있어요. 안전 장치 아이디어를 쓰는 센서에 따라 나눠 보세요.”</div></div>
+          <div class="stage-card"><div id="b-sort"></div></div>
+          <div class="mission" id="m2-4">여덟 가지 안전 장치를 쓰는 센서에 따라 나누세요.</div>
+        </section>
+
+        <section class="scene" data-title="결말 — 체험 학습 보고서">
+          <div class="ending">
+            <h4>📱 주머니 속의 실험 도구</h4>
+            <p>범퍼카는 부딪치는 순간에만 뾰족하게, 롤러코스터는 곡선마다 오르내리며, 자이로드롭은 떨어지는 동안 <b>0 g</b>(무중력)를 가리켰다가 멈출 때 크게 치솟았습니다. 동그란 루프는 꼭대기를 안전하게 지나려면 바닥에서 6 g 를 넘어 위험했지만, 꼭대기는 좁고 바닥은 넓은 <b>물방울 모양</b>으로 바꾸자 두 조건을 모두 맞출 수 있었지요. 같은 가속도 센서가 헬멧에 들어가면 머리 충격을, 스마트폰에서는 넘어짐을 감지합니다. 생활 속에서 문제를 발견하고, 재고, 해결 장치를 설계하는 것, 이것이 생활 속의 과학 탐구입니다.</p>
+            <div class="vs" id="e2-vs"></div>
+            <span class="stamp">생활 탐구 ② 완성</span>
+          </div>
+          <div class="info-card" style="margin:14px 0">📎 과학자의 눈: 1900년대 초의 동그란 루프 롤러코스터는 승객에게 너무 큰 힘을 주어 목 부상이 잦았습니다. 1976년부터 곡률이 점점 변하는 클로소이드(물방울) 루프가 쓰였어요. 물방울 루프는 바닥의 곡률 반지름이 꼭대기의 3배, 높이가 꼭대기 반지름의 2.5배라고 단순화해 계산했습니다.</div>
+          <div class="stage-card" style="padding:6px 0 4px;margin-top:16px"><div id="wk2"></div></div>
+        </section>
       </div>
+      <p class="teacher-note">교사용: 주소 끝에 <a href="?open=1">?open=1</a> 을 붙이면 모든 장면이 열립니다.</p>
     </section>
 
-    <!-- 03 놀이공원 가속도 -->
+    <!-- =====================================================================
+         03 건축물 내진 설계 — 이야기 「5층 건물만 크게 흔들렸다」
+         ===================================================================== -->
     <section class="tab-panel" data-panel="2" hidden>
       <div class="stage-head">
-        <div class="eyebrow">03 · 스마트 기기를 이용하여 놀이공원에서 다양한 운동의 가속도 비교하기</div>
-        <h2 class="display">어떤 놀이기구가 가장 짜릿할까?</h2>
-        <p>놀이기구를 선택하면, 스마트폰 가속도 센서로 측정했다고 가정한 시간-가속도 그래프를 보여줍니다.</p>
-      </div>
-      <div class="stage-card">
-        <div class="canvas-wrap"><canvas id="c2" width="900" height="360"></canvas></div>
-        <div class="controls">
-          <div class="ctrl-group">
-            <div class="ctrl-label">놀이기구</div>
-            <div class="seg" id="c2-ride">
-              <button class="on" data-r="bumper">범퍼카(충돌)</button>
-              <button data-r="coaster">롤러코스터(곡선 주행)</button>
-              <button data-r="drop">자이로드롭(자유낙하)</button>
-            </div>
-          </div>
-        </div>
-        <div class="stat-row"><div class="stat-box"><div class="lbl">측정된 최대 가속도</div><div class="num" id="c2-max">—</div></div></div>
-        <div class="info-card" id="c2-info"></div>
+        <div class="eyebrow">03 · 건축물에 적용된 내진 설계의 원리 알아보기 · 이야기 한 편</div>
+        <h2 class="display">5층 건물만 크게 흔들렸다</h2>
+        <p>지진이 지나간 도시. 이상하게도 낮은 건물과 높은 건물은 멀쩡한데, 5층쯤 되는 건물들만 크게 부서졌습니다. 건축 안전 조사단이 되어 흔들림이 커지는 까닭을 찾아내고, 내진·면진·제진 기술을 조합해 학교 건물을 지킵니다.</p>
+        <span class="std-chip">10과탐2-01-03</span><div class="std-note"><b>[10과탐2-01-03]</b> 과학 개념을 적용하여 실생활 문제의 해결 방안을 창의적으로 고안하고, 필요한 도구를 설계·제작할 수 있다.</div><div class="terms"><b>고유 주기</b><b>공진</b><b>내진·면진·제진</b></div>
       </div>
 
-      <div class="stage-head">
-        <div class="eyebrow">🔎 미션 · 가속도 패턴으로 놀이기구 맞히기</div>
-        <h2 class="display" style="font-size:18px;">이 가속도 패턴은 어떤 놀이기구일까?</h2>
+      <div class="episode" id="ep3">
+        <section class="scene" data-title="이상한 피해 지도">
+          <div class="story narr"><div class="who">🏚️</div><div class="say"><span class="name">이야기</span>지진 피해 지도를 펼친 조사단. 2층짜리 주택과 20층짜리 아파트는 금이 조금 간 정도인데, 4 ~ 6층 건물들에서 기둥이 부서진 곳이 많습니다.</div></div>
+          <div class="story"><div class="who">👷</div><div class="say"><span class="name">조사단장</span>“같은 지진인데 왜 층수에 따라 피해가 달랐을까? 그리고 우리 학교는 어떻게 지켜야 할까?”</div></div>
+          <div class="gate loose" id="g3"></div>
+        </section>
+
+        <section class="scene" data-title="건물마다의 박자">
+          <div class="story"><div class="who">🎵</div><div class="say"><span class="name">구조 공학자</span>“건물은 저마다 좌우로 한 번 흔들리는 데 걸리는 시간, <b>고유 주기</b>가 있어요(대략 층수 × 0.1 초). 이번 지진은 땅이 약 <b>0.5 초</b>마다 한 번씩 흔들렸습니다. 층수를 바꿔 가며, 이 지진에 <b>가장 크게 흔들리는 건물</b>을 찾아보세요.”</div></div>
+          <div class="stage-card">
+            <div class="canvas-wrap"><canvas id="c-c-res" width="900" height="290"></canvas></div>
+            <div class="controls">
+              <div class="ctrl-group">
+                <div class="ctrl-label">건물 층수<span class="val" id="c-n-val">2층</span></div>
+                <input type="range" id="c-n" min="1" max="12" step="1" value="2">
+              </div>
+            </div>
+            <div class="info-card" id="c-res-info"></div>
+          </div>
+          <div id="c-res-pick"></div>
+          <div class="mission" id="m3-2"><ul><li id="m3-2a">이 지진에 가장 크게 흔들리는 층수 찾기</li><li id="m3-2b">그렇게 흔들리는 까닭 고르기</li></ul></div>
+        </section>
+
+        <section class="scene" data-title="학교 건물 지키기">
+          <div class="story"><div class="who">🏫</div><div class="say"><span class="name">조사단장</span>“우리 학교 본관도 5층이에요. 세 가지 기술을 켜고 꺼 보며, 꼭대기 층이 받는 흔들림이 건물이 견디는 힘보다 작아지게 해 주세요. 비용을 생각해 필요한 것만 고르되, 적어도 <b>두 가지 기술</b>을 함께 써야 합니다.”</div></div>
+          <div class="stage-card">
+            <div class="canvas-wrap"><canvas id="c-c-tech" width="900" height="290"></canvas></div>
+            <div class="controls">
+              <div class="ctrl-group">
+                <div class="ctrl-label">내진 — 기둥·벽 보강</div>
+                <div class="seg" id="c-t1"><button class="on" data-v="0">끔</button><button data-v="1">켬</button></div>
+              </div>
+              <div class="ctrl-group">
+                <div class="ctrl-label">면진 — 고무 받침</div>
+                <div class="seg" id="c-t2"><button class="on" data-v="0">끔</button><button data-v="1">켬</button></div>
+              </div>
+              <div class="ctrl-group">
+                <div class="ctrl-label">제진 — 댐퍼</div>
+                <div class="seg" id="c-t3"><button class="on" data-v="0">끔</button><button data-v="1">켬</button></div>
+              </div>
+            </div>
+            <div class="info-card" id="c-tech-info"></div>
+          </div>
+          <div class="mission" id="m3-3">두 가지 이상의 기술을 조합해 흔들림이 견디는 힘보다 작아지게 하세요.</div>
+        </section>
+
+        <section class="scene" data-title="기술 분류하기">
+          <div class="story"><div class="who">🗂️</div><div class="say"><span class="name">구조 공학자</span>“실제 건물에 쓰이는 방법들을 세 기술로 나눠 봅시다. 버티는가, 떼어 내는가, 흡수하는가.”</div></div>
+          <div class="stage-card"><div id="c-sort"></div></div>
+          <div class="mission" id="m3-4">여덟 가지 방법을 내진·면진·제진으로 나누세요.</div>
+        </section>
+
+        <section class="scene" data-title="결말 — 조사 보고서">
+          <div class="ending">
+            <h4>🏗️ 박자를 피하고, 떼어 내고, 흡수하고, 버틴다</h4>
+            <p>0.5 초마다 흔들린 이번 지진은 고유 주기가 약 0.5 초인 <b>5층 건물</b>과 박자가 맞아 흔들림이 10배로 커졌습니다(<b>공진</b>). 그네를 박자 맞춰 밀면 점점 높이 올라가는 것과 같지요. 학교 본관은 기둥과 벽을 보강해 튼튼하게 하고(<b>내진</b>), 여기에 고무 받침으로 땅의 흔들림을 떼어 내거나(<b>면진</b>) 댐퍼로 흔들림 에너지를 흡수하도록(<b>제진</b>) 설계했습니다. 실제 건물은 한 가지 기술만 쓰지 않고, 늘 튼튼함을 바탕으로 여러 기술을 함께 씁니다.</p>
+            <div class="vs" id="e3-vs"></div>
+            <span class="stamp">생활 탐구 ③ 완성</span>
+          </div>
+          <div class="miscon loose"><span class="tag">오개념 지도</span><br><b>내진 설계는 한 가지가 아니다</b><br><b>면진 기술과 제진 기술만을 이용하는 내진 설계는 없다.</b> 모든 건축물에는 기본적으로 일정 강도를 확보하여 건물을 튼튼하게 짓는 <b>내진 기술</b>이 적용되어 있다. 건축물에 하나의 내진 설계 기술만 적용된다고 생각하지 않도록 유의한다.<cite>과학탐구실험2 교사용 교과서, 오개념 지도</cite></div>
+          <div class="info-card" style="margin:14px 0">📎 과학자의 눈: 1985년 멕시코시티 지진 때 6 ~ 15층 건물이 특히 많이 무너진 것도 무른 지반의 긴 흔들림 주기와 건물의 고유 주기가 맞았기 때문입니다. ‘층수 × 0.1 초’는 대략적인 어림이며, 흔들림 배율은 감쇠 5% 인 단순 모형으로 계산했습니다.</div>
+          <div class="stage-card" style="padding:6px 0 4px;margin-top:16px"><div id="wk3"></div></div>
+        </section>
       </div>
-      <div class="stage-card">
-        <div class="info-card" id="c2m-data"></div>
-        <div class="seg" id="c2m-choices">
-          <button data-c="bumper">범퍼카(충돌)</button>
-          <button data-c="coaster">롤러코스터(곡선 주행)</button>
-          <button data-c="drop">자이로드롭(자유낙하)</button>
-        </div>
-        <div class="toggle-row" style="margin:14px 20px;">
-          <button class="btn" id="c2m-check">정답 확인</button>
-          <button class="btn" id="c2m-new">새 문제</button>
-        </div>
-        <div class="info-card" id="c2m-info"></div>
-      </div>
+      <p class="teacher-note">교사용: 주소 끝에 <a href="?open=1">?open=1</a> 을 붙이면 모든 장면이 열립니다.</p>
     </section>
 
-    <!-- 04 건축물 내진 설계 -->
+    <!-- =====================================================================
+         04 우리 동네 환경과 유사과학 — 이야기 「동네 환경 탐사대」
+         ===================================================================== -->
     <section class="tab-panel" data-panel="3" hidden>
       <div class="stage-head">
-        <div class="eyebrow">04 · 건축물에 적용된 내진 설계의 원리 알아보기</div>
-        <h2 class="display">지진에도 흔들리지 않으려면?</h2>
-        <p>지진 세기 슬라이더를 올리면서, 일반 건물과 내진 설계 건물의 흔들림 차이를 비교해 보세요.</p>
+        <div class="eyebrow">04 · 외래종과 생물다양성 · 학교 주변 오염 측정 · 유사과학 비평 · 이야기 한 편</div>
+        <h2 class="display">동네 환경 탐사대</h2>
+        <p>환경 동아리 ‘동네 탐사대’가 학교 앞 저수지와 등굣길을 조사합니다. 저수지를 점령한 외래종의 영향을 모형으로 따져 보고, 등굣길의 미세먼지와 소음을 재어 기준과 비교하며, 동네에 도는 ‘환경 꿀팁’이 과학인지 가려냅니다.</p>
+        <span class="std-chip">10과탐2-01-02</span><div class="std-note"><b>[10과탐2-01-02]</b> 사회적 이슈나 생활 속에서 과학 탐구 문제를 발견하고, 이를 해결하기 위한 과학 탐구 활동을 계획하고 수행할 수 있다.</div><div class="terms"><b>외래종</b><b>생물다양성</b><b>환경 기준</b><b>유사과학</b></div>
       </div>
-      <div class="stage-card">
-        <div class="canvas-wrap"><canvas id="c3" width="900" height="380"></canvas></div>
-        <div class="controls">
-          <div class="ctrl-group">
-            <div class="ctrl-label">지진 세기<span class="val" id="c3-mag-val">3</span></div>
-            <input type="range" id="c3-mag" min="1" max="9" step="1" value="3">
+
+      <div class="episode" id="ep4">
+        <section class="scene" data-title="탐사 주제 정하기">
+          <div class="story narr"><div class="who">🗺️</div><div class="say"><span class="name">이야기</span>동아리 첫 모임. “저수지에 이상한 쥐 같은 동물이 산대.” “정문 앞은 차가 많아서 숨 막혀.” “할머니가 방에 양파를 두면 미세먼지가 준대.” 이야기는 많은데 무엇부터 탐구할지 정해야 합니다.</div></div>
+          <div class="story"><div class="who">🧑‍🏫</div><div class="say"><span class="name">지도 교사</span>“좋은 탐구 문제는 어떤 것일까?”</div></div>
+          <div class="gate loose" id="g4"></div>
+        </section>
+
+        <section class="scene" data-title="저수지의 뉴트리아">
+          <div class="story"><div class="who">🦫</div><div class="say"><span class="name">생태 연구원</span>“저수지의 뉴트리아는 남아메리카에서 들여온 외래종이에요. 수를 조절하지 않으면 수초와 토종 생물이 크게 줄지요. 해마다 뉴트리아를 몇 % 씩 포획해야, 10년 뒤 토종 생물이 <b>60% 이상</b> 남을까요? 포획에도 인력과 비용이 드니 <b>가장 낮은 포획률</b>을 찾아 주세요.”</div></div>
+          <div class="stage-card">
+            <div class="canvas-wrap"><canvas id="d-c-eco" width="900" height="280"></canvas></div>
+            <div class="controls">
+              <div class="ctrl-group">
+                <div class="ctrl-label">해마다 포획하는 뉴트리아 비율<span class="val" id="d-h-val">0%</span></div>
+                <input type="range" id="d-h" min="0" max="60" step="5" value="0">
+              </div>
+            </div>
+            <div class="info-card" id="d-eco-info"></div>
           </div>
-        </div>
-        <div class="info-card">내진 설계는 <b>기초 면진 장치</b>(건물과 지반 사이의 고무 받침 등으로 흔들림을 흡수), <b>제진 장치</b>(건물 내부의 댐퍼가 진동 에너지를 흡수), <b>유연한 골조 구조</b>(강한 힘에 부러지지 않고 휘어지며 버팀) 등을 이용해 지진 에너지가 건물 전체에 그대로 전달되지 않도록 합니다.</div>
+          <div id="d-eco-pick"></div>
+          <div class="mission" id="m4-2"><ul><li id="m4-2a">10년 뒤 토종 생물 60% 이상을 지키는 가장 낮은 포획률 찾기</li><li id="m4-2b">외래종이 생물다양성을 해치는 까닭 고르기</li></ul></div>
+        </section>
+
+        <section class="scene" data-title="등굣길 측정">
+          <div class="story"><div class="who">📟</div><div class="say"><span class="name">동아리 부장</span>“간이 측정기로 등교 시간(8시)에 세 곳을 쟀어. 미세먼지(PM2.5)는 <b>35 ㎍/m³</b> 를 넘으면 ‘나쁨’, 도로변 소음은 낮 <b>65 dB</b> 를 넘으면 기준 초과야. 세 곳을 모두 재 보고, <b>두 항목 모두 기준을 넘는 곳</b>을 찾아 줘.”</div></div>
+          <div class="stage-card">
+            <div class="canvas-wrap"><canvas id="d-c-pol" width="900" height="260"></canvas></div>
+            <div class="controls">
+              <div class="ctrl-group">
+                <div class="ctrl-label">측정 장소</div>
+                <div class="seg" id="d-loc"><button class="on" data-v="park">학교 뒤 공원</button><button data-v="field">운동장</button><button data-v="gate">정문 앞 큰길</button></div>
+              </div>
+            </div>
+            <div class="info-card" id="d-pol-info"></div>
+          </div>
+          <div id="d-pol-pick"></div>
+          <div class="mission" id="m4-3"><ul><li id="m4-3a">세 곳 모두 측정하기</li><li id="m4-3b">측정 결과로 제안할 해결 방안 고르기</li></ul></div>
+        </section>
+
+        <section class="scene" data-title="과학일까 유사과학일까">
+          <div class="story"><div class="who">🔍</div><div class="say"><span class="name">지도 교사</span>“동네에서 들은 이야기들이에요. <b>반증할 수 있는가, 되풀이해도 같은 결과가 나오는가, 측정한 근거가 있는가</b>를 기준으로 나눠 보세요.”</div></div>
+          <div class="stage-card"><div id="d-sort"></div></div>
+          <div class="mission" id="m4-4">여덟 가지 주장을 과학적 주장과 유사과학으로 나누세요.</div>
+        </section>
+
+        <section class="scene" data-title="결말 — 동네 환경 보고회">
+          <div class="ending">
+            <h4>🌿 이야기를 자료로 바꾸다</h4>
+            <p>‘이상한 동물’은 외래종 뉴트리아였고, 해마다 40% 이상 포획해야 10년 뒤 토종 생물이 60% 넘게 남는다는 계산이 나왔습니다. ‘숨 막히는 정문’은 미세먼지와 소음 모두 기준을 넘는 곳으로 확인되어, 동아리는 등교 동선을 공원 쪽으로 바꾸고 정문 앞에 나무 울타리를 심자고 제안했지요. ‘양파가 미세먼지를 먹는다’는 측정 근거가 없는 이야기였습니다. 생활 속 문제를 <b>측정할 수 있는 탐구 문제</b>로 바꾸고, 자료와 기준으로 판단하며, 근거 없는 주장을 가려내는 것이 탐사대의 방법입니다.</p>
+            <div class="vs" id="e4-vs"></div>
+            <span class="stamp">생활 탐구 ④ 완성</span>
+          </div>
+          <div class="info-card" style="margin:14px 0">📎 과학자의 눈: 뉴트리아는 1985년 모피와 고기를 얻으려고 들여왔다가 야생으로 퍼져, 2009년 생태계 교란 생물로 지정되었습니다. 개체수 모형과 측정값은 원리를 보이기 위해 만든 값이며, 실제 환경 기준은 항목과 지역에 따라 다릅니다.</div>
+          <div class="stage-card" style="padding:6px 0 4px;margin-top:16px"><div id="wk4"></div></div>
+        </section>
       </div>
-      <div class="miscon loose"><span class="tag">오개념 지도</span><br><b>내진 설계는 한 가지가 아니다</b><br><b>면진 기술과 제진 기술만을 이용하는 내진 설계는 없다.</b> 모든 건축물에는 기본적으로 일정 강도를 확보하여 건물을 튼튼하게 짓는 <b>내진 기술</b>이 적용되어 있다. 건축물에 하나의 내진 설계 기술만 적용된다고 생각하지 않도록 유의한다.<cite>과학탐구실험2 교사용 교과서, 오개념 지도</cite></div>
+      <p class="teacher-note">교사용: 주소 끝에 <a href="?open=1">?open=1</a> 을 붙이면 모든 장면이 열립니다.</p>
     </section>
 
-    <!-- 05 유사과학 비평 -->
+    <!-- ===================================================================== 05 수준별 문제 -->
     <section class="tab-panel" data-panel="4" hidden>
       <div class="stage-head">
-        <div class="eyebrow">05 · 미디어나 생활에 있는 유사과학을 탐색하고 비평하기</div>
-        <h2 class="display">이것은 과학일까, 유사과학일까?</h2>
-        <p>주장 카드를 눌러, 과학적 판단 기준(반증 가능성·재현성·근거)으로 비평한 내용을 확인해 보세요.</p>
+        <div class="eyebrow">05 · 기본 · 발전 · 심화</div>
+        <h2 class="display">수준별 문제</h2>
+        <p>이 단원의 학습 목표를 세 단계로 확인합니다. <b>1단계 기본</b>은 용어와 핵심 개념, <b>2단계 발전</b>은 자료 해석과 계산, <b>3단계 심화</b>는 처음 보는 상황에 적용하고 근거를 들어 설명하기입니다. 자기 수준에 맞는 단계부터 시작하세요. 두 번 틀리면 정답과 해설을 볼 수 있어요.</p>
       </div>
-      <div class="stage-card">
-        <div class="card-grid" id="c4-grid" style="padding-top:18px;"></div>
-        <div class="detail-panel" id="c4-detail"><span class="hint">위에서 주장 카드를 하나 선택해 보세요.</span></div>
-      </div>
-      <p class="foot-note">과학적 주장인지 판단할 때는 <b>반증 가능성</b>(틀렸음을 확인할 방법이 있는가), <b>재현성</b>(같은 조건에서 같은 결과가 반복되는가), <b>동료 검토</b>(다른 전문가의 검증을 거쳤는가)를 기준으로 삼습니다.</p>
+      <div id="quiz"></div>
     </section>
 
-    <!-- 06 외래종과 생물다양성 -->
+    <!-- ===================================================================== 06 응용 실험실 -->
     <section class="tab-panel" data-panel="5" hidden>
       <div class="stage-head">
-        <div class="eyebrow">06 · 주변의 생물을 조사하고 외래종이 생물다양성에 미치는 영향 논증하기</div>
-        <h2 class="display">외래종이 늘어나면 생태계는?</h2>
-        <p>외래종 개체수 슬라이더를 올리며, 토종 생물의 개체수가 어떻게 변하는지 관찰해 보세요.</p>
+        <div class="eyebrow">06 · 배운 것을 처음 보는 상황에</div>
+        <h2 class="display">응용 실험실</h2>
+        <p>이야기에서 찾아낸 개념을 전혀 다른 상황에 써 봅니다. 사례마다 <b>먼저 예상하고 → 직접 조작해 → 판정받고 → 까닭을 확인</b>합니다. 세 번 틀리면 풀이를 볼 수 있어요.</p>
       </div>
-      <div class="stage-card">
-        <div class="canvas-wrap"><canvas id="c5" width="900" height="360"></canvas></div>
-        <div class="controls">
-          <div class="ctrl-group">
-            <div class="ctrl-label">외래종(예: 뉴트리아) 개체수<span class="val" id="c5-pop-val">10</span></div>
-            <input type="range" id="c5-pop" min="0" max="100" step="5" value="10">
-          </div>
-        </div>
-        <div class="info-card" id="c5-info"></div>
-      </div>
+      <div id="lab"></div>
     </section>
 
-    <!-- 07 학교 주변 오염 측정 -->
+    <!-- ===================================================================== 07 정리하기 -->
     <section class="tab-panel" data-panel="6" hidden>
       <div class="stage-head">
-        <div class="eyebrow">07 · 오염 물질 측정 장치를 활용한 학교 주변 환경 탐구하기</div>
-        <h2 class="display">우리 학교 주변은 안전할까?</h2>
-        <p>측정 항목을 고르고 슬라이더로 측정값을 조절해, 기준치 대비 상태를 확인해 보세요.</p>
-      </div>
-      <div class="stage-card">
-        <div class="controls" style="padding-bottom:0;">
-          <div class="ctrl-group">
-            <div class="ctrl-label">측정 항목</div>
-            <div class="seg" id="c6-item">
-              <button class="on" data-i="pm">미세먼지(PM2.5, ㎍/m³)</button>
-              <button data-i="noise">소음(dB)</button>
-              <button data-i="water">수질(BOD, mg/L)</button>
-            </div>
-          </div>
-        </div>
-        <div class="controls">
-          <div class="ctrl-group">
-            <div class="ctrl-label">측정값<span class="val" id="c6-val-val">30</span></div>
-            <input type="range" id="c6-val" min="0" max="100" step="1" value="30">
-          </div>
-        </div>
-        <div class="gauge-wrap">
-          <div class="gauge-track"><div class="gauge-marker" id="c6-marker" style="left:30%"></div></div>
-        </div>
-        <div class="info-card" id="c6-info"></div>
-      </div>
-    </section>
-
-    <!-- 08 운동 안전사고 예방 -->
-    <section class="tab-panel" data-panel="7" hidden>
-      <div class="stage-head">
-        <div class="eyebrow">08 · 운동 관련 안전사고 예방 장치 고안하기</div>
-        <h2 class="display">센서로 다치기 전에 막을 수 있을까?</h2>
-        <p>안전 장치 아이디어 카드를 눌러, 어떤 센서와 원리로 작동하는지 확인해 보세요.</p>
-      </div>
-      <div class="stage-card">
-        <div class="card-grid" id="c7-grid" style="padding-top:18px;"></div>
-        <div class="detail-panel" id="c7-detail"><span class="hint">위에서 안전 장치 카드를 하나 선택해 보세요.</span></div>
-      </div>
-    </section>
-
-    <section class="tab-panel" data-panel="8" hidden>
-      <div class="stage-head">
-        <div class="eyebrow">09 · 오늘 알아낸 것을 문장으로</div>
+        <div class="eyebrow">07 · 네 탐구를 하나로</div>
         <h2 class="display">정리하기</h2>
-        <p>조작한 것을 말이나 글로 옮기지 않으면 남지 않습니다. 아래를 채우고 <b>답안 복사</b>를 눌러 제출하세요. 쓰는 동안 자동으로 저장됩니다.</p>
+        <p>네 이야기의 결과가 아래에 모입니다. 네 탐구를 꿰는 한 문장을 쓰고 <b>답안 복사</b>를 눌러 제출하세요. 쓰는 동안 자동으로 저장됩니다.</p>
       </div>
       <div class="stage-card" style="padding:6px 0 4px"><div id="wk"></div></div>
     </section>
-  
-    <!-- ===================================================================== 10 우리 반 -->
-    <section class="tab-panel" data-panel="9" hidden>
+
+    <!-- ===================================================================== 08 우리 반 -->
+    <section class="tab-panel" data-panel="7" hidden>
       <div class="stage-head">
-        <div class="eyebrow">10 · 같은 반 친구들과 나누기</div>
+        <div class="eyebrow">08 · 같은 반 친구들과 나누기</div>
         <h2 class="display">우리 반</h2>
-        <p>정리하기에 쓴 것을 우리 반에 올리고, 같은 반 친구들이 어디까지 했는지 함께 보세요. <b>올리기 버튼을 눌렀을 때만</b> 공유됩니다. 실명 대신 별명을 쓰고, 글까지 올릴지는 직접 고르세요.</p>
+        <p>내가 완성한 생활 탐구와 찾아낸 답을 우리 반에 올리고, 친구들은 생활 속에서 어떤 탐구 문제를 찾았는지 살펴보세요. <b>올리기 버튼을 눌렀을 때만</b> 공유됩니다. 실명 대신 별명을 쓰세요.</p>
       </div>
       <div class="stage-card"><div id="share"></div></div>
     </section>
-
   </main>
 </div>
 
 <button class="theme-toggle" id="themeToggle">라이트 모드</button>
 <script src="../assets/theme.js"></script>
+<script src="../assets/story.js"></script>
+<script src="../assets/quiz.js"></script>
+<script src="../assets/lab.js"></script>
 <script src="../assets/share-config.js"></script>
 <script src="../assets/share.js"></script>
-<script>
-"use strict";
-
-/* 01 동결 건조 식품 */
-(function () {
-  var canvas = document.getElementById("c0");
-  var ctx = window.setupCanvas(canvas);
-  var W = canvas._w, H = canvas._h;
-  var seg = document.getElementById("c0-mode");
-  var info = document.getElementById("c0-info");
-  var mode = "hot";
-
-  seg.querySelectorAll("button").forEach(function (b) {
-    b.addEventListener("click", function () {
-      seg.querySelectorAll("button").forEach(function (x) { x.classList.remove("on"); });
-      b.classList.add("on");
-      mode = b.getAttribute("data-m");
-      render();
-    });
-  });
-
-  function render() {
-    ctx.clearRect(0, 0, W, H);
-    var cx = W / 2, cy = H / 2 - 10;
-    var shrink = mode === "hot" ? 0.45 : 0.92;
-    var r = 90 * shrink;
-    ctx.beginPath();
-    ctx.arc(cx, cy, r, 0, Math.PI * 2);
-    ctx.fillStyle = mode === "hot" ? "#a8402f" : "#e8483a";
-    ctx.fill();
-    if (mode === "freeze") {
-      // porous texture dots
-      var seed = 3;
-      function hash(i) { var x = Math.sin(i * 12.9 + seed) * 10000; return x - Math.floor(x); }
-      ctx.fillStyle = "rgba(255,255,255,0.25)";
-      for (var i = 0; i < 40; i++) {
-        var a = hash(i) * Math.PI * 2, rr = hash(i + 30) * r * 0.8;
-        ctx.beginPath();
-        ctx.arc(cx + Math.cos(a) * rr, cy + Math.sin(a) * rr, 3, 0, Math.PI * 2);
-        ctx.fill();
-      }
-    } else {
-      ctx.strokeStyle = "rgba(0,0,0,0.3)"; ctx.lineWidth = 2;
-      for (var j = 0; j < 6; j++) {
-        ctx.beginPath();
-        ctx.moveTo(cx, cy);
-        ctx.lineTo(cx + Math.cos(j) * r, cy + Math.sin(j) * r);
-        ctx.stroke();
-      }
-    }
-    ctx.font = "700 13px Segoe UI"; ctx.fillStyle = cssVar("--foam"); ctx.textAlign = "center";
-    ctx.fillText(mode === "hot" ? "열풍 건조 후 (크게 수축)" : "동결 건조 후 (모양 유지, 다공질)", cx, cy + r + 30);
-
-    info.innerHTML = mode === "hot"
-      ? "<b>열풍 건조</b>는 식품을 가열해 수분을 <b>액체 → 기체</b>로 증발시킵니다. 열에 의해 세포 구조가 크게 파괴되어 식품이 많이 수축하고, 비타민 등 열에 약한 영양소가 파괴되기 쉽습니다."
-      : "<b>동결 건조</b>는 식품을 얼린 뒤 진공 상태에서 얼음을 <b>고체 → 기체로 승화</b>시켜 수분을 제거합니다. 액체 상태를 거치지 않아 세포 구조가 거의 파괴되지 않고, 원래 모양과 영양소를 잘 유지하며 다공질 구조가 되어 물을 부으면 빠르게 복원됩니다.";
-  }
-  render();
-})();
-
-/* 02 생활 제품 속 과학 */
-(function () {
-  var items = [
-    { ico: "🍚", name: "압력밥솥", desc: "내부 압력을 높여 물의 끓는점을 100℃보다 높여 밥을 빠르게 익힙니다. 압력이 높을수록 액체의 끓는점이 올라가는 원리를 이용합니다." },
-    { ico: "☀️", name: "자외선 살균기", desc: "파장이 짧은 자외선(UV-C)이 미생물의 DNA를 파괴해 증식을 억제합니다. 약품 없이 살균할 수 있어 정수기나 의료기구 멸균에 활용됩니다." },
-    { ico: "🥽", name: "게코 테이프", desc: "도마뱀의 발바닥에서 착안한 접착 테이프로, 수백만 개의 미세한 털(강모)이 표면과 닿으면서 생기는 반데르발스 힘으로 붙습니다. 접착제 없이도 유리면에 붙을 수 있습니다." },
-    { ico: "🧴", name: "보온병", desc: "병 사이의 진공층이 전도와 대류에 의한 열 이동을 차단하고, 은색 코팅이 복사열을 반사해 내부와 외부 간 열 전달을 최소화합니다." }
-  ];
-  var grid = document.getElementById("c1-grid");
-  var detail = document.getElementById("c1-detail");
-  items.forEach(function (it) {
-    var btn = document.createElement("button");
-    btn.className = "pick-card";
-    btn.innerHTML = '<span class="ico">' + it.ico + '</span><div class="t">' + it.name + '</div>';
-    btn.addEventListener("click", function () {
-      grid.querySelectorAll(".pick-card").forEach(function (c) { c.classList.remove("on"); });
-      btn.classList.add("on");
-      detail.innerHTML = "<h4>" + it.ico + " " + it.name + "</h4>" + it.desc;
-    });
-    grid.appendChild(btn);
-  });
-})();
-
-/* 03 놀이공원 가속도 */
-(function () {
-  var canvas = document.getElementById("c2");
-  var ctx = window.setupCanvas(canvas);
-  var W = canvas._w, H = canvas._h;
-  var seg = document.getElementById("c2-ride");
-  var maxEl = document.getElementById("c2-max");
-  var info = document.getElementById("c2-info");
-  var ride = "bumper";
-
-  var rides = {
-    bumper: { peak: 1.8, shape: "spike", desc: "범퍼카는 충돌 순간에만 짧고 뾰족한 큰 가속도가 발생하고, 그 외에는 낮고 일정합니다.", unit: "g" },
-    coaster: { peak: 3.2, shape: "wave", desc: "롤러코스터는 곡선 구간(커브·루프)마다 가속도가 주기적으로 오르내리며, 원운동에 의한 구심 가속도가 계속 나타납니다.", unit: "g" },
-    drop: { peak: 4.5, shape: "drop", desc: "자이로드롭은 자유 낙하 구간에서 중력 가속도(약 1g)까지 순간적으로 떨어졌다가, 감속 구간에서 매우 큰 가속도가 짧게 나타납니다.", unit: "g" }
-  };
-
-  seg.querySelectorAll("button").forEach(function (b) {
-    b.addEventListener("click", function () {
-      seg.querySelectorAll("button").forEach(function (x) { x.classList.remove("on"); });
-      b.classList.add("on");
-      ride = b.getAttribute("data-r");
-      render();
-    });
-  });
-
-  function render() {
-    var r = rides[ride];
-    maxEl.textContent = r.peak.toFixed(1) + r.unit;
-    info.innerHTML = r.desc;
-
-    ctx.clearRect(0, 0, W, H);
-    ctx.fillStyle = cssVar("--panel"); ctx.fillRect(0, 0, W, H);
-    var x0 = 60, x1 = W - 40, y0 = 40, yBase = H - 60;
-    ctx.strokeStyle = cssVar("--line"); ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x0, yBase); ctx.lineTo(x1, yBase); ctx.stroke();
-    ctx.font = "11px Segoe UI"; ctx.fillStyle = cssVar("--mist"); ctx.textAlign = "left";
-    ctx.fillText("시간 →", x1 - 40, yBase + 24);
-    ctx.save(); ctx.translate(22, (y0 + yBase) / 2); ctx.rotate(-Math.PI / 2); ctx.textAlign = "center"; ctx.fillText("가속도", 0, 0); ctx.restore();
-
-    ctx.beginPath();
-    var N = 200;
-    for (var i = 0; i <= N; i++) {
-      var t = i / N;
-      var x = x0 + t * (x1 - x0);
-      var a;
-      if (r.shape === "spike") {
-        a = Math.abs(t - 0.5) < 0.03 ? r.peak : 0.3;
-      } else if (r.shape === "wave") {
-        a = 0.6 + (r.peak - 0.6) * Math.abs(Math.sin(t * Math.PI * 5));
-      } else {
-        a = t < 0.4 ? 1 - t * 1.5 : (t < 0.5 ? r.peak : 0.5 * Math.exp(-(t - 0.5) * 6));
-      }
-      var y = yBase - (a / r.peak) * (yBase - y0 - 10);
-      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-    }
-    ctx.strokeStyle = cssVar("--teal"); ctx.lineWidth = 2.5; ctx.stroke();
-  }
-  render();
-})();
-
-/* 03 미션 — 가속도 패턴으로 놀이기구 맞히기 */
-(function () {
-  var qa = [
-    { txt: "충돌 순간에만 짧고 뾰족한 큰 가속도가 발생하고, 그 외에는 낮고 일정하다.", key: "bumper" },
-    { txt: "곡선 구간(커브·루프)마다 가속도가 주기적으로 오르내리며, 원운동에 의한 구심 가속도가 계속 나타난다.", key: "coaster" },
-    { txt: "자유 낙하 구간에서 중력 가속도(약 1g)까지 순간적으로 떨어졌다가, 감속 구간에서 매우 큰 가속도가 짧게 나타난다.", key: "drop" }
-  ];
-  var labels = { bumper: "범퍼카(충돌)", coaster: "롤러코스터(곡선 주행)", drop: "자이로드롭(자유낙하)" };
-  var dataBox = document.getElementById("c2m-data");
-  var seg = document.getElementById("c2m-choices");
-  var checkBtn = document.getElementById("c2m-check");
-  var newBtn = document.getElementById("c2m-new");
-  var info = document.getElementById("c2m-info");
-  var current = null, picked = null;
-
-  function newQuestion() {
-    current = qa[Math.floor(Math.random() * qa.length)];
-    picked = null;
-    dataBox.innerHTML = current.txt;
-    seg.querySelectorAll("button").forEach(function (x) { x.classList.remove("on"); });
-    info.innerHTML = "";
-    info.style.color = "";
-  }
-
-  seg.querySelectorAll("button").forEach(function (btn) {
-    btn.addEventListener("click", function () {
-      picked = btn.dataset.c;
-      seg.querySelectorAll("button").forEach(function (x) { x.classList.toggle("on", x === btn); });
-    });
-  });
-
-  checkBtn.addEventListener("click", function () {
-    if (!picked) { info.innerHTML = "먼저 보기를 하나 선택하세요."; info.style.color = "var(--coral)"; return; }
-    if (picked === current.key) {
-      info.innerHTML = "✅ 정답! '" + labels[current.key] + "'의 가속도 패턴입니다.";
-      info.style.color = "var(--teal)";
-    } else {
-      info.innerHTML = "❌ 틀렸습니다. 정답은 '" + labels[current.key] + "' 입니다.";
-      info.style.color = "var(--coral)";
-    }
-  });
-
-  newBtn.addEventListener("click", newQuestion);
-  newQuestion();
-})();
-
-/* 04 건축물 내진 설계 */
-(function () {
-  var canvas = document.getElementById("c3");
-  var ctx = window.setupCanvas(canvas);
-  var W = canvas._w, H = canvas._h;
-  var slider = document.getElementById("c3-mag");
-  var val = document.getElementById("c3-mag-val");
-
-  function drawBuilding(cx, baseY, sway, label, damped) {
-    var floors = 6, fh = 30, fw = 70;
-    for (var i = 0; i < floors; i++) {
-      var t = i / floors;
-      var dx = sway * (damped ? (t * t) : t);
-      var y = baseY - (i + 1) * fh;
-      ctx.fillStyle = cssVar(i % 2 === 0 ? "--panel-2" : "--panel");
-      ctx.strokeStyle = cssVar("--line");
-      ctx.fillRect(cx - fw / 2 + dx, y, fw, fh - 4);
-      ctx.strokeRect(cx - fw / 2 + dx, y, fw, fh - 4);
-    }
-    ctx.fillStyle = cssVar("--mist"); ctx.font = "700 12px Segoe UI"; ctx.textAlign = "center";
-    ctx.fillText(label, cx, baseY + 20);
-  }
-
-  function render() {
-    var mag = +slider.value;
-    val.textContent = mag;
-    var sway = mag * 4;
-    ctx.clearRect(0, 0, W, H);
-    ctx.fillStyle = cssVar("--panel"); ctx.fillRect(0, 0, W, H);
-    var baseY = H - 60;
-    ctx.strokeStyle = cssVar("--line"); ctx.lineWidth = 3;
-    ctx.beginPath(); ctx.moveTo(60, baseY); ctx.lineTo(W - 60, baseY); ctx.stroke();
-
-    drawBuilding(W * 0.3, baseY, sway, "일반 건물", false);
-    drawBuilding(W * 0.7, baseY, sway, "내진 설계 건물", true);
-  }
-  slider.addEventListener("input", render);
-  render();
-})();
-
-/* 05 유사과학 비평 */
-(function () {
-  var items = [
-    { ico: "🩸", name: "혈액형 성격설", desc: "혈액형과 성격의 상관관계를 보여주는 대규모 대조 연구가 반복적으로 실패했습니다. 재현성이 없고, 확증 사례만 선택적으로 기억하는 <b>확증 편향</b>이 작용한 대표적인 유사과학 사례입니다." },
-    { ico: "🧲", name: "자석 팔찌의 통증 완화 효과", desc: "자석이 인체 혈액 순환이나 통증을 개선한다는 주장은 대조군과의 비교 실험에서 효과가 플라시보(가짜약)와 차이가 없음이 반복적으로 확인되었습니다." },
-    { ico: "💿", name: "이온 목걸이가 홍보하는 음이온 방출량", desc: "제품 표면에서 실제로 방출되는 음이온은 자연적인 대기 음이온 농도에 비해 무시할 만큼 적은 양이었음이 측정으로 드러난 사례입니다. 과장된 광고 문구와 실제 측정값을 비교하는 것이 중요합니다." },
-    { ico: "🌍", name: "대륙 이동설(처음엔 의심받았던 과학 이론)", desc: "베게너가 처음 주장했을 때는 이동을 일으키는 힘을 설명하지 못해 비판받았지만, 이후 GPS로 측정한 대륙 이동 속도나 해저 지형 증거 등 <b>반증 가능한 예측</b>이 계속 검증되면서 판 구조론으로 발전해 정식 과학 이론으로 자리잡았습니다. 유사과학과 과학의 차이를 보여주는 대조 사례입니다." }
-  ];
-  var grid = document.getElementById("c4-grid");
-  var detail = document.getElementById("c4-detail");
-  items.forEach(function (it) {
-    var btn = document.createElement("button");
-    btn.className = "pick-card";
-    btn.innerHTML = '<span class="ico">' + it.ico + '</span><div class="t">' + it.name + '</div>';
-    btn.addEventListener("click", function () {
-      grid.querySelectorAll(".pick-card").forEach(function (c) { c.classList.remove("on"); });
-      btn.classList.add("on");
-      detail.innerHTML = "<h4>" + it.ico + " " + it.name + "</h4>" + it.desc;
-    });
-    grid.appendChild(btn);
-  });
-})();
-
-/* 06 외래종과 생물다양성 */
-(function () {
-  var canvas = document.getElementById("c5");
-  var ctx = window.setupCanvas(canvas);
-  var W = canvas._w, H = canvas._h;
-  var slider = document.getElementById("c5-pop");
-  var val = document.getElementById("c5-pop-val");
-  var info = document.getElementById("c5-info");
-
-  function render() {
-    var pop = +slider.value;
-    val.textContent = pop;
-    var nativePop = Math.max(5, 100 - pop * 0.9);
-
-    ctx.clearRect(0, 0, W, H);
-    ctx.fillStyle = cssVar("--panel"); ctx.fillRect(0, 0, W, H);
-    var baseY = H - 50;
-    var barW = 140;
-
-    function bar(cx, h, color, label, value) {
-      var maxH = H - 120;
-      var bh = (h / 100) * maxH;
-      ctx.fillStyle = cssVar(color);
-      ctx.fillRect(cx - barW / 2, baseY - bh, barW, bh);
-      ctx.font = "700 13px Segoe UI"; ctx.fillStyle = cssVar("--foam"); ctx.textAlign = "center";
-      ctx.fillText(label, cx, baseY + 22);
-      ctx.fillText(Math.round(value) + "%", cx, baseY - bh - 10);
-    }
-    bar(W * 0.32, nativePop, "--teal", "토종 생물 개체수", nativePop);
-    bar(W * 0.68, pop, "--coral", "외래종 개체수", pop);
-
-    info.innerHTML = pop < 20
-      ? "외래종이 적을 때는 토종 생물과 큰 경쟁 없이 함께 살아갈 수 있습니다."
-      : pop < 60
-      ? "외래종이 늘어나며 먹이·서식지를 두고 토종 생물과 <b>경쟁</b>이 심해지고, 토종 개체수가 눈에 띄게 줄어들고 있습니다."
-      : "외래종이 크게 늘어나 토종 생물의 서식지를 잠식하고 포식·경쟁으로 개체수를 크게 감소시켜, <b>생물다양성이 훼손</b>되는 단계입니다. 이런 사례로 뉴트리아, 배스, 가시박 등이 있습니다.";
-  }
-  slider.addEventListener("input", render);
-  render();
-})();
-
-/* 07 학교 주변 오염 측정 */
-(function () {
-  var itemSeg = document.getElementById("c6-item");
-  var slider = document.getElementById("c6-val");
-  var val = document.getElementById("c6-val-val");
-  var marker = document.getElementById("c6-marker");
-  var info = document.getElementById("c6-info");
-  var item = "pm";
-
-  var specs = {
-    pm: { max: 150, good: 15, bad: 75, unit: "㎍/m³", name: "미세먼지(PM2.5)" },
-    noise: { max: 100, good: 55, bad: 70, unit: "dB", name: "소음" },
-    water: { max: 20, good: 2, bad: 5, unit: "mg/L(BOD)", name: "수질(BOD)" }
-  };
-
-  itemSeg.querySelectorAll("button").forEach(function (b) {
-    b.addEventListener("click", function () {
-      itemSeg.querySelectorAll("button").forEach(function (x) { x.classList.remove("on"); });
-      b.classList.add("on");
-      item = b.getAttribute("data-i");
-      var s = specs[item];
-      slider.max = s.max;
-      slider.value = Math.round(s.max * 0.3);
-      render();
-    });
-  });
-  slider.addEventListener("input", render);
-
-  function render() {
-    var s = specs[item];
-    var v = +slider.value;
-    val.textContent = v + " " + s.unit;
-    var pct = Math.min(100, (v / s.max) * 100);
-    marker.style.left = pct + "%";
-    var state = v <= s.good ? "양호" : v <= s.bad ? "주의" : "나쁨";
-    info.innerHTML = "<b>" + s.name + " " + v + " " + s.unit + "</b> — 현재 상태: <b>" + state + "</b>. " +
-      (state === "양호" ? "기준치 이내로 안전한 수준입니다." : state === "주의" ? "기준치에 가까워지고 있어 지속적인 관찰이 필요합니다." : "기준치를 초과해 개선 대책이 필요한 수준입니다.");
-  }
-  render();
-})();
-
-/* 08 운동 안전사고 예방 */
-(function () {
-  var items = [
-    { ico: "🪖", name: "충격 감지 헬멧", desc: "가속도 센서로 머리에 가해지는 충격을 감지해, 일정 기준을 넘으면 보호자에게 무선으로 경고를 보냅니다." },
-    { ico: "🦯", name: "낙상 감지 지팡이", desc: "자이로스코프(기울기 센서)로 급격한 자세 변화를 감지해 낙상을 판단하고, 자동으로 보호자에게 위치를 알립니다." },
-    { ico: "🦵", name: "압력 분산 무릎 보호대", desc: "압력 센서로 충격을 감지해, 내부의 충격 흡수 재질(전단 농화 유체)이 강한 충격을 받는 순간 단단해지며 충격을 분산시킵니다." },
-    { ico: "🏊", name: "심박수 이상 감지 워치", desc: "광학식 심박 센서로 운동 중 심박수를 실시간으로 측정해, 위험 수준을 넘으면 휴식을 권고합니다." }
-  ];
-  var grid = document.getElementById("c7-grid");
-  var detail = document.getElementById("c7-detail");
-  items.forEach(function (it) {
-    var btn = document.createElement("button");
-    btn.className = "pick-card";
-    btn.innerHTML = '<span class="ico">' + it.ico + '</span><div class="t">' + it.name + '</div>';
-    btn.addEventListener("click", function () {
-      grid.querySelectorAll(".pick-card").forEach(function (c) { c.classList.remove("on"); });
-      btn.classList.add("on");
-      detail.innerHTML = "<h4>" + it.ico + " " + it.name + "</h4>" + it.desc;
-    });
-    grid.appendChild(btn);
-  });
-})();
-</script>
-
-<script>
-(function () {
-  window.sthUnit("gt2-2-3");
-  window.sthWork({
-    mount: "wk",
-    unitLabel: "[과학탐구실험2 Ⅰ] 생활 속의 과학 탐구",
-    items: [
-      {
-            "id": "w1",
-            "label": "고른 탐구 하나",
-            "hint": "여덟 가지 탐구 중 하나를 골라, 무엇을 재서 무엇을 알아냈는지 쓰세요.",
-            "ph": ""
-      },
-      {
-            "id": "w2",
-            "label": "내진·면진·제진",
-            "hint": "세 기술이 각각 지진 에너지를 어떻게 다루는지 한 줄씩 구분해 쓰세요.",
-            "ph": "내진: … / 면진: … / 제진: …"
-      },
-      {
-            "id": "w3",
-            "label": "유사과학을 가르는 기준",
-            "hint": "어떤 주장이 과학인지 아닌지 판단할 때 무엇을 보는지 쓰세요.",
-            "ph": ""
-      },
-      {
-            "id": "w4",
-            "label": "아직 헷갈리는 것",
-            "hint": "다음 시간에 여기서부터 시작합니다.",
-            "ph": ""
-      }
-]
-  });
-  window.sthShare({
-    mount: "share",
-    unit: "gt2-2-3",
-    unitLabel: "[과학탐구실험2 Ⅰ] 생활 속의 과학 탐구",
-    works: [
-      { id: "w1", label: "고른 탐구 하나" },
-      { id: "w2", label: "내진·면진·제진" },
-      { id: "w3", label: "유사과학을 가르는 기준" }
-    ]
-  });
-})();
-</script>
+<script src="episodes.js"></script>
+<script src="quiz-items.js"></script>
+<script src="lab-cases.js"></script>
 </body>
 </html>
