@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Ⅱ. 미래 사회와 첨단 과학 탐구 — 관측 스테이션</title>
 <link rel="stylesheet" href="../assets/theme.css">
-<link rel="stylesheet" href="../assets/share.css">
+<link rel="stylesheet" href="../assets/story.css">
 </head>
 <body>
 
@@ -17,398 +17,288 @@
       <h1 class="display">미래 사회와<br>첨단 과학 탐구</h1>
     </div>
     <button class="tab-btn active" data-tab="0"><span class="num">01</span> 스마트 온실 설계</button>
-    <button class="tab-btn" data-tab="1"><span class="num">02</span> 센서 활용 생활 발명품</button>
+    <button class="tab-btn" data-tab="1"><span class="num">02</span> 센서 발명품과 연구 윤리</button>
     <button class="tab-btn" data-tab="2"><span class="num">03</span> 우주 개발 사례 평가</button>
-    <button class="tab-btn" data-tab="3"><span class="num">04</span> 정리하기</button>
-    <button class="tab-btn" data-tab="4"><span class="num">05</span> 우리 반</button>
+    <button class="tab-btn" data-tab="3"><span class="num">04</span> 수준별 문제</button>
+    <button class="tab-btn" data-tab="4"><span class="num">05</span> 응용 실험실</button>
+    <button class="tab-btn" data-tab="5"><span class="num">06</span> 정리하기</button>
+    <button class="tab-btn" data-tab="6"><span class="num">07</span> 우리 반</button>
   </nav>
 
   <main>
-    <!-- 01 스마트 온실 -->
+    <!-- =====================================================================
+         01 스마트 온실 설계 — 이야기 「겨울 딸기 온실」
+         ===================================================================== -->
     <section class="tab-panel" data-panel="0">
       <div class="stage-head">
-        <div class="eyebrow">01 · 프로젝트 · 마이크로컨트롤러를 활용하여 스마트 온실 설계하기</div>
-        <h2 class="display">센서가 스스로 판단하는 온실</h2>
-        <p>환경 상황을 바꿔 보면서, 마이크로컨트롤러가 센서 값을 어떻게 판단해 장치를 자동으로 작동시키는지 확인해 보세요.</p>
-      
+        <div class="eyebrow">01 · 프로젝트 · 마이크로컨트롤러를 활용하여 스마트 온실 설계하기 · 이야기 한 편</div>
+        <h2 class="display">겨울 딸기 온실</h2>
+        <p>할머니의 딸기 온실은 새벽마다 창문을 여닫고 물을 주느라 쉴 틈이 없습니다. 손주가 되어 온실에 센서와 마이크로컨트롤러를 달아, 여러 상황에서 장치들이 스스로 옳게 움직이도록 규칙을 설계하고, 센서가 고장 나도 딸기가 무사하도록 대비합니다.</p>
         <span class="std-chip">10과탐2-02-01</span><span class="std-chip">10과탐2-02-02</span><span class="std-chip">10과탐2-02-03</span><div class="std-note"><b>[10과탐2-02-01]</b> 첨단 과학 기술 속의 과학 원리를 찾아내는 탐구 활동을 통해 과학 지식이 활용된 사례를 추론할 수 있다.<br><b>[10과탐2-02-02]</b> 과학 원리가 적용된 첨단 과학 기술 및 탐구 산출물을 발표하고 공유하며, 이를 확산할 수 있다.<br><b>[10과탐2-02-03]</b> 탐구 활동 과정에서 지켜야 할 생명 존중, 연구 진실성, 지식 재산권 존중 등과 같은 연구 윤리를 준수할 수 있다.</div><div class="terms"><b>스마트 온실</b><b>센서 발명품</b><b>연구 윤리</b></div>
       </div>
-      <div class="stage-card">
-        <div class="canvas-wrap"><canvas id="c0" width="900" height="420"></canvas></div>
-        <div class="controls">
-          <div class="ctrl-group">
-            <div class="ctrl-label">시간대</div>
-            <div class="seg" id="c0-time">
-              <button class="on" data-t="day">낮 (조도 높음)</button>
-              <button data-t="night">밤 (조도 낮음)</button>
-            </div>
-          </div>
-          <div class="ctrl-group">
-            <div class="ctrl-label">토양 상태</div>
-            <div class="seg" id="c0-soil">
-              <button class="on" data-s="dry">건조</button>
-              <button data-s="wet">촉촉함</button>
-            </div>
-          </div>
-          <div class="ctrl-group">
-            <div class="ctrl-label">온실 내부 온도</div>
-            <div class="seg" id="c0-temp">
-              <button data-p="hot">높음(30℃+)</button>
-              <button class="on" data-p="normal">적정(20~28℃)</button>
-            </div>
-          </div>
-        </div>
-        <div class="info-card" id="c0-info"></div>
-      </div>
-      <p class="foot-note">실제 스마트 온실은 온습도 센서·조도 센서·토양 수분 센서의 값을 마이크로컨트롤러(예: 아두이노)가 읽어, 미리 정한 기준값과 비교해 창문 개폐 모터·물펌프·LED 조명 등을 자동으로 제어합니다.</p>
 
-      <div class="stage-head">
-        <div class="eyebrow">🔎 미션 · 센서 조건으로 장치 동작 예측하기</div>
-        <h2 class="display" style="font-size:18px;">이 조건에서 이 장치는 어떻게 될까?</h2>
+      <div class="episode" id="ep1">
+        <section class="scene" data-title="할머니의 새벽">
+          <div class="story narr"><div class="who">🍓</div><div class="say"><span class="name">이야기</span>겨울 딸기 온실. 할머니는 새벽 5시에 일어나 창문을 닫고, 한낮에는 다시 열고, 흙을 만져 보며 물을 줍니다. 조금만 늦어도 딸기가 얼거나 데고 말지요.</div></div>
+          <div class="story"><div class="who">👵</div><div class="say"><span class="name">할머니</span>“이 늙은이 대신 온실이 알아서 해 주면 좋으련만. 네가 학교에서 배운다는 그 센서라는 걸로 될까?”</div></div>
+          <div class="gate loose" id="g1"></div>
+        </section>
+
+        <section class="scene" data-title="규칙 설계">
+          <div class="story"><div class="who">🧑‍💻</div><div class="say"><span class="name">나 (온실 설계자)</span>“딸기는 28 °C 를 넘으면 힘들어하고, 흐린 날에는 빛이 모자라며, 흙 수분이 30% 아래면 목말라해. 창문·LED·펌프가 켜지는 기준을 정해서, 온실에서 일어날 <b>여섯 가지 상황</b>에 모두 옳게 움직이게 해 보자.”</div></div>
+          <div class="stage-card">
+            <div class="canvas-wrap"><canvas id="a-c-rule" width="900" height="290"></canvas></div>
+            <div class="controls">
+              <div class="ctrl-group">
+                <div class="ctrl-label">이 온도보다 높으면 창문 열기<span class="val" id="a-t-val">32 °C</span></div>
+                <input type="range" id="a-t" min="20" max="36" step="1" value="32">
+              </div>
+              <div class="ctrl-group">
+                <div class="ctrl-label">이 밝기보다 어두우면 LED 켜기<span class="val" id="a-l-val">1 000 lux</span></div>
+                <input type="range" id="a-l" min="1000" max="20000" step="1000" value="1000">
+              </div>
+              <div class="ctrl-group">
+                <div class="ctrl-label">흙 수분이 이 값보다 낮으면 펌프 켜기<span class="val" id="a-s-val">15%</span></div>
+                <input type="range" id="a-s" min="10" max="60" step="5" value="15">
+              </div>
+            </div>
+            <div class="info-card" id="a-rule-info"></div>
+          </div>
+          <div class="mission" id="m1-2">여섯 가지 상황에서 세 장치가 모두 옳게 움직이는 기준값을 찾으세요.</div>
+        </section>
+
+        <section class="scene" data-title="센서가 고장 나면">
+          <div class="story"><div class="who">⚠️</div><div class="say"><span class="name">나 (온실 설계자)</span>“큰일 날 뻔했어! 오늘 아침 온도 센서가 고장 나서 계속 <b>20 °C</b> 만 가리켰대. 한낮 온실은 38 °C 까지 올랐는데 창문이 안 열렸지 뭐야. 고장을 <b>1시간 안에</b> 알아채면서, 쓸데없이 창문을 열지도 않는 안전장치를 골라 보자.”</div></div>
+          <div class="stage-card">
+            <div class="canvas-wrap"><canvas id="a-c-fail" width="900" height="270"></canvas></div>
+            <div class="controls">
+              <div class="ctrl-group">
+                <div class="ctrl-label">온도 센서 두 개 두고 서로 비교</div>
+                <div class="seg" id="a-f1"><button class="on" data-v="0">안 씀</button><button data-v="1">씀</button></div>
+              </div>
+              <div class="ctrl-group">
+                <div class="ctrl-label">3시간 동안 값이 안 변하면 경고</div>
+                <div class="seg" id="a-f2"><button class="on" data-v="0">안 씀</button><button data-v="1">씀</button></div>
+              </div>
+              <div class="ctrl-group">
+                <div class="ctrl-label">날씨와 상관없이 정오에 창문 열기</div>
+                <div class="seg" id="a-f3"><button class="on" data-v="0">안 씀</button><button data-v="1">씀</button></div>
+              </div>
+            </div>
+            <div class="info-card" id="a-fail-info"></div>
+          </div>
+          <div id="a-fail-pick"></div>
+          <div class="mission" id="m1-3"><ul><li id="m1-3a">1시간 안에 고장을 알아채고, 쓸데없이 창문을 열지 않는 안전장치 고르기</li><li id="m1-3b">안전장치가 필요한 까닭 고르기</li></ul></div>
+        </section>
+
+        <section class="scene" data-title="온실의 부품들">
+          <div class="story"><div class="who">🔧</div><div class="say"><span class="name">나 (온실 설계자)</span>“할머니께 설명드리려면 부품들을 역할별로 나눠 두는 게 좋겠어. 재는 것, 판단하는 것, 움직이는 것.”</div></div>
+          <div class="stage-card"><div id="a-sort"></div></div>
+          <div class="mission" id="m1-4">여덟 가지 부품을 입력·판단·출력으로 나누세요.</div>
+        </section>
+
+        <section class="scene" data-title="결말 — 할머니의 늦잠">
+          <div class="ending">
+            <h4>🌱 재고 → 판단하고 → 움직인다</h4>
+            <p>온실은 이제 온습도·조도·토양 수분 <b>센서</b>(입력)로 상황을 재고, <b>마이크로컨트롤러</b>(판단)가 기준값과 비교해, 창문 모터·LED·펌프(출력)를 스스로 움직입니다. 기준값은 딸기가 좋아하는 조건이라는 <b>과학 지식</b>에서 나왔지요. 센서 두 개를 비교하는 안전장치 덕분에 고장도 금방 알아챕니다. 할머니는 이번 겨울 처음으로 늦잠을 주무셨습니다. 이 설계를 마을 농가 모임에서 발표했더니, 이웃 온실 세 곳이 따라 만들기로 했어요.</p>
+            <div class="vs" id="e1-vs"></div>
+            <span class="stamp">첨단 탐구 ① 완성</span>
+          </div>
+          <div class="info-card" style="margin:14px 0">📎 과학자의 눈: 실제 스마트 팜은 기준값에 이력(히스테리시스)을 두고, 여러 센서 값을 함께 보며, 원격으로 상태를 알려 줍니다. 딸기의 알맞은 온도·빛·수분 값은 설명을 위해 단순화한 것입니다.</div>
+          <div class="stage-card" style="padding:6px 0 4px;margin-top:16px"><div id="wk1"></div></div>
+        </section>
       </div>
-      <div class="stage-card">
-        <div class="info-card" id="c0m-data"></div>
-        <div class="seg" id="c0m-choices"></div>
-        <div class="toggle-row" style="margin:14px 20px;">
-          <button class="btn" id="c0m-check">정답 확인</button>
-          <button class="btn" id="c0m-new">새 문제</button>
-        </div>
-        <div class="info-card" id="c0m-info"></div>
-      </div>
+      <p class="teacher-note">교사용: 주소 끝에 <a href="?open=1">?open=1</a> 을 붙이면 모든 장면이 열립니다.</p>
     </section>
 
-    <!-- 02 센서 생활 발명품 -->
+    <!-- =====================================================================
+         02 센서 발명품과 연구 윤리 — 이야기 「숨 막히는 5교시」
+         ===================================================================== -->
     <section class="tab-panel" data-panel="1" hidden>
       <div class="stage-head">
-        <div class="eyebrow">02 · 프로젝트 · 각종 센서를 활용한 생활 발명품 아이디어 고안 및 시제품 발표하기</div>
-        <h2 class="display">센서로 만드는 생활 발명품</h2>
-        <p>발명품 카드를 눌러, 어떤 센서와 원리로 문제를 해결하는지 살펴보세요.</p>
+        <div class="eyebrow">02 · 프로젝트 · 센서를 활용한 생활 발명품 고안과 시제품 발표 · 연구 윤리 · 이야기 한 편</div>
+        <h2 class="display">숨 막히는 5교시</h2>
+        <p>점심 뒤 5교시만 되면 반 전체가 졸립니다. 혹시 교실 공기 때문은 아닐까? 발명 동아리가 되어 이산화 탄소 센서로 환기 알림 장치를 만들고, 시제품을 시험하고 발표하는 과정에서 지켜야 할 연구 윤리를 하나씩 판단합니다.</p>
+        <span class="std-chip">10과탐2-02-02</span><span class="std-chip">10과탐2-02-03</span><div class="std-note"><b>[10과탐2-02-02]</b> 과학 원리가 적용된 첨단 과학 기술 및 탐구 산출물을 발표하고 공유하며, 이를 확산할 수 있다.<br><b>[10과탐2-02-03]</b> 탐구 활동 과정에서 지켜야 할 생명 존중, 연구 진실성, 지식 재산권 존중 등과 같은 연구 윤리를 준수할 수 있다.</div><div class="terms"><b>이산화 탄소 농도</b><b>시제품</b><b>연구 진실성</b><b>지식 재산권</b></div>
       </div>
-      <div class="stage-card">
-        <div class="card-grid" id="c1-grid" style="padding-top:18px;"></div>
-        <div class="detail-panel" id="c1-detail"><span class="hint">위에서 발명품 카드를 하나 선택해 보세요.</span></div>
+
+      <div class="episode" id="ep2">
+        <section class="scene" data-title="졸린 5교시">
+          <div class="story narr"><div class="who">😪</div><div class="say"><span class="name">이야기</span>5교시 수학 시간. 창문을 꼭 닫은 교실에서 서른 명이 하나둘 꾸벅꾸벅 좁니다. “점심을 먹어서 그래.” “아니야, 공기가 답답해서야.”</div></div>
+          <div class="story"><div class="who">🧑‍🔬</div><div class="say"><span class="name">발명 동아리장</span>“이번 발명 대회 주제로 딱이야. 그런데 발명품 아이디어는 어디서부터 시작하면 좋을까?”</div></div>
+          <div class="gate loose" id="g2"></div>
+        </section>
+
+        <section class="scene" data-title="환기 알림 장치">
+          <div class="story"><div class="who">🟢</div><div class="say"><span class="name">발명 동아리장</span>“이산화 탄소 센서로 재 보니 창문을 닫으면 1분에 약 25 ppm 씩 오르더라. <b>1000 ppm</b> 을 넘으면 졸리고 집중이 떨어진대. 알림이 울리면 5분 동안 창문을 여는 거야. 50분 수업 동안 <b>1000 ppm 을 넘지 않으면서</b>, 알림이 <b>3번 이하</b>로 울리게(너무 자주 울리면 귀찮으니까) 알림 기준을 정해 줘.”</div></div>
+          <div class="stage-card">
+            <div class="canvas-wrap"><canvas id="b-c-co2" width="900" height="270"></canvas></div>
+            <div class="controls">
+              <div class="ctrl-group">
+                <div class="ctrl-label">환기 알림 기준<span class="val" id="b-th-val">1200 ppm</span></div>
+                <input type="range" id="b-th" min="600" max="1500" step="100" value="1200">
+              </div>
+            </div>
+            <div class="info-card" id="b-co2-info"></div>
+          </div>
+          <div class="mission" id="m2-2">1000 ppm 을 넘지 않고 알림이 3번 이하인 기준값을 찾으세요.</div>
+        </section>
+
+        <section class="scene" data-title="시제품 시험과 윤리">
+          <div class="story"><div class="who">🧪</div><div class="say"><span class="name">발명 동아리장</span>“발명 대회 제출 직전인데 고민이 두 가지 생겼어. 네가 판단해 줘.”</div></div>
+          <div class="stage-card" style="padding:16px 18px">
+            <div class="case-file"><b class="k">고민 ①</b> 다섯 번 시험한 자료 가운데 한 번은 센서를 햇볕 드는 창가에 두어 값이 이상하게 높게 나왔다.</div>
+            <div id="b-eth1"></div>
+            <div class="case-file" style="margin-top:14px"><b class="k">고민 ②</b> 센서 값을 읽는 프로그램 일부를 인터넷의 공개 코드에서 가져왔다.</div>
+            <div id="b-eth2"></div>
+          </div>
+          <div class="mission" id="m2-3"><ul><li id="m2-3a">이상한 시험 자료의 처리 방법 판단하기</li><li id="m2-3b">가져온 코드의 사용 방법 판단하기</li></ul></div>
+        </section>
+
+        <section class="scene" data-title="연구 윤리 사례 분류">
+          <div class="story"><div class="who">⚖️</div><div class="say"><span class="name">발명 대회 심사 위원</span>“연구 윤리는 크게 세 가지를 지켜야 합니다. 다음 사례들이 어떤 윤리와 관련되는지 나눠 보세요.”</div></div>
+          <div class="stage-card"><div id="b-sort"></div></div>
+          <div class="mission" id="m2-4">여덟 가지 사례를 연구 윤리의 세 영역으로 나누세요.</div>
+        </section>
+
+        <section class="scene" data-title="결말 — 발명 대회 발표">
+          <div class="ending">
+            <h4>🏅 정직하게 만들고, 출처를 밝히고, 함께 나눈다</h4>
+            <p>환기 알림 장치는 이산화 탄소 농도가 기준에 이르면 초록 불이 빨갛게 바뀌며 알립니다. 기준을 700 ~ 1000 ppm 으로 정하자 수업 내내 1000 ppm 을 넘지 않았고, 5교시에 조는 친구도 줄었지요. 발표에서는 이상했던 시험 한 번의 원인과 제외한 까닭을 그대로 밝히고(<b>연구 진실성</b>), 가져온 코드의 출처와 사용 허락 조건을 표시했습니다(<b>지식 재산권 존중</b>). 심사 위원은 결과만큼 과정의 정직함을 높이 평가했습니다.</p>
+            <div class="vs" id="e2-vs"></div>
+            <span class="stamp">첨단 탐구 ② 완성</span>
+          </div>
+          <div class="info-card" style="margin:14px 0">📎 과학자의 눈: 바깥 공기의 이산화 탄소 농도는 약 420 ppm 이며, 학교 보건법은 교실 이산화 탄소 농도를 1000 ppm 이하로 관리하도록 정하고 있습니다. 증가 속도와 환기 효과는 설명을 위해 단순화한 값입니다.</div>
+          <div class="stage-card" style="padding:6px 0 4px;margin-top:16px"><div id="wk2"></div></div>
+        </section>
       </div>
-      <p class="foot-note">발명품을 설계할 때는 <b>어떤 문제를 해결할 것인지</b>, <b>어떤 센서로 상황을 감지할 것인지</b>, <b>감지된 값에 따라 무엇을 작동시킬 것인지</b>의 세 단계로 아이디어를 구체화하면 도움이 됩니다.</p>
+      <p class="teacher-note">교사용: 주소 끝에 <a href="?open=1">?open=1</a> 을 붙이면 모든 장면이 열립니다.</p>
     </section>
 
-    <!-- 03 우주 개발 사례 평가 -->
+    <!-- =====================================================================
+         03 우주 개발 사례 평가 — 이야기 「우주 개발 토론회」
+         ===================================================================== -->
     <section class="tab-panel" data-panel="2" hidden>
       <div class="stage-head">
-        <div class="eyebrow">03 · 우주 개발 사례 조사를 통해 과학 기술의 발전 방향 평가하기</div>
-        <h2 class="display">우주 개발, 어떻게 평가할까?</h2>
-        <p>우주 개발의 주요 사건을 시간순으로 살펴보고, 평가 관점을 바꿔가며 같은 사건도 어떻게 다르게 평가할 수 있는지 확인해 보세요.</p>
+        <div class="eyebrow">03 · 우주 개발 사례 조사를 통해 과학 기술의 발전 방향 평가하기 · 이야기 한 편</div>
+        <h2 class="display">우주 개발 토론회</h2>
+        <p>“우주에 돈을 쓰는 대신 지구의 문제부터 해결해야 한다!” 학교 토론회를 앞두고 과학 동아리가 우주 개발의 역사를 여러 관점에서 평가하고, 재사용 로켓의 비용을 직접 계산해 근거 있는 주장을 준비합니다.</p>
+        <span class="std-chip">10과탐2-02-01</span><div class="std-note"><b>[10과탐2-02-01]</b> 첨단 과학 기술 속의 과학 원리를 찾아내는 탐구 활동을 통해 과학 지식이 활용된 사례를 추론할 수 있다.</div><div class="terms"><b>인공위성</b><b>재사용 로켓</b><b>우주 쓰레기</b><b>평가 관점</b></div>
       </div>
-      <div class="stage-card">
-        <div class="controls" style="padding-bottom:0;">
-          <div class="ctrl-group">
-            <div class="ctrl-label">평가 관점</div>
-            <div class="seg" id="c2-lens">
-              <button class="on" data-l="tech">기술 파급 효과</button>
-              <button data-l="cost">비용과 실효성</button>
-              <button data-l="coop">국제 협력</button>
+
+      <div class="episode" id="ep3">
+        <section class="scene" data-title="토론 주제 발표">
+          <div class="story narr"><div class="who">🎤</div><div class="say"><span class="name">이야기</span>학교 토론회 주제가 발표되었습니다. ‘우주 개발에 많은 돈을 쓰는 것은 가치 있는 일인가?’ 동아리는 찬성과 반대 어느 쪽이 되더라도 근거를 갖추기로 했습니다.</div></div>
+          <div class="story"><div class="who">🧑‍🏫</div><div class="say"><span class="name">지도 교사</span>“과학 기술의 가치를 평가할 때는 어떻게 해야 할까?”</div></div>
+          <div class="gate loose" id="g3"></div>
+        </section>
+
+        <section class="scene" data-title="관점을 바꿔 보는 우주 개발사">
+          <div class="story"><div class="who">🛰️</div><div class="say"><span class="name">지도 교사</span>“우주 개발의 다섯 사건을 세 가지 관점으로 살펴보자. <b>다섯 사건을 모두</b> 보고, <b>세 관점도 모두</b> 바꿔 보렴. 같은 사건이 관점에 따라 어떻게 달리 보이니?”</div></div>
+          <div class="stage-card">
+            <div class="canvas-wrap"><canvas id="c-c-tl" width="900" height="200"></canvas></div>
+            <div class="controls">
+              <div class="ctrl-group">
+                <div class="ctrl-label">사건<span class="val" id="c-ev-val">1957</span></div>
+                <input type="range" id="c-ev" min="0" max="4" step="1" value="0">
+              </div>
+              <div class="ctrl-group">
+                <div class="ctrl-label">평가 관점</div>
+                <div class="seg" id="c-lens"><button class="on" data-v="tech">기술 파급 효과</button><button data-v="cost">비용과 실효성</button><button data-v="coop">국제 협력</button></div>
+              </div>
             </div>
+            <div class="info-card" id="c-tl-info"></div>
           </div>
-        </div>
-        <div class="timeline-wrap">
-          <div class="timeline-track"><div class="timeline-fill" id="c2-fill"></div></div>
-          <input type="range" id="c2-slider" min="0" max="4" step="1" value="0" style="width:100%">
-          <div class="timeline-ticks">
-            <span>1957 스푸트니크</span><span>1969 아폴로11호</span><span>1998 국제우주정거장</span><span>2008 재사용로켓 개발</span><span>2020년대 위성 인터넷</span>
+          <div id="c-tl-pick"></div>
+          <div class="mission" id="m3-2"><ul><li id="m3-2a">다섯 사건과 세 관점을 모두 살펴보기</li><li id="m3-2b">관점에 따라 평가가 달라지는 까닭 고르기</li></ul></div>
+        </section>
+
+        <section class="scene" data-title="로켓을 다시 쓰면">
+          <div class="story"><div class="who">🚀</div><div class="say"><span class="name">동아리 부장</span>“‘우주 개발은 너무 비싸다’는 반론에 답하려면 숫자가 필요해. 로켓 한 번 발사에 600억 원이 드는데, 그중 1단 로켓이 360억 원이야. 1단을 회수해 다시 쓰면 한 번 정비에 36억 원이 든대. 한 개의 1단을 몇 번 쓰면 발사 한 번의 비용이 <b>330억 원 이하</b>가 될까? <b>가장 적은 횟수</b>를 찾아 줘.”</div></div>
+          <div class="stage-card">
+            <div class="canvas-wrap"><canvas id="c-c-cost" width="900" height="260"></canvas></div>
+            <div class="controls">
+              <div class="ctrl-group">
+                <div class="ctrl-label">1단 로켓 한 개를 쓰는 횟수<span class="val" id="c-n-val">1번</span></div>
+                <input type="range" id="c-n" min="1" max="20" step="1" value="1">
+              </div>
+            </div>
+            <div class="info-card" id="c-cost-info"></div>
           </div>
-        </div>
-        <div class="detail-panel" id="c2-detail"></div>
+          <div class="mission" id="m3-3">발사 한 번의 비용이 330억 원 이하가 되는 가장 적은 재사용 횟수를 찾으세요.</div>
+        </section>
+
+        <section class="scene" data-title="토론 근거 분류">
+          <div class="story"><div class="who">🗂️</div><div class="say"><span class="name">지도 교사</span>“모은 근거들을 관점별로 정리해 두자. 네 번째 관점, 환경과 윤리도 빠뜨리지 말고.”</div></div>
+          <div class="stage-card"><div id="c-sort"></div></div>
+          <div class="mission" id="m3-4">여덟 가지 근거를 네 가지 평가 관점으로 나누세요.</div>
+        </section>
+
+        <section class="scene" data-title="결말 — 토론회 날">
+          <div class="ending">
+            <h4>🌏 한 가지 잣대로는 평가할 수 없다</h4>
+            <p>동아리는 우주 개발을 기술 파급, 비용과 실효성, 국제 협력, 환경과 윤리의 네 관점으로 나누어 근거를 준비했습니다. 스푸트니크는 냉전 경쟁의 산물이었지만 위성 산업을 열었고, 국제 우주 정거장은 비싸지만 협력의 상징이 되었으며, 재사용 로켓은 같은 1단을 6번만 써도 발사 비용을 절반 가까이 낮췄지요. 반면 급증한 위성은 우주 쓰레기라는 새 문제를 남겼습니다. 과학 기술의 발전 방향은 <b>여러 관점의 근거를 함께 따져</b> 평가해야 합니다.</p>
+            <div class="vs" id="e3-vs"></div>
+            <span class="stamp">첨단 탐구 ③ 완성</span>
+          </div>
+          <div class="info-card" style="margin:14px 0">📎 과학자의 눈: 발사 비용은 재사용 로켓의 원리를 보이기 위해 만든 값입니다. 실제로는 회수에 실패하는 경우, 연료비, 2단 로켓 비용 등이 더해집니다. 우리나라는 2022년 누리호로 1톤 이상의 실용 위성을 자체 발사할 수 있는 나라가 되었습니다.</div>
+          <div class="stage-card" style="padding:6px 0 4px;margin-top:16px"><div id="wk3"></div></div>
+        </section>
       </div>
+      <p class="teacher-note">교사용: 주소 끝에 <a href="?open=1">?open=1</a> 을 붙이면 모든 장면이 열립니다.</p>
     </section>
 
+    <!-- ===================================================================== 04 수준별 문제 -->
     <section class="tab-panel" data-panel="3" hidden>
       <div class="stage-head">
-        <div class="eyebrow">04 · 오늘 알아낸 것을 문장으로</div>
+        <div class="eyebrow">04 · 기본 · 발전 · 심화</div>
+        <h2 class="display">수준별 문제</h2>
+        <p>이 단원의 학습 목표를 세 단계로 확인합니다. <b>1단계 기본</b>은 용어와 핵심 개념, <b>2단계 발전</b>은 자료 해석과 계산, <b>3단계 심화</b>는 처음 보는 상황에 적용하고 근거를 들어 설명하기입니다. 자기 수준에 맞는 단계부터 시작하세요. 두 번 틀리면 정답과 해설을 볼 수 있어요.</p>
+      </div>
+      <div id="quiz"></div>
+    </section>
+
+    <!-- ===================================================================== 05 응용 실험실 -->
+    <section class="tab-panel" data-panel="4" hidden>
+      <div class="stage-head">
+        <div class="eyebrow">05 · 배운 것을 처음 보는 상황에</div>
+        <h2 class="display">응용 실험실</h2>
+        <p>이야기에서 찾아낸 개념을 전혀 다른 상황에 써 봅니다. 사례마다 <b>먼저 예상하고 → 직접 조작해 → 판정받고 → 까닭을 확인</b>합니다. 세 번 틀리면 풀이를 볼 수 있어요.</p>
+      </div>
+      <div id="lab"></div>
+    </section>
+
+    <!-- ===================================================================== 06 정리하기 -->
+    <section class="tab-panel" data-panel="5" hidden>
+      <div class="stage-head">
+        <div class="eyebrow">06 · 세 탐구를 하나로</div>
         <h2 class="display">정리하기</h2>
-        <p>조작한 것을 말이나 글로 옮기지 않으면 남지 않습니다. 아래를 채우고 <b>답안 복사</b>를 눌러 제출하세요. 쓰는 동안 자동으로 저장됩니다.</p>
+        <p>세 이야기의 결과가 아래에 모입니다. 세 탐구를 꿰는 한 문장을 쓰고 <b>답안 복사</b>를 눌러 제출하세요. 쓰는 동안 자동으로 저장됩니다.</p>
       </div>
       <div class="stage-card" style="padding:6px 0 4px"><div id="wk"></div></div>
     </section>
-  
-    <!-- ===================================================================== 05 우리 반 -->
-    <section class="tab-panel" data-panel="4" hidden>
+
+    <!-- ===================================================================== 07 우리 반 -->
+    <section class="tab-panel" data-panel="6" hidden>
       <div class="stage-head">
-        <div class="eyebrow">05 · 같은 반 친구들과 나누기</div>
+        <div class="eyebrow">07 · 같은 반 친구들과 나누기</div>
         <h2 class="display">우리 반</h2>
-        <p>정리하기에 쓴 것을 우리 반에 올리고, 같은 반 친구들이 어디까지 했는지 함께 보세요. <b>올리기 버튼을 눌렀을 때만</b> 공유됩니다. 실명 대신 별명을 쓰고, 글까지 올릴지는 직접 고르세요.</p>
+        <p>내가 완성한 첨단 탐구와 찾아낸 답을 우리 반에 올리고, 친구들은 어떤 발명품을 떠올렸는지 살펴보세요. <b>올리기 버튼을 눌렀을 때만</b> 공유됩니다. 실명 대신 별명을 쓰세요.</p>
       </div>
       <div class="stage-card"><div id="share"></div></div>
     </section>
-
   </main>
 </div>
 
 <button class="theme-toggle" id="themeToggle">라이트 모드</button>
 <script src="../assets/theme.js"></script>
+<script src="../assets/story.js"></script>
+<script src="../assets/quiz.js"></script>
+<script src="../assets/lab.js"></script>
 <script src="../assets/share-config.js"></script>
 <script src="../assets/share.js"></script>
-<script>
-"use strict";
-
-/* 01 스마트 온실 */
-(function () {
-  var canvas = document.getElementById("c0");
-  var ctx = window.setupCanvas(canvas);
-  var W = canvas._w, H = canvas._h;
-  var info = document.getElementById("c0-info");
-  var state = { time: "day", soil: "dry", temp: "normal" };
-
-  function bindSeg(id, key, attr) {
-    var seg = document.getElementById(id);
-    seg.querySelectorAll("button").forEach(function (b) {
-      b.addEventListener("click", function () {
-        seg.querySelectorAll("button").forEach(function (x) { x.classList.remove("on"); });
-        b.classList.add("on");
-        state[key] = b.getAttribute(attr);
-        render();
-      });
-    });
-  }
-  bindSeg("c0-time", "time", "data-t");
-  bindSeg("c0-soil", "soil", "data-s");
-  bindSeg("c0-temp", "temp", "data-p");
-
-  function actuators() {
-    return {
-      light: state.time === "night",
-      pump: state.soil === "dry",
-      window: state.temp === "hot"
-    };
-  }
-
-  function render() {
-    var a = actuators();
-    ctx.clearRect(0, 0, W, H);
-    ctx.fillStyle = cssVar("--panel"); ctx.fillRect(0, 0, W, H);
-
-    // greenhouse outline
-    var x0 = 260, x1 = 640, y0 = 60, y1 = H - 60;
-    ctx.strokeStyle = cssVar("--line"); ctx.lineWidth = 3;
-    ctx.strokeRect(x0, y0, x1 - x0, y1 - y0);
-    ctx.fillStyle = cssVar("--panel-2"); ctx.globalAlpha = 0.4; ctx.fillRect(x0, y0, x1 - x0, y1 - y0); ctx.globalAlpha = 1;
-
-    // plant
-    ctx.strokeStyle = cssVar("--teal"); ctx.lineWidth = 4;
-    ctx.beginPath(); ctx.moveTo((x0 + x1) / 2, y1 - 10); ctx.lineTo((x0 + x1) / 2, y1 - 70); ctx.stroke();
-    ctx.beginPath(); ctx.arc((x0 + x1) / 2, y1 - 80, 20, 0, Math.PI * 2); ctx.fillStyle = cssVar("--teal"); ctx.fill();
-
-    // window (top)
-    var winOpen = a.window;
-    ctx.strokeStyle = winOpen ? cssVar("--coral") : cssVar("--mist"); ctx.lineWidth = 3;
-    ctx.beginPath();
-    ctx.moveTo(x0 + 30, y0);
-    ctx.lineTo(x0 + 30, winOpen ? y0 - 30 : y0);
-    ctx.stroke();
-    ctx.font = "11px Segoe UI"; ctx.textAlign = "center"; ctx.fillStyle = winOpen ? cssVar("--coral") : cssVar("--mist");
-    ctx.fillText("창문: " + (winOpen ? "열림" : "닫힘"), x0 + 30, y0 - 40);
-
-    // LED light (top right)
-    ctx.beginPath(); ctx.arc(x1 - 40, y0 + 30, 14, 0, Math.PI * 2);
-    ctx.fillStyle = a.light ? "#eede4e" : cssVar("--panel-2");
-    ctx.fill(); ctx.strokeStyle = cssVar("--line"); ctx.stroke();
-    ctx.fillStyle = cssVar("--mist"); ctx.fillText("LED: " + (a.light ? "켜짐" : "꺼짐"), x1 - 40, y0 + 60);
-
-    // water pump (bottom left)
-    ctx.beginPath(); ctx.rect(x0 + 10, y1 - 30, 24, 20);
-    ctx.fillStyle = a.pump ? cssVar("--cold") : cssVar("--panel-2"); ctx.fill(); ctx.strokeStyle = cssVar("--line"); ctx.stroke();
-    ctx.fillStyle = cssVar("--mist"); ctx.fillText("펌프: " + (a.pump ? "작동" : "정지"), x0 + 22, y1 + 20);
-
-    ctx.font = "700 12px Segoe UI"; ctx.fillStyle = cssVar("--foam"); ctx.textAlign = "center";
-    ctx.fillText("마이크로컨트롤러 제어 스마트 온실", (x0 + x1) / 2, y0 - 15);
-
-    var lines = [];
-    lines.push(state.time === "night" ? "🌙 조도 센서 값이 낮음 → LED 조명 <b>ON</b>" : "☀️ 조도 센서 값이 충분함 → LED 조명 OFF");
-    lines.push(state.soil === "dry" ? "🌱 토양 수분 센서 값이 기준 이하 → 물펌프 <b>작동</b>" : "🌱 토양 수분 센서 값이 충분함 → 물펌프 정지");
-    lines.push(state.temp === "hot" ? "🌡️ 온습도 센서 값이 30℃ 초과 → 환기 창문 <b>개방</b>" : "🌡️ 온습도 센서 값이 적정 범위 → 창문 닫힘 유지");
-    info.innerHTML = lines.join("<br>");
-  }
-  render();
-})();
-
-/* 01 미션 — 센서 조건으로 장치 동작 예측 */
-(function () {
-  var devices = [
-    { key: "led", name: "LED 조명", cond: "time", onVal: "night", onDesc: "낮 (조도 높음)", offDesc: "밤 (조도 낮음)" },
-    { key: "pump", name: "물펌프", cond: "soil", onVal: "dry", onDesc: "건조", offDesc: "촉촉함" },
-    { key: "win", name: "환기 창문", cond: "temp", onVal: "hot", onDesc: "높음(30℃+)", offDesc: "적정(20~28℃)" }
-  ];
-  var timeLabel = { day: "낮 (조도 높음)", night: "밤 (조도 낮음)" };
-  var soilLabel = { dry: "건조", wet: "촉촉함" };
-  var tempLabel = { normal: "적정(20~28℃)", hot: "높음(30℃+)" };
-  var dataBox = document.getElementById("c0m-data");
-  var seg = document.getElementById("c0m-choices");
-  var checkBtn = document.getElementById("c0m-check");
-  var newBtn = document.getElementById("c0m-new");
-  var info = document.getElementById("c0m-info");
-  var state, device, key, picked = null;
-
-  function newQuestion() {
-    state = {
-      time: Math.random() < 0.5 ? "day" : "night",
-      soil: Math.random() < 0.5 ? "dry" : "wet",
-      temp: Math.random() < 0.5 ? "normal" : "hot"
-    };
-    device = devices[Math.floor(Math.random() * devices.length)];
-    key = state[device.cond] === device.onVal ? "on" : "off";
-    picked = null;
-    dataBox.innerHTML = "시간대: <b>" + timeLabel[state.time] + "</b> · 토양 상태: <b>" + soilLabel[state.soil] + "</b> · 온실 내부 온도: <b>" + tempLabel[state.temp] + "</b><br>이 조건에서 <b>" + device.name + "</b>는 어떻게 될까요?";
-    seg.innerHTML = "";
-    [["on", device.name + " 작동/켜짐"], ["off", device.name + " 정지/꺼짐"]].forEach(function (pair) {
-      var b = document.createElement("button");
-      b.textContent = pair[1];
-      b.dataset.c = pair[0];
-      b.addEventListener("click", function () {
-        picked = pair[0];
-        seg.querySelectorAll("button").forEach(function (x) { x.classList.toggle("on", x === b); });
-      });
-      seg.appendChild(b);
-    });
-    info.innerHTML = "";
-    info.style.color = "";
-  }
-
-  checkBtn.addEventListener("click", function () {
-    if (!picked) { info.innerHTML = "먼저 보기를 하나 선택하세요."; info.style.color = "var(--coral)"; return; }
-    if (picked === key) {
-      info.innerHTML = "✅ 정답! " + device.name + "는 '" + (key === "on" ? "작동/켜짐" : "정지/꺼짐") + "' 상태입니다.";
-      info.style.color = "var(--teal)";
-    } else {
-      info.innerHTML = "❌ 틀렸습니다. 정답은 '" + (key === "on" ? "작동/켜짐" : "정지/꺼짐") + "' 입니다.";
-      info.style.color = "var(--coral)";
-    }
-  });
-
-  newBtn.addEventListener("click", newQuestion);
-  newQuestion();
-})();
-
-/* 02 센서 생활 발명품 */
-(function () {
-  var items = [
-    { ico: "☂️", name: "우산 놓고가기 방지 알림", desc: "우산 손잡이에 근접 센서를 달아, 스마트폰과의 거리가 일정 이상 멀어지면 블루투스 신호가 끊기며 스마트폰에 알림을 보냅니다." },
-    { ico: "🐾", name: "반려동물 자동 급식기", desc: "무게 센서로 사료가 얼마나 남았는지 감지하고, 실시간 시계와 연동해 정해진 시간에 정해진 양만큼 자동으로 배급합니다." },
-    { ico: "🚪", name: "환기 알림 이산화 탄소 센서", desc: "실내 이산화 탄소 농도 센서로 공기 질을 측정해, 기준치를 넘으면 환기하라는 알림을 보내고 자동으로 환풍기를 작동시킵니다." },
-    { ico: "🧴", name: "손 소독 자동 분사기", desc: "적외선 근접 센서로 손이 다가오는 것을 감지해 자동으로 일정량의 소독제를 분사합니다. 접촉 없이 사용할 수 있어 위생적입니다." },
-    { ico: "🛏️", name: "수면 자세 교정 베개", desc: "압력 센서로 뒤척임과 자는 자세를 감지해, 코골이가 심해지는 자세가 되면 베개 내부 공기주머니를 조절해 자세를 자연스럽게 바꿔 줍니다." },
-    { ico: "🔥", name: "화재 조기 감지 콘센트", desc: "온도 센서와 전류 센서로 콘센트의 과열·과부하를 감지해, 위험 수준이 되면 스스로 전원을 차단하고 경보를 울립니다." }
-  ];
-  var grid = document.getElementById("c1-grid");
-  var detail = document.getElementById("c1-detail");
-  items.forEach(function (it) {
-    var btn = document.createElement("button");
-    btn.className = "pick-card";
-    btn.innerHTML = '<span class="ico">' + it.ico + '</span><div class="t">' + it.name + '</div>';
-    btn.addEventListener("click", function () {
-      grid.querySelectorAll(".pick-card").forEach(function (c) { c.classList.remove("on"); });
-      btn.classList.add("on");
-      detail.innerHTML = "<h4>" + it.ico + " " + it.name + "</h4>" + it.desc;
-    });
-    grid.appendChild(btn);
-  });
-})();
-
-/* 03 우주 개발 사례 평가 */
-(function () {
-  var slider = document.getElementById("c2-slider");
-  var fill = document.getElementById("c2-fill");
-  var lensSeg = document.getElementById("c2-lens");
-  var detail = document.getElementById("c2-detail");
-  var lens = "tech";
-
-  var events = [
-    {
-      name: "1957 · 스푸트니크 1호 발사",
-      tech: "인류 최초의 인공위성 발사로, 이후 통신·기상·항법(GPS) 위성 산업 전체의 출발점이 되었습니다.",
-      cost: "체제 경쟁 속에서 막대한 비용이 투입되었지만, 이후 위성 통신 산업이 그 비용을 여러 배로 회수하는 기반이 되었습니다.",
-      coop: "당시에는 냉전 경쟁의 산물로 국제 협력과는 거리가 멀었으며, 오히려 우주 개발 경쟁을 촉발했습니다."
-    },
-    {
-      name: "1969 · 아폴로 11호 유인 달 착륙",
-      tech: "정밀 유도 항법, 소형 컴퓨터, 신소재 등 이후 민간 산업에 파급된 기술이 다수 개발되었습니다.",
-      cost: "당시 미국 GDP의 상당 부분을 차지할 정도로 천문학적 비용이 들어, 실효성 논쟁이 꾸준히 제기되었습니다.",
-      coop: "미국 단독 프로젝트로 진행되어 국제 협력보다는 냉전 시대 국가 간 경쟁을 상징하는 사건이었습니다."
-    },
-    {
-      name: "1998 · 국제 우주 정거장(ISS) 건설 시작",
-      tech: "미세중력 환경 실험을 통해 신약·신소재 연구 등 다양한 과학 기술이 발전했습니다.",
-      cost: "여러 나라가 비용을 분담했지만, 유지·보수에 지속적으로 막대한 비용이 들어가는 점이 과제로 지적됩니다.",
-      coop: "미국·러시아·유럽·일본·캐나다 등 여러 나라가 함께 참여한 대표적인 <b>국제 협력</b> 우주 프로젝트입니다."
-    },
-    {
-      name: "2008~ · 재사용 로켓 기술 개발",
-      tech: "로켓 1단을 회수해 재사용하는 기술이 발전하며 발사 비용을 획기적으로 낮추는 계기가 되었습니다.",
-      cost: "초기 개발 비용은 컸지만, 장기적으로 발사 1회당 비용을 크게 낮춰 <b>실효성</b>을 높인 사례로 평가받습니다.",
-      coop: "민간 기업이 주도하며 여러 나라의 위성을 함께 실어 발사하는 상업적 협력 모델을 만들었습니다."
-    },
-    {
-      name: "2020년대 · 저궤도 위성 인터넷망 구축",
-      tech: "수천 개의 소형 위성을 저궤도에 배치해, 지상 통신망이 닿지 않는 지역까지 인터넷을 공급하는 기술이 발전했습니다.",
-      cost: "초기 막대한 투자가 필요하지만, 오지·해상·항공 통신 등 새로운 수요를 창출하며 사업성을 검증받는 중입니다.",
-      coop: "동시에 급증한 위성 수만큼 <b>우주 쓰레기</b>와 전파 간섭 문제로 국제적인 규범 마련 논의가 활발합니다."
-    }
-  ];
-
-  lensSeg.querySelectorAll("button").forEach(function (b) {
-    b.addEventListener("click", function () {
-      lensSeg.querySelectorAll("button").forEach(function (x) { x.classList.remove("on"); });
-      b.classList.add("on");
-      lens = b.getAttribute("data-l");
-      render();
-    });
-  });
-  slider.addEventListener("input", render);
-
-  function render() {
-    var i = +slider.value;
-    fill.style.width = (i / (events.length - 1) * 100) + "%";
-    var e = events[i];
-    detail.innerHTML = "<h4>" + e.name + "</h4>" + e[lens];
-  }
-  render();
-})();
-</script>
-
-<script>
-(function () {
-  window.sthUnit("gt2-2-4");
-  window.sthWork({
-    mount: "wk",
-    unitLabel: "[과학탐구실험2 Ⅱ] 미래 사회와 첨단 과학 탐구",
-    items: [
-      {
-            "id": "w1",
-            "label": "제어의 조건",
-            "hint": "스마트 온실에서 어떤 값이 얼마를 넘으면 무엇이 작동하도록 정했는지, 그 기준을 정한 근거와 함께 쓰세요.",
-            "ph": ""
-      },
-      {
-            "id": "w2",
-            "label": "연구 윤리",
-            "hint": "내 탐구에서 지켜야 할 윤리 항목을 하나 고르고, 구체적으로 무엇을 하겠다는 것인지 쓰세요.",
-            "ph": ""
-      },
-      {
-            "id": "w3",
-            "label": "아직 헷갈리는 것",
-            "hint": "다음 시간에 여기서부터 시작합니다.",
-            "ph": ""
-      }
-]
-  });
-  window.sthShare({
-    mount: "share",
-    unit: "gt2-2-4",
-    unitLabel: "[과학탐구실험2 Ⅱ] 미래 사회와 첨단 과학 탐구",
-    works: [
-      { id: "w1", label: "제어의 조건" },
-      { id: "w2", label: "연구 윤리" }
-    ]
-  });
-})();
-</script>
+<script src="episodes.js"></script>
+<script src="quiz-items.js"></script>
+<script src="lab-cases.js"></script>
 </body>
 </html>
