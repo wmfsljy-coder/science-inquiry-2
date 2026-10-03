@@ -8,7 +8,8 @@ var S = window.REAL_SAT || { iss: ["ISS (ZARYA)", 92.98, 425, 416, 51.63] }, Q =
 var I = S.iss, RE = 6371, HM = (I[2] + I[3]) / 2, V = 2 * Math.PI * (RE + HM) / (I[1] * 60);
 var EQ = Q.rows;                                       /* [날짜, 규모, 종류, 위도, 경도, 깊이, 설명] */
 var BIG = 0; EQ.forEach(function (r, i) { if (r[1] > EQ[BIG][1]) BIG = i; });
-function where(r) { var p = r[6]; return /Gyeongju/.test(p) ? "경주" : /Heunghae|Pohang/.test(p) ? "포항" : /Sinan/.test(p) ? "신안 앞바다" : /Ulsan/.test(p) ? "울산 앞바다" : /Pyeongchang/.test(p) ? "평창" : /T.aebaek/.test(p) ? "태백" : /Kyosai/.test(p) ? "남해(거제 앞바다)" : "그 밖"; }
+var KO = { Gyeongju: "경주", Heunghae: "포항(흥해)", Pohang: "포항", Sinan: "신안", Ulsan: "울산", Pyeongchang: "평창", "T’aebaek": "태백", Kyosai: "거제", Santyoku: "삼척", Tonghae: "동해", Sokcho: "속초", Gaigeturi: "제주 가이거리", Iksan: "익산", Mungyeong: "문경", Puan: "부안", Ongjin: "옹진" };
+function where(r) { var m = /^(\d+)\s?km\s+\w+\s+of\s+(.+?),/.exec(r[6]); if (m) { var n = KO[m[2]] || m[2]; return +m[1] >= 30 ? n + " " + m[1] + " km 밖" : n; } return "북위 " + r[3].toFixed(1) + "°, 동경 " + r[4].toFixed(1) + "°"; }
 var SRC1 = "<small>출처: CelesTrak 위성 목록(SATCAT) — 국제 우주 정거장 " + I[0] + " 의 궤도 주기 " + I[1] + " 분, 원지점 " + I[2] + " km, 근지점 " + I[3] + " km, 궤도 기울기 " + I[4] + "°. 정거장은 공기 저항으로 조금씩 낮아져 가끔 엔진으로 높이를 올립니다. 사본은 data/satcat.js.</small>";
 var SRC2 = "<small>출처: 미국 지질조사국(USGS) 지진 목록 — 남한과 둘레 바다에서 1990 ~ 2025년 규모 2.5 이상으로 기록된 지진 " + EQ.length + "건(세계 관측망 기준이라 작은 지진은 빠진 것이 많음). 기상청 발표 규모(국지 규모 ML): 2016년 경주 5.8, 2017년 포항 5.4. 사본은 data/usgs-korea.js.</small>";
 
@@ -22,7 +23,7 @@ window.sthLab({
     say: "“우리 딸기 씨앗이 실려 갈 국제 우주 정거장은 지구 둘레를 쉬지 않고 돌아요. 위성 목록에 적힌 <b>실제 궤도 주기</b>와 <b>높이</b>로 정거장의 <b>속력(km/s)</b>을 구해 주세요. 지구 반지름은 6,371 km, 궤도는 원이라고 칩니다.”",
     predict: {
       q: "우주 정거장은 대략 얼마나 빠를까요?",
-      options: ["㉠ 여객기쯤 (0.25 km/s)", "㉡ 소리의 몇 배 (1 km/s)", "㉢ 소리의 20배 넘게 (약 8 km/s)"],
+      options: ["㉠ 여객기쯤 (0.25 km/s)", "㉡ 소리의 몇 배 (1 km/s)", "㉢ 소리의 20배 넘게 (수 km/s)"],
       answer: 2
     },
     task: "정거장의 속력을 슬라이더로 맞추세요(± 0.1 km/s).",
@@ -50,7 +51,7 @@ window.sthLab({
         }
       };
     },
-    hints: ["한 바퀴 거리 = 2 × 3.14 × " + (RE + HM) + " ≈ " + Math.round(2 * Math.PI * (RE + HM)).toLocaleString() + " km.", "주기 = " + I[1] + " × 60 ≈ " + Math.round(I[1] * 60).toLocaleString() + " s. 거리 ÷ 시간 = ?"],
+    hints: ["한 바퀴 거리 = 2 × 3.14 × " + (RE + HM) + " ≈ " + Math.round(2 * 3.14 * (RE + HM)).toLocaleString() + " km.", "주기 = " + I[1] + " × 60 ≈ " + Math.round(I[1] * 60).toLocaleString() + " s. 거리 ÷ 시간 = ?"],
     solution: "약 <b>" + V.toFixed(2) + " km/s</b>.",
     why: "정거장은 지구 쪽으로 계속 떨어지고 있지만 옆으로 아주 빠르게 움직여, 떨어지는 만큼 지구 표면이 둥글게 멀어지므로 땅에 닿지 않습니다. 이 높이에서 원 궤도를 돌려면 약 7.7 km/s 가 필요해요. 정거장 안의 사람과 물건이 함께 떨어지고 있어서 무게를 느끼지 않는 ‘무중력 상태’가 됩니다.<br>"
       + "그래서 우주에서 키운 식물은 위아래를 중력으로 알 수 없어, 뿌리가 아무 방향으로나 뻗기도 합니다. 우주 딸기 실험이 확인하려는 것도 이런 차이예요."
@@ -78,12 +79,12 @@ window.sthLab({
         EQ.forEach(function (r, j) { H.dot(ctx, X(r[0]), Y(r[1]), j === i ? 7 : 4, j === i ? H.v("--amber-700") : H.v("--brand")); });
         H.text(ctx, "USGS 가 기록한 남한 둘레 지진의 규모", x0 + 6, y0 - 10, { s: 11, w: "700", c: H.v("--mist") });
         var r = EQ[i] || ["", 0, "", 0, 0, 0, ""];
-        H.rows(ctx, 640, 30, [["고른 지진", r[0] + " · " + where(r), "--amber-700"], ["USGS 규모", r[1].toFixed(1) + " (" + r[2] + ")", null, true], ["깊이", r[5] + " km"]], 62);
+        H.rows(ctx, 640, 30, [["고른 지진", r[0], "--amber-700"], ["곳", where(r)], ["USGS 규모", r[1].toFixed(1) + " (" + r[2] + ")", null, true], ["깊이", r[5] + " km"]], 52);
       }
       cv.canvas._redraw = draw;
       api.slider({ label: "지진 (날짜 순)", min: 0, max: Math.max(0, EQ.length - 1), step: 1, value: 0, fmt: function (x) { return EQ[x] ? EQ[x][0] + " " + where(EQ[x]) : ""; }, onInput: function (x) { i = x; api.changed(); draw(); } });
       api.seg({ label: "두 기관 값이 다른 까닭", value: "none", options: [{ v: "scale", t: "규모를 재는 방법(척도)이 달라서" }, { v: "wrong", t: "한 기관이 잘못 재서" }, { v: "deep", t: "포항 지진이 더 깊어서" }], onPick: function (x) { why = x; api.changed(); } });
-      api.info("규모 종류: mww·mwr·mwb·mwc·mw = 모멘트 규모(Mw, 단층이 미끄러진 넓이·거리로 구함), mb = 실체파 규모. 기상청의 ML 은 가까운 지진계의 흔들림 크기로 구하는 국지 규모입니다. " + SRC2
+      api.info("규모 종류: mww·mwr·mwb·mwc·mw = 모멘트 규모(Mw, 단층이 미끄러진 넓이·거리로 구함), mb = 실체파 규모, ml = 국지 규모. 기상청의 ML 은 가까운 지진계의 흔들림 크기로 구하는 국지 규모입니다. " + SRC2
         + "<div data-link='{\"id\":\"kma-eqk\",\"title\":\"국내 지진 조회\",\"src\":\"기상청\",\"url\":\"https://www.weather.go.kr/w/earthquake-volcano/search/korea.do\",\"ask\":\"2016년 9월 12일 경주 지진과 2017년 11월 15일 포항 지진을 찾아, 기상청이 발표한 규모와 진앙의 깊이를 적고 USGS 값과 비교해 오세요.\"}'></div>");
       draw();
       return {

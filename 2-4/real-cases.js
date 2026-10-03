@@ -13,7 +13,7 @@ var SR = S.rows;                                         /* [연도, 위성, 파
 function sat(y) { for (var i = 0; i < SR.length; i++) if (SR[i][0] === y) return SR[i]; return [y, 1, 0, 0, 0]; }
 var P15 = sat(2015)[1], P25 = sat(2025)[1], PR = P15 ? P25 / P15 : 4;
 var SRC1 = "<small>출처: 미국 해양대기청(NOAA) 지구 감시 연구소 — 하와이 마우나로아 관측소(해발 3,397 m)의 달 평균 이산화 탄소 농도, 1958년 3월 ~ " + LAST[0] + "년 " + LAST[1] + "월. 사본은 data/co2-mlo.js.</small>";
-var SRC2 = "<small>출처: CelesTrak 위성 목록(SATCAT) — 쏘아 올린 날·떨어진 날로 해마다 말에 지구 둘레에 남아 있던 물체를 셈(추적되는 약 10 cm 이상만). ‘위성’에는 작동을 멈춘 위성도 들어 있습니다. 사본은 data/satcat.js.</small>";
+var SRC2 = "<small>출처: CelesTrak 위성 목록(SATCAT) — 쏘아 올린 날·떨어진 날로 해마다 말에 지구 둘레에 남아 있던 물체를 셈(추적되는 약 10 cm 이상만). ‘위성’에는 작동을 멈춘 위성도 들어 있습니다. 목록은 파편을 부모 위성의 발사일로 적어 두므로, 물체가 나타난 해는 카탈로그 번호가 매겨진 해로 다시 잡았습니다. 사본은 data/satcat.js.</small>";
 
 window.sthLab({
   mount: "real", key: "real", result: "rReal", label: "실제 자료",
@@ -25,7 +25,7 @@ window.sthLab({
     say: "“환기 알림 장치를 만들려면 ‘깨끗한 바깥 공기’의 이산화 탄소 농도를 알아야 해요. 도시와 멀리 떨어진 하와이 마우나로아 산꼭대기에서 1958년부터 잰 <b>실제 기록</b>입니다. <b>2015년과 2025년</b>의 한 해 평균을 비교해, 해마다 <b>몇 ppm 씩</b> 늘었는지 구해 주세요.”",
     predict: {
       q: "곡선이 해마다 톱니처럼 오르내리는 까닭은 무엇일까요?",
-      options: ["㉠ 측정기가 고장 나서", "㉡ 북반구 식물이 여름에 광합성으로 흡수하고 겨울에 덜 흡수해서", "㉢ 사람들이 겨울에만 연료를 써서"],
+      options: ["㉠ 측정기가 고장 나서", "㉡ 북반구 식물이 여름엔 광합성으로 흡수하고, 겨울엔 낙엽·흙의 분해로 내놓아서", "㉢ 사람들이 겨울에만 연료를 써서"],
       answer: 1
     },
     task: "2015 ~ 2025년 한 해 평균 증가량을 슬라이더로 맞추세요(± 0.2 ppm/년).",
@@ -37,7 +37,7 @@ window.sthLab({
         function X(y, m) { return x0 + (y + (m - 0.5) / 12 - 1958) / 69 * (x1 - x0); }
         function Y(v) { return y1 - (v - 310) / 125 * (y1 - y0); }
         H.axes(ctx, x0, y0, x1, y1);
-        [320, 360, 400, 430].forEach(function (v) { H.text(ctx, v, x0 - 6, Y(v) + 4, { s: 10, a: "right", c: H.v("--mist") }); });
+        [320, 350, 380, 410].forEach(function (v) { H.text(ctx, v, x0 - 6, Y(v) + 4, { s: 10, a: "right", c: H.v("--mist") }); });
         [1960, 1980, 2000, 2020].forEach(function (y) { H.text(ctx, y, X(y, 1), y1 + 15, { s: 10, a: "center", c: H.v("--mist") }); });
         H.line(ctx, C.rows.map(function (r) { return [X(r[0], r[1]), Y(r[2])]; }), H.v("--brand"), 1.4);
         [2015, 2025].forEach(function (y) { var v = am(y); if (v) H.dot(ctx, X(y, 6.5), Y(v), 6, H.v("--amber-700")); });
@@ -58,8 +58,8 @@ window.sthLab({
     },
     hints: ["2025년 평균 − 2015년 평균 = " + (A15 && A25 ? (A25 - A15).toFixed(2) : "?") + " ppm.", "그 차이를 10 년으로 나누세요."],
     solution: "약 <b>+" + GR.toFixed(1) + " ppm/년</b>.",
-    why: "마우나로아 기록은 처음 시작한 과학자의 이름을 따 ‘킬링 곡선’이라 불립니다. 화석 연료를 태워 나온 이산화 탄소가 쌓이면서 농도는 1958년 약 315 ppm 에서 지금 420 ppm 을 넘었어요. 해마다의 톱니는 북반구 식물의 광합성이 만드는 계절 변화입니다.<br>"
-      + "센서 장치를 만들 때는 이렇게 믿을 수 있는 기준값으로 보정해야 합니다. 맑은 날 바깥에서 센서가 약 420 ppm 을 가리키는지 확인하는 것이 간단한 보정 방법이에요."
+    why: "마우나로아 기록은 처음 시작한 과학자의 이름을 따 ‘킬링 곡선’이라 불립니다. 화석 연료를 태워 나온 이산화 탄소가 쌓이면서 농도는 1958년 약 315 ppm 에서 지금 425 ppm 을 넘었어요. 해마다의 톱니는 북반구 식물의 광합성이 만드는 계절 변화입니다.<br>"
+      + "센서 장치를 만들 때는 이렇게 믿을 수 있는 기준값으로 보정해야 합니다. 맑은 날 바깥에서 센서가 약 430 ppm 안팎(도시는 더 높을 수 있음)을 가리키는지 확인하는 것이 간단한 보정 방법이에요."
   },
   {
     id: "r2", tag: "실제 자료 · 우주 환경", title: "하늘의 위성은 얼마나 늘었나", short: "위성 수",
@@ -90,12 +90,12 @@ window.sthLab({
       }
       cv.canvas._redraw = draw;
       api.slider({ label: "2025년은 2015년의 몇 배", min: 1, max: 10, step: 0.1, value: 1, fmt: function (x) { return x.toFixed(1) + " 배"; }, onInput: function (x) { g = x; api.changed(); draw(); } });
-      api.info("2020년대 파편 수가 조금 줄어든 것은 태양 활동이 강해져 높은 대기가 부풀고, 공기 저항으로 낮은 궤도의 파편이 빨리 떨어졌기 때문으로 보입니다. " + SRC2
+      api.info("빨간 막대가 2007년(중국의 위성 요격 시험), 2009년(이리듐·코스모스 위성 충돌), 2021년(러시아의 위성 요격 시험)에 껑충 뛰는 것을 찾아보세요. 2020년대 파편 수가 조금 줄어든 것은 태양 활동이 강해져 높은 대기가 부풀고, 공기 저항으로 낮은 궤도의 파편이 빨리 떨어졌기 때문으로 보입니다. " + SRC2
         + "<div data-link='{\"id\":\"esa-debris\",\"title\":\"숫자로 보는 우주 쓰레기\",\"src\":\"유럽 우주국 ESA\",\"url\":\"https://www.esa.int/Space_Safety/Space_Debris/Space_debris_by_the_numbers\",\"ask\":\"지구 둘레에 있는 1 cm 이상, 10 cm 이상 우주 쓰레기는 각각 몇 개로 추정되는지 적고, 추적되지 않는 작은 조각이 왜 위험한지 한 문장으로 적어 오세요.\"}'></div>");
       draw();
       return {
         judge: function () {
-          if (Math.abs(g - PR) <= 0.3 + 1e-9) return { ok: true, msg: P25.toLocaleString() + " ÷ " + P15.toLocaleString() + " ≈ " + PR.toFixed(1) + " 배 — 10년 만에 이만큼 늘었고, 대부분은 수천 개를 한꺼번에 띄우는 위성 인터넷 군집입니다." };
+          if (Math.abs(g - PR) <= 0.3 + 1e-9) return { ok: true, msg: P25.toLocaleString() + " ÷ " + P15.toLocaleString() + " ≈ " + PR.toFixed(1) + " 배 — 10년 만에 이만큼 늘었고, 대부분은 수천 개를 무리 지어 운용하는 위성 인터넷 군집(스타링크 등)입니다." };
           return { ok: false, msg: g.toFixed(1) + " 배는 맞지 않습니다. 오른쪽 두 수를 나누세요." };
         }
       };

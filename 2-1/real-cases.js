@@ -11,7 +11,7 @@ function es(t) { return 6.112 * Math.exp(17.62 * t / (243.12 + t)); }          /
 function rho(t) { return 216.7 * es(t) / (t + 273.15); }                         /* 포화 수증기량 g/m³ */
 var IN = 22, RS = rho(IN), RD = rho(DJ), RH = RD / RS * 100;
 var VOL = 9 * 7 * 3, NEED = (0.4 * RS - RD) * VOL / 1000;
-var SRC = "<small>출처: 미국 항공우주국(NASA) POWER 자료 서비스 — 서울(북위 37.57°, 동경 126.98°) 1월의 기온·이슬점 달 평균을 2001 ~ 2024년 24해로 평균한 값(기온 " + TJ.toFixed(1) + " °C, 이슬점 " + DJ.toFixed(1) + " °C). 포화 수증기량은 마그누스 식으로 계산했습니다. 사본은 data/seoul-hum.js.</small>";
+var SRC = "<small>출처: 미국 항공우주국(NASA) POWER 자료 서비스 — 서울(북위 37.57°, 동경 126.98°) 1월의 기온·이슬점 달 평균을 2001 ~ 2024년 24해로 평균한 값(기온 " + TJ.toFixed(1) + " °C, 이슬점 " + DJ.toFixed(1) + " °C). 포화 수증기량은 마그누스 식으로 계산했습니다. 약 50 km 격자 값이라 도심 관측소보다 조금 습하게 나옵니다. 사본은 data/seoul-hum.js.</small>";
 
 function curve(H, ctx, W, CH) {
   H.paper(ctx, W, CH);
@@ -95,7 +95,7 @@ window.sthLab({
       draw();
       return {
         judge: function () {
-          if (Math.abs(g - NEED) <= 0.1 + 1e-9) return { ok: true, msg: "(" + (0.4 * RS).toFixed(2) + " − " + RD.toFixed(2) + ") × " + VOL + " ≈ " + Math.round(NEED * 1000) + " g ≈ " + NEED.toFixed(1) + " kg — 큰 생수 반 병쯤입니다. 환기를 하면 이 물이 그대로 빠져나가 계속 보충해야 해요." };
+          if (Math.abs(g - NEED) <= 0.1 + 1e-9) return { ok: true, msg: "(" + (0.4 * RS).toFixed(2) + " − " + RD.toFixed(2) + ") × " + VOL + " ≈ " + Math.round(NEED * 1000) + " g ≈ " + NEED.toFixed(1) + " kg — 큰 생수(2 L) 반 병쯤입니다. 환기를 하면 이 물이 그대로 빠져나가 계속 보충해야 해요." };
           return { ok: false, msg: g.toFixed(1) + " kg 는 " + (g < NEED ? "적습니다" : "많습니다") + ". 1 m³ 에 더 넣을 양을 먼저 구한 뒤 부피를 곱하세요." };
         }
       };
