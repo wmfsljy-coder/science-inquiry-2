@@ -347,7 +347,8 @@ window.sthWork({
     { key: "r1", label: "① 비행기 안의 고요" },
     { key: "r2", label: "② 목이 따가운 교실" },
     { key: "rQuiz", label: "수준별 문제" },
-    { key: "rLab", label: "응용 실험실" }
+    { key: "rLab", label: "응용 실험실" },
+    { key: "rReal", label: "실제 자료" }
   ],
   items: [
     { id: "all", label: "두 탐구를 꿰는 한 문장", hint: "헤드폰과 교실 습도, 두 이야기를 ‘생활’과 ‘과학 원리’라는 말을 넣어 한 문장으로 이어 보세요." },
@@ -362,7 +363,8 @@ window.sthShare({
     { key: "r1", label: "① 비행기 안의 고요" },
     { key: "r2", label: "② 목이 따가운 교실" },
     { key: "rQuiz", label: "수준별 문제" },
-    { key: "rLab", label: "응용 실험실" }
+    { key: "rLab", label: "응용 실험실" },
+    { key: "rReal", label: "실제 자료" }
   ],
   line: { id: "all", label: "두 탐구를 꿰는 한 문장" }
 });

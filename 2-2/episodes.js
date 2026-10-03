@@ -351,7 +351,8 @@ window.sthWork({
     { key: "r1", label: "① 고양이를 못 알아보는 인공지능" },
     { key: "r2", label: "② 방학 동안의 화분" },
     { key: "rQuiz", label: "수준별 문제" },
-    { key: "rLab", label: "응용 실험실" }
+    { key: "rLab", label: "응용 실험실" },
+    { key: "rReal", label: "실제 자료" }
   ],
   items: [
     { id: "all", label: "두 탐구를 꿰는 한 문장", hint: "인공지능과 자동 급수 장치, 두 이야기를 ‘데이터’와 ‘과학 원리’라는 말을 넣어 한 문장으로 이어 보세요." },
@@ -366,7 +367,8 @@ window.sthShare({
     { key: "r1", label: "① 고양이를 못 알아보는 인공지능" },
     { key: "r2", label: "② 방학 동안의 화분" },
     { key: "rQuiz", label: "수준별 문제" },
-    { key: "rLab", label: "응용 실험실" }
+    { key: "rLab", label: "응용 실험실" },
+    { key: "rReal", label: "실제 자료" }
   ],
   line: { id: "all", label: "두 탐구를 꿰는 한 문장" }
 });

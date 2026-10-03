@@ -685,7 +685,8 @@ window.sthWork({
     { key: "r3", label: "③ 5층 건물만 크게 흔들렸다" },
     { key: "r4", label: "④ 동네 환경 탐사대" },
     { key: "rQuiz", label: "수준별 문제" },
-    { key: "rLab", label: "응용 실험실" }
+    { key: "rLab", label: "응용 실험실" },
+    { key: "rReal", label: "실제 자료" }
   ],
   items: [
     { id: "all", label: "네 탐구를 꿰는 한 문장", hint: "딸기, 롤러코스터, 건물, 동네. 네 이야기를 ‘생활 속 문제’와 ‘과학 원리’라는 말을 넣어 한 문장으로 이어 보세요." },
@@ -703,7 +704,8 @@ window.sthShare({
     { key: "r3", label: "③ 5층 건물만 크게 흔들렸다" },
     { key: "r4", label: "④ 동네 환경 탐사대" },
     { key: "rQuiz", label: "수준별 문제" },
-    { key: "rLab", label: "응용 실험실" }
+    { key: "rLab", label: "응용 실험실" },
+    { key: "rReal", label: "실제 자료" }
   ],
   line: { id: "all", label: "네 탐구를 꿰는 한 문장" }
 });

@@ -475,7 +475,8 @@ window.sthWork({
     { key: "r2", label: "② 숨 막히는 5교시" },
     { key: "r3", label: "③ 우주 개발 토론회" },
     { key: "rQuiz", label: "수준별 문제" },
-    { key: "rLab", label: "응용 실험실" }
+    { key: "rLab", label: "응용 실험실" },
+    { key: "rReal", label: "실제 자료" }
   ],
   items: [
     { id: "all", label: "세 탐구를 꿰는 한 문장", hint: "온실, 환기 알림, 우주 개발. 세 이야기를 ‘첨단 과학 기술’과 ‘책임’이라는 말을 넣어 한 문장으로 이어 보세요." },
@@ -491,7 +492,8 @@ window.sthShare({
     { key: "r2", label: "② 숨 막히는 5교시" },
     { key: "r3", label: "③ 우주 개발 토론회" },
     { key: "rQuiz", label: "수준별 문제" },
-    { key: "rLab", label: "응용 실험실" }
+    { key: "rLab", label: "응용 실험실" },
+    { key: "rReal", label: "실제 자료" }
   ],
   line: { id: "all", label: "세 탐구를 꿰는 한 문장" }
 });
