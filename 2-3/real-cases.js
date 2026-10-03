@@ -8,8 +8,9 @@ var S = window.REAL_SAT || { iss: ["ISS (ZARYA)", 92.98, 425, 416, 51.63] }, Q =
 var I = S.iss, RE = 6371, HM = (I[2] + I[3]) / 2, V = 2 * Math.PI * (RE + HM) / (I[1] * 60);
 var EQ = Q.rows;                                       /* [날짜, 규모, 종류, 위도, 경도, 깊이, 설명] */
 var BIG = 0; EQ.forEach(function (r, i) { if (r[1] > EQ[BIG][1]) BIG = i; });
-var KO = { Gyeongju: "경주", Heunghae: "포항(흥해)", Pohang: "포항", Sinan: "신안", Ulsan: "울산", Pyeongchang: "평창", "T’aebaek": "태백", Kyosai: "거제", Santyoku: "삼척", Tonghae: "동해", Sokcho: "속초", Gaigeturi: "제주 가이거리", Iksan: "익산", Mungyeong: "문경", Puan: "부안", Ongjin: "옹진" };
-function where(r) { var m = /^(\d+)\s?km\s+\w+\s+of\s+(.+?),/.exec(r[6]); if (m) { var n = KO[m[2]] || m[2]; return +m[1] >= 30 ? n + " " + m[1] + " km 밖" : n; } return "북위 " + r[3].toFixed(1) + "°, 동경 " + r[4].toFixed(1) + "°"; }
+var KO = { Gyeongju: "경주", Heunghae: "포항(흥해)", Pohang: "포항", Sinan: "신안", Ulsan: "울산", Pyeongchang: "평창", "T’aebaek": "태백", Kyosai: "거제", Santyoku: "삼척", Tonghae: "동해", Sokcho: "속초", Gaigeturi: "제주", Iksan: "익산", Mungyeong: "문경", Puan: "부안", Ongjin: "옹진" };
+var DK = { N: "북", S: "남", E: "동", W: "서" };
+function where(r) { var m = /^(\d+)\s?km\s+([NSEW]+)\s+of\s+(.+?),/.exec(r[6]); if (m) { var n = KO[m[3]] || m[3]; return +m[1] >= 30 ? n + " " + m[2].split("").map(function (c) { return DK[c]; }).join("") + "쪽 " + m[1] + " km" : n; } return "북위 " + r[3].toFixed(1) + "°, 동경 " + r[4].toFixed(1) + "°"; }
 var SRC1 = "<small>출처: CelesTrak 위성 목록(SATCAT) — 국제 우주 정거장 " + I[0] + " 의 궤도 주기 " + I[1] + " 분, 원지점 " + I[2] + " km, 근지점 " + I[3] + " km, 궤도 기울기 " + I[4] + "°. 정거장은 공기 저항으로 조금씩 낮아져 가끔 엔진으로 높이를 올립니다. 사본은 data/satcat.js.</small>";
 var SRC2 = "<small>출처: 미국 지질조사국(USGS) 지진 목록 — 남한과 둘레 바다에서 1990 ~ 2025년 규모 2.5 이상으로 기록된 지진 " + EQ.length + "건(세계 관측망 기준이라 작은 지진은 빠진 것이 많음). 기상청 발표 규모(국지 규모 ML): 2016년 경주 5.8, 2017년 포항 5.4. 사본은 data/usgs-korea.js.</small>";
 
