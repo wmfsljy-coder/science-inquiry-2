@@ -113,25 +113,25 @@ window.sthLab({
   {
     id: "c3", tag: "생명 공학 기술 · 서열이 맞아야 자른다", title: "유전자 가위가 자를 곳 찾기", short: "유전자 가위",
     who: "🧬", name: "생명 공학 연구실",
-    say: "“유전자 가위는 안내 RNA 가 DNA 에서 <b>자기와 같은 서열</b>을 찾아가 자릅니다. 그런데 아무 곳이나 자르는 게 아니라, 찾은 서열 바로 뒤에 <b>‘GG’ 표지(PAM)</b>가 있어야만 자르지요. 안내 서열 <b>GATTACAG</b> 를 DNA 위에서 움직여, 가위가 <b>실제로 자를 자리</b>를 찾아 주세요. 한 글자만 달라도 엉뚱한 곳을 자를 수 있으니 조심하고요.”",
+    say: "“유전자 가위는 안내 RNA 가 DNA 에서 <b>한 가닥과 짝이 맞는(다른 가닥과 같은) 서열</b>을 찾아가 자릅니다. 그런데 아무 곳이나 자르는 게 아니라, 찾은 서열 바로 뒤 <b>한 글자 다음에 ‘GG’ 표지(NGG, PAM)</b>가 있어야만 자르지요. 안내 서열(DNA 글자로 적으면) <b>GATTACAG</b> 를 DNA 위에서 움직여, 가위가 <b>실제로 자를 자리</b>를 찾아 주세요. 한 글자만 달라도 엉뚱한 곳을 자를 수 있으니 조심하고요.”",
     predict: {
       q: "안내 서열과 DNA 서열이 여덟 글자 중 일곱 글자만 같다면?",
       options: ["㉠ 충분히 비슷하니 여기를 자르는 것이 목표다", "㉡ 목표가 아닌 곳을 잘못 자를(표적 이탈) 위험이 있는 자리다", "㉢ 서열은 상관없다"],
       answer: 1
     },
-    task: "안내 서열의 위치를 옮겨 <b>여덟 글자가 모두 같고 바로 뒤에 GG 가 있는</b> 자리를 찾으세요.",
+    task: "안내 서열의 위치를 옮겨 <b>여덟 글자가 모두 같고 바로 뒤에 NGG 가 있는</b> 자리를 찾으세요.",
     build: function (stage, api) {
       var H = api.h, cv = api.canvas(250), ctx = cv.ctx, W = cv.W, pos = 0;
-      var DNA = "CTAGATTACAGTAGATCACAGGGTCGATTACAGGGA", GUIDE = "GATTACAG";
+      var DNA = "CTAGATTACAGTAGATCACAGTGGTCGATTACAGAGGA", GUIDE = "GATTACAG";
       var COL = { A: "#e4572e", T: "#f3a712", G: "#29a36a", C: "#1f8fbf" };
       function match() { var m = 0; for (var i = 0; i < 8; i++) if (DNA[pos + i] === GUIDE[i]) m++; return m; }
-      function pam() { return DNA.substr(pos + 8, 2) === "GG"; }
+      function pam() { return DNA.substr(pos + 9, 2) === "GG"; }
       function draw() {
         H.paper(ctx, W, cv.H);
-        var cw = 23, x0 = (W - cw * DNA.length) / 2, y = 120;
+        var cw = 21, x0 = (W - cw * DNA.length) / 2, y = 120;
         H.text(ctx, "DNA", x0, y + 34, { s: 11.5, w: "800", c: H.v("--mist") });
         for (var i = 0; i < DNA.length; i++) {
-          var inG = i >= pos && i < pos + 8, inP = i >= pos + 8 && i < pos + 10;
+          var inG = i >= pos && i < pos + 8, inP = i >= pos + 8 && i < pos + 11;
           H.box(ctx, x0 + i * cw + 1, y - 18, cw - 2, 30, COL[DNA[i]], inG ? 0.95 : (inP ? 0.7 : 0.35));
           H.text(ctx, DNA[i], x0 + i * cw + cw / 2, y + 3, { s: 13, w: "900", a: "center", c: "#fff" });
         }
@@ -141,32 +141,32 @@ window.sthLab({
           H.text(ctx, GUIDE[k], gx + cw / 2, y - 45, { s: 13, w: "900", a: "center", c: "#fff" });
         }
         H.text(ctx, "안내 RNA", x0 + pos * cw, y - 72, { s: 11, w: "800", c: H.v("--brand-700") });
-        if (pam()) H.text(ctx, "PAM", x0 + (pos + 9) * cw, y + 34, { s: 11, w: "900", a: "center", c: H.v("--green-700") });
+        if (pam()) H.text(ctx, "PAM", x0 + (pos + 9.5) * cw, y + 34, { s: 11, w: "900", a: "center", c: H.v("--green-700") });
         var m = match(), ok = m === 8 && pam();
         H.text(ctx, "같은 글자 " + m + " / 8", 60, 200, { s: 15, w: "900", c: m === 8 ? H.v("--green-700") : H.v("--ink") });
-        H.text(ctx, "바로 뒤 GG 표지: " + (pam() ? "있음" : "없음"), 260, 200, { s: 15, w: "900", c: pam() ? H.v("--green-700") : H.v("--rose-700") });
+        H.text(ctx, "바로 뒤 NGG 표지: " + (pam() ? "있음" : "없음"), 260, 200, { s: 15, w: "900", c: pam() ? H.v("--green-700") : H.v("--rose-700") });
         H.text(ctx, ok ? "✂ 여기를 자른다" : (m === 7 && pam() ? "⚠ 잘못 자를 위험" : "자르지 않는다"), 560, 200, { s: 16, w: "900", c: ok ? H.v("--green-700") : (m === 7 && pam() ? H.v("--amber-700") : H.v("--mist")) });
       }
       cv.canvas._redraw = draw;
-      api.slider({ label: "안내 서열의 위치", min: 0, max: 26, step: 1, value: 0, fmt: function (x) { return (x + 1) + "번째 글자부터"; }, onInput: function (x) { pos = x; draw(); } });
-      api.info("초록 칸은 같은 글자, 빨간 칸은 다른 글자입니다. 실제로는 안내 RNA 가 DNA 의 한쪽 가닥과 염기쌍을 이루며 결합합니다.");
+      api.slider({ label: "안내 서열의 위치", min: 0, max: 27, step: 1, value: 0, fmt: function (x) { return (x + 1) + "번째 글자부터"; }, onInput: function (x) { pos = x; draw(); } });
+      api.info("초록 칸은 같은 글자, 빨간 칸은 다른 글자입니다. 실제로는 안내 RNA 가 DNA 의 한쪽 가닥과 염기쌍을 이루며 결합하고, RNA 에는 T 대신 U 가 들어갑니다(GAUUACAG).");
       draw();
       return {
         judge: function () {
           var m = match(), p = pam();
-          if (m === 8 && p) return { ok: true, msg: (pos + 1) + "번째 글자부터 여덟 글자가 모두 같고, 바로 뒤에 GG 가 있습니다. 가위가 이 자리를 자릅니다." };
-          if (m === 8) return { ok: false, msg: "서열은 모두 같지만 바로 뒤에 GG 표지가 없어 가위가 자르지 않습니다. 같은 서열이 또 있는지 찾아보세요." };
-          if (m === 7 && p) return { ok: false, msg: "한 글자가 다른데 GG 가 있어 가위가 잘못 자를 수도 있는 자리입니다. 연구자들이 가장 조심하는 곳이에요." };
+          if (m === 8 && p) return { ok: true, msg: (pos + 1) + "번째 글자부터 여덟 글자가 모두 같고, 바로 뒤에 NGG(AGG) 가 있습니다. 가위가 이 자리를 자릅니다." };
+          if (m === 8) return { ok: false, msg: "서열은 모두 같지만 바로 뒤에 NGG 표지가 없어 가위가 자르지 않습니다. 같은 서열이 또 있는지 찾아보세요." };
+          if (m === 7 && p) return { ok: false, msg: "한 글자가 다른데 NGG 가 있어 가위가 잘못 자를 수도 있는 자리입니다. 연구자들이 가장 조심하는 곳이에요." };
           return { ok: false, msg: "같은 글자가 " + m + "개뿐입니다." };
         }
       };
     },
     hints: [
-      "GATTACAG 는 이 DNA 에 두 번 나옵니다. 둘 가운데 바로 뒤에 GG 가 있는 쪽은?",
-      "뒤쪽의 GATTACAG (26번째 글자부터)를 보세요."
+      "GATTACAG 는 이 DNA 에 두 번 나옵니다. 둘 가운데 바로 뒤에 ‘아무 글자 하나 + GG’ 가 있는 쪽은?",
+      "뒤쪽의 GATTACAG (27번째 글자부터)를 보세요."
     ],
-    solution: "<b>26번째 글자부터</b> (GATTACAG 바로 뒤에 GG).",
-    why: "유전자 가위(크리스퍼 캐스9)는 안내 RNA 의 염기 서열과 짝이 맞는 DNA 를 찾아가, 그 옆에 특정한 짧은 표지(PAM, 흔히 NGG)가 있을 때만 자릅니다. 두 조건 덕분에 원하는 자리만 골라 자를 수 있지요.<br>" +
+    solution: "<b>27번째 글자부터</b> (GATTACAG 바로 뒤에 AGG).",
+    why: "유전자 가위(크리스퍼 캐스9)는 안내 RNA 의 염기 서열과 짝이 맞는 DNA 를 찾아가, 그 옆에 특정한 짧은 표지(PAM, 흔히 쓰는 캐스9 은 NGG)가 있을 때만 자릅니다. 두 조건 덕분에 원하는 자리만 골라 자를 수 있지요.<br>" +
       "그러나 서열이 한두 글자만 다른 곳을 잘못 자르는 ‘표적 이탈’이 일어날 수 있어, 연구자들은 안내 서열을 고를 때 DNA 전체에 비슷한 서열이 없는지 컴퓨터로 확인합니다. 생명과학과 정보 기술이 함께 쓰이는 첨단 기술입니다."
   }
   ]

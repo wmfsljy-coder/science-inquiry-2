@@ -72,8 +72,8 @@ function orderDone(mount, steps) {
       ctx.stroke(); ctx.restore();
       seg(ctx, x0, 225, x1, 225, A(v("--mist"), 0.4), 1, true);
       var r = R(), ok = r <= 0.1 + 1e-9;
-      text(ctx, "소음 대비 " + Math.round(r * 100) + "%", 670, 90, { s: 18, w: "900", c: ok ? v("--green-700") : (r > 1 ? v("--rose-700") : v("--ink")) });
-      text(ctx, r > 1.05 ? "보강 간섭 — 더 커졌다" : (r < 0.3 ? "상쇄 간섭 — 거의 사라졌다" : "부분적으로 줄었다"), 670, 122, { s: 13, w: "800", c: v("--mist") });
+      text(ctx, "남은 진폭 " + Math.round(r * 100) + "%", 670, 90, { s: 18, w: "900", c: ok ? v("--green-700") : (r > 1 ? v("--rose-700") : v("--ink")) });
+      text(ctx, r > 1.0 ? "보강 간섭 — 더 커졌다" : (r < 0.3 ? "상쇄 간섭 — 거의 사라졌다" : "부분적으로 줄었다"), 670, 122, { s: 13, w: "800", c: v("--mist") });
       text(ctx, "소리 크기 " + (r < 0.01 ? "−40 dB 이하" : (20 * Math.log(r) / Math.LN10).toFixed(1) + " dB"), 670, 150, { s: 12.5, w: "700", c: v("--mist") });
       return ok;
     }
@@ -126,18 +126,18 @@ function orderDone(mount, steps) {
       ctx.save(); ctx.strokeStyle = v("--brand"); ctx.lineWidth = 2.5; ctx.beginPath();
       for (var ff = 100; ff <= 2000; ff += 20) { var red = Math.max(0, 1 - R(ff)); if (ff === 100) ctx.moveTo(X(ff), Y(red)); else ctx.lineTo(X(ff), Y(red)); }
       ctx.stroke(); ctx.restore();
-      var red0 = Math.max(0, 1 - R(f));
-      dot(ctx, X(f), Y(red0), 7, red0 >= 0.5 ? v("--green-700") : v("--rose-700"));
+      var red0 = 1 - R(f);
+      dot(ctx, X(f), Y(Math.max(0, red0)), 7, red0 >= 0.5 ? v("--green-700") : v("--rose-700"));
       text(ctx, "진동수 " + f + " Hz", 610, 60, { s: 15, w: "900" });
       text(ctx, "0.1 ms 동안 위상이 " + err(f).toFixed(0) + "° 어긋남", 610, 90, { s: 12.5, w: "700", c: v("--mist") });
-      text(ctx, "소음을 " + Math.round(red0 * 100) + "% 줄임", 610, 122, { s: 15, w: "900", c: red0 >= 0.5 ? v("--green-700") : v("--rose-700") });
+      text(ctx, red0 < 0 ? "오히려 " + Math.round(-red0 * 100) + "% 커짐" : "소음을 " + Math.round(red0 * 100) + "% 줄임", 610, 122, { s: 15, w: "900", c: red0 >= 0.5 ? v("--green-700") : v("--rose-700") });
       text(ctx, "엔진 소리 약 100 ~ 300 Hz", 610, 170, { s: 11.5, w: "700", c: v("--mist") });
       text(ctx, "말소리의 자음 약 1000 ~ 4000 Hz", 610, 192, { s: 11.5, w: "700", c: v("--mist") });
       return R(f) <= 0.5 && R(f + 100) > 0.5;
     }
     function update() {
-      var ok = draw(), red0 = Math.max(0, 1 - R(f));
-      put("a-lag-info", f + " Hz 소음은 헤드폰이 소리를 만드는 0.1 ms 동안 위상이 " + err(f).toFixed(0) + "° 어긋나, " + Math.round(red0 * 100) + "% 만 줄어듭니다. "
+      var ok = draw(), red0 = 1 - R(f);
+      put("a-lag-info", f + " Hz 소음은 헤드폰이 소리를 만드는 0.1 ms 동안 위상이 " + err(f).toFixed(0) + "° 어긋나, " + (red0 < 0 ? "오히려 " + Math.round(-red0 * 100) + "% 커집니다(보강 간섭). " : Math.round(red0 * 100) + "% 만 줄어듭니다. ")
         + (ok ? "✅ 800 Hz 가 절반 이상 줄일 수 있는 가장 높은 진동수입니다. 그보다 높은 소리는 위상이 너무 많이 어긋나요." : (red0 >= 0.5 ? "아직 절반 넘게 줄어듭니다. 더 높은 진동수는?" : "절반도 못 줄입니다. 진동수를 낮춰 보세요.")));
       if (ok && !got.a) { got.a = true; window.sthState("lagGot", got); mission(); }
     }
@@ -154,7 +154,7 @@ function orderDone(mount, steps) {
     window.sthPick({
       mount: "a-lag-pick",
       q: "노이즈 캔슬링 헤드폰을 써도 승무원의 말소리는 들리는 까닭으로 가장 알맞은 것은?",
-      options: ["말소리가 엔진 소리보다 커서", "말소리는 진동수가 높아, 반대 소리를 만드는 짧은 시간 동안에도 위상이 크게 어긋나기 때문에", "헤드폰이 사람 목소리를 알아보고 일부러 들려주기 때문에"],
+      options: ["말소리가 엔진 소리보다 커서", "말소리에는 진동수가 높은 성분(자음 등)이 많아, 반대 소리를 만드는 짧은 시간 동안에도 위상이 크게 어긋나기 때문에", "헤드폰이 사람 목소리를 알아보고 일부러 들려주기 때문에"],
       answer: 1,
       why: ["엔진 소리가 훨씬 큽니다.", "진동수가 높을수록 같은 시간 지연에도 위상이 더 많이 어긋나 상쇄가 잘 안 됩니다.", "일부 제품에 그런 기능이 있지만, 기본 원리는 위상 어긋남입니다."],
       onDone: function () { got.q = true; window.sthState("lagGot", got); mission(); }
@@ -169,7 +169,7 @@ function orderDone(mount, steps) {
     items: [
       { t: "🎧 노이즈 캔슬링 헤드폰 — 반대 위상의 소리로 소음을 지운다 (미디어)", a: "wave", why: "소리 파동의 상쇄 간섭입니다." },
       { t: "📡 GPS 내비게이션 — 여러 위성의 전파가 도착하는 시간 차로 위치를 잰다 (미디어)", a: "wave", why: "빛의 속력으로 가는 전파의 도착 시간을 씁니다." },
-      { t: "🎬 3D 영화 안경 — 양쪽 눈에 방향이 다른 빛만 들어가게 한다 (영화)", a: "wave", why: "빛의 편광을 이용합니다." },
+      { t: "🎬 3D 영화 안경 — 양쪽 눈에 편광 방향이 다른 빛만 들어가게 한다 (영화)", a: "wave", why: "빛의 편광을 이용합니다." },
       { t: "🍱 보냉 도시락통 — 진공층이 열의 전도·대류를 막는다 (요리)", a: "heat", why: "열이 이동하는 길을 막습니다." },
       { t: "🏠 겨울 이중창 — 유리 사이 공기층이 열이 빠져나가는 것을 줄인다 (건축)", a: "heat", why: "공기는 열을 잘 전하지 않습니다." },
       { t: "🥩 수비드 요리 — 일정한 온도의 물로 고기를 천천히 익힌다 (요리)", a: "heat", why: "물의 열을 고르게 전달합니다.", hint: "무엇이 고기에게 전달되나요?" },
@@ -294,7 +294,7 @@ function orderDone(mount, steps) {
     function update() {
       var ok = draw(), r = rise(n, win);
       put("b-towel-info", "수건 " + n + "장, 창문 " + (win === "shut" ? "닫음" : "20분마다 환기") + ": 한 시간 동안 습도가 " + r.toFixed(1) + "%p 오릅니다. "
-        + (ok ? "✅ 7장이 가장 적은 수입니다. 가설은 지지되지만, 가습기보다 훨씬 느리고 많은 수건이 필요해요." : (win === "vent" ? "환기하면 수증기가 빠져나가 효과가 절반으로 줄어듭니다. 창문을 닫은 조건에서 찾으세요." : (r >= 10 ? "10%p 는 넘었지만 더 적은 수로도 됩니다." : "아직 10%p 가 안 됩니다."))));
+        + (ok ? "✅ 7장이 가장 적은 수입니다. 가설은 지지되지만, 가습기 한 대 몫을 내려면 수건 여러 장이 필요해요." : (win === "vent" ? "환기하면 수증기가 빠져나가 효과가 절반으로 줄어듭니다. 창문을 닫은 조건에서 찾으세요." : (r >= 10 ? "10%p 는 넘었지만 더 적은 수로도 됩니다." : "아직 10%p 가 안 됩니다."))));
       if (ok && !got) { got = true; window.sthState("towelGot", true); mission(); }
     }
     function mission() {

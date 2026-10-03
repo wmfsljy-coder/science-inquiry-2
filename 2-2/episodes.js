@@ -73,13 +73,13 @@ function fmtN(n) { return n >= 10000 ? Math.round(n).toLocaleString() : String(M
     function update() {
       var ok = draw(), a = acc(L);
       put("a-data-info", "학습 사진 " + fmtN(Math.pow(10, L)) + " 장: 처음 보는 사진을 " + (a * 100).toFixed(1) + "% 맞힙니다. "
-        + (ok ? "✅ 약 1,300 장이 90% 에 이르는 가장 적은 수입니다." : (a >= 0.9 ? "90% 는 넘었지만 더 적은 사진으로도 됩니다." : "아직 90% 에 못 미칩니다.")));
+        + (ok ? "✅ 약 1,260 장이 90% 에 이르는 가장 적은 수입니다." : (a >= 0.9 ? "90% 는 넘었지만 더 적은 사진으로도 됩니다." : "아직 90% 에 못 미칩니다.")));
       if (ok && !got.a) { got.a = true; window.sthState("dataGot", got); mission(); }
     }
     function mission() {
       if (got.a) done("m1-2a"); if (got.q) done("m1-2b");
       if (got.a && got.q) {
-        window.sthState("dataBest", "약 1,300 장에서 90%, 그 뒤로는 10배마다 조금씩");
+        window.sthState("dataBest", "약 1,260 장에서 90%, 그 뒤로는 10배마다 조금씩");
         window.sthMission("m1-2", true, "<span class='m-tag'>미션 완료</span>" + window.sthState("dataBest") + ". 데이터가 많을수록 좋지만, 늘어나는 폭은 점점 줄어듭니다.");
         ep.clear(1);
       }
@@ -105,7 +105,7 @@ function fmtN(n) { return n >= 10000 ? Math.round(n).toLocaleString() : String(M
     function draw() {
       paper(ctx, W, H);
       var q = p / 100, w = aw(q), b = aw(1 - q);
-      text(ctx, "학습 사진 100 장의 구성", 30, 26, { s: 12.5, w: "800", c: v("--mist") });
+      text(ctx, "학습 사진의 구성 (한 칸 = 1%)", 30, 26, { s: 12.5, w: "800", c: v("--mist") });
       for (var i = 0; i < 100; i++) {
         var x = 30 + (i % 25) * 18, y = 42 + Math.floor(i / 25) * 18;
         dot(ctx, x + 7, y + 7, 7, i < p ? "#f4f1ea" : "#23262d");
@@ -162,7 +162,7 @@ function fmtN(n) { return n >= 10000 ? Math.round(n).toLocaleString() : String(M
       { t: "리튬 이온 전지 — 리튬 이온이 두 전극 사이를 오가며 충전·방전된다", a: "chem", why: "산화·환원 반응을 씁니다." },
       { t: "수소 연료 전지차 — 수소와 산소가 반응해 물이 되며 전기를 만든다", a: "chem", why: "화학 반응의 에너지를 전기로 바꿉니다." },
       { t: "유전자 가위 — 특정 DNA 염기 서열을 찾아 자르고 고친다", a: "bio", why: "DNA 염기의 짝짓기를 이용합니다." },
-      { t: "mRNA 백신 — 세포가 바이러스 단백질 조각을 만들어 면역을 익히게 한다", a: "bio", why: "세포의 단백질 합성과 면역을 씁니다.", hint: "세포 속에서 무슨 일이 일어나나요?" },
+      { t: "mRNA 백신 — 세포가 바이러스의 표면 단백질(항원)을 만들어 면역을 익히게 한다", a: "bio", why: "세포의 단백질 합성과 면역을 씁니다.", hint: "세포 속에서 무슨 일이 일어나나요?" },
       { t: "사진 속 고양이를 알아보는 인공지능 — 많은 사진에서 특징의 패턴을 학습한다", a: "info", why: "데이터에서 패턴을 찾는 알고리즘입니다." },
       { t: "동영상 추천 — 비슷한 사람들이 본 영상을 분석해 골라 준다", a: "info", why: "많은 사용 기록을 분석하는 알고리즘입니다." }
     ],
@@ -226,12 +226,12 @@ function fmtN(n) { return n >= 10000 ? Math.round(n).toLocaleString() : String(M
       var ok = draw();
       put("b-cal-info", "시험 흙 ① 은 " + read(raw(50)).toFixed(1) + "%, 시험 흙 ② 는 " + read(raw(30)).toFixed(1) + "% 로 읽힙니다. "
         + (ok ? "✅ 두 시험 흙이 모두 제대로 읽힙니다. 센서의 숫자가 이제 ‘수분 %’라는 뜻을 갖게 되었어요." : "마른 흙과 젖은 흙에 꽂았을 때 실제로 나온 센서 값을 입력해 보세요."));
-      if (ok && !got.a) { got.a = true; window.sthState("calGot", got); mission(); }
+      if (ok && !got.a) { got.a = true; got.dry = dry; got.wet = wet; window.sthState("calGot", got); mission(); }
     }
     function mission() {
       if (got.a) done("m2-2a"); if (got.q) done("m2-2b");
       if (got.a && got.q) {
-        window.sthState("calBest", "마른 흙 820 → 0%, 젖은 흙 380 → 100% 로 보정");
+        window.sthState("calBest", "마른 흙 " + (got.dry || 820) + " → 0%, 젖은 흙 " + (got.wet || 380) + " → 100% 로 보정");
         window.sthMission("m2-2", true, "<span class='m-tag'>미션 완료</span>" + window.sthState("calBest") + ". 센서의 숫자를 우리가 아는 단위로 바꾸는 것이 보정입니다.");
         ep.clear(1);
       }
@@ -289,13 +289,13 @@ function fmtN(n) { return n >= 10000 ? Math.round(n).toLocaleString() : String(M
     function update() {
       var ok = draw(), r = sim();
       put("b-hys-info", "켜기 " + on + "%, 끄기 " + off + "%: 하루 동안 펌프가 " + r.starts + "번 켜지고, 흙 수분은 " + r.mn.toFixed(0) + " ~ " + r.mx.toFixed(0) + "% 였습니다. "
-        + (ok ? "✅ 펌프가 떨지 않고, 흙도 알맞게 유지됩니다." : (off <= on ? "두 기준이 같거나 거꾸로면 센서 값의 작은 떨림에도 펌프가 계속 켜졌다 꺼집니다." : (r.starts > 4 ? "두 기준 사이가 좁아 아직 자주 켜집니다." : (r.mn < 25 ? "켜는 기준이 너무 낮아 흙이 너무 마릅니다." : "끄는 기준이 너무 높아 물이 넘칩니다.")))));
-      if (ok && !got.a) { got.a = true; window.sthState("hysGot", got); mission(); }
+        + (ok ? "✅ 펌프가 떨지 않고, 흙도 알맞게 유지됩니다." : (off <= on ? "두 기준이 같거나 거꾸로면 센서 값의 작은 떨림에도 펌프가 계속 켜졌다 꺼집니다." : (r.starts > 4 ? "두 기준 사이가 좁아 아직 자주 켜집니다." : (r.mn < 25 ? "켜는 기준이 너무 낮아 흙이 너무 마릅니다." : "끄는 기준이 너무 높아 흙이 너무 축축해집니다(뿌리가 썩을 위험).")))));
+      if (ok && !got.a) { got.a = true; got.on = on; got.off = off; window.sthState("hysGot", got); mission(); }
     }
     function mission() {
       if (got.a) done("m2-3a"); if (got.q) done("m2-3b");
       if (got.a && got.q) {
-        window.sthState("hysBest", "켜기 " + on + "% · 끄기 " + off + "% 처럼 기준 사이를 벌림");
+        window.sthState("hysBest", "켜기 " + (got.on || on) + "% · 끄기 " + (got.off || off) + "% 처럼 기준 사이를 벌림");
         window.sthMission("m2-3", true, "<span class='m-tag'>미션 완료</span>" + window.sthState("hysBest") + ". 기준 사이의 간격이 센서 값의 떨림을 흡수합니다.");
         ep.clear(2);
       }

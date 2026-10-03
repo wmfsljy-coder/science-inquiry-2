@@ -28,7 +28,7 @@ window.sthLab({
         for (var k = -1; k <= 1; k++) H.arrow(ctx, x - 150 * Math.cos(r) + k * 30 * Math.sin(r), gy - 20 - 150 * Math.sin(r) - k * 30 * Math.cos(r), x - 40 * Math.cos(r) + k * 30 * Math.sin(r), gy - 20 - 40 * Math.sin(r) - k * 30 * Math.cos(r), H.v("--amber-700"), 2, 7);
         var e = eff(alt, tilt);
         H.text(ctx, name + " (태양 고도 " + alt + "°)", x, 26, { s: 12.5, w: "900", a: "center" });
-        H.text(ctx, "기울기 " + tilt + "° → " + Math.round(e * 100) + "%", x, 250, { s: 13, w: "900", a: "center", c: e >= 0.98 ? H.v("--green-700") : H.v("--rose-700") });
+        H.text(ctx, "기울기 " + tilt + "° → " + (e * 100).toFixed(1) + "%", x, 250, { s: 13, w: "900", a: "center", c: e >= 0.98 ? H.v("--green-700") : H.v("--rose-700") });
       }
       function draw() { H.paper(ctx, W, cv.H); panel(230, 76.5, ts, "여름 한낮"); panel(660, 29.5, tw, "겨울 한낮"); }
       cv.canvas._redraw = draw;
@@ -39,8 +39,8 @@ window.sthLab({
       return {
         judge: function () {
           var es = eff(76.5, ts), ew = eff(29.5, tw);
-          if (es >= 0.98 && ew >= 0.98) return { ok: true, msg: "여름 " + ts + "° → " + Math.round(es * 100) + "%, 겨울 " + tw + "° → " + Math.round(ew * 100) + "%. 계절마다 햇빛을 정면으로 받습니다." };
-          return { ok: false, msg: "여름 " + Math.round(es * 100) + "%, 겨울 " + Math.round(ew * 100) + "%. 패널 기울기 + 태양 고도 = 90° 가 되게 해 보세요." };
+          if (es >= 0.98 && ew >= 0.98) return { ok: true, msg: "여름 " + ts + "° → " + (es * 100).toFixed(1) + "%, 겨울 " + tw + "° → " + (ew * 100).toFixed(1) + "%. 계절마다 햇빛을 정면으로 받습니다." };
+          return { ok: false, msg: "여름 " + (es * 100).toFixed(1) + "%, 겨울 " + (ew * 100).toFixed(1) + "%. 패널 기울기 + 태양 고도 = 90° 가 되게 해 보세요." };
         }
       };
     },
@@ -68,9 +68,9 @@ window.sthLab({
         H.paper(ctx, W, cv.H);
         var x0 = 60, x1 = 560, y0 = 20, y1 = 220;
         function X(c) { return x0 + (c - 20) / 380 * (x1 - x0); }
-        function Y(t) { return y1 - t / 26 * (y1 - y0); }
+        function Y(t) { return y1 - Math.max(0, Math.min(1, (t - 15) / 10)) * (y1 - y0); }
         H.axes(ctx, x0, y0, x1, y1);
-        [0, 10, 20].forEach(function (t) { H.text(ctx, t + "분", x0 - 6, Y(t) + 4, { s: 10, a: "right", c: H.v("--mist") }); });
+        [15, 20, 25].forEach(function (t) { H.text(ctx, t + "분", x0 - 6, Y(t) + 4, { s: 10, a: "right", c: H.v("--mist") }); });
         [20, 100, 200, 300, 400].forEach(function (c) { H.text(ctx, c + " Wh", X(c), y1 + 16, { s: 10, a: "center", c: H.v("--mist") }); });
         H.dash(ctx, x0, Y(23), x1, Y(23), H.v("--amber-700"), 1.5);
         var pts = []; for (var c = 20; c <= 400; c += 10) pts.push([X(c), Y(tmin(c))]);
@@ -105,13 +105,13 @@ window.sthLab({
   {
     id: "c3", tag: "과학 기술의 발전 방향 · 우주 환경", title: "위성 인터넷과 우주 쓰레기", short: "우주 쓰레기",
     who: "🛰️", name: "우주 교통 관리 위원회",
-    say: "“위성 인터넷을 전 세계에 제공하려면 위성이 <b>20 000 기 이상</b> 필요합니다. 그런데 수명이 끝난 위성을 그대로 두면 우주 쓰레기가 늘어 충돌 위험이 커지지요. 10년 뒤 한 해 충돌 위험이 <b>2% 이하</b>가 되도록, 올릴 위성 수와 다 쓴 위성의 처리 규칙을 정해 주세요.”",
+    say: "“한 위성 인터넷 회사가 위성 <b>20,000 기 이상</b>을 운영하려고 합니다. 그런데 수명이 끝난 위성을 그대로 두면 우주 쓰레기가 늘어 충돌 위험이 커지지요. 10년 뒤 한 해 충돌 위험이 <b>2% 이하</b>가 되도록, 올릴 위성 수와 다 쓴 위성의 처리 규칙을 정해 주세요.”",
     predict: {
       q: "수명이 끝난 위성을 빨리 대기권으로 끌어내려 태우면?",
       options: ["㉠ 우주 쓰레기가 줄어 충돌 위험이 낮아진다", "㉡ 아무 차이가 없다", "㉢ 오히려 충돌이 늘어난다"],
       answer: 0
     },
-    task: "위성 수와 처리 규칙을 정해 <b>20 000 기 이상</b> 운영하면서 <b>충돌 위험 2% 이하</b>를 맞추세요.",
+    task: "위성 수와 처리 규칙을 정해 <b>20,000 기 이상</b> 운영하면서 <b>충돌 위험 2% 이하</b>를 맞추세요.",
     build: function (stage, api) {
       var H = api.h, cv = api.canvas(260), ctx = cv.ctx, W = cv.W, N = 30000, rule = "none";
       var F = { none: 1.0, y25: 0.6, y5: 0.1 };
@@ -141,14 +141,14 @@ window.sthLab({
       return {
         judge: function () {
           var rk = risk();
-          if (N < 20000) return { ok: false, msg: "위성이 " + N.toLocaleString() + " 기뿐이라 전 세계에 서비스를 할 수 없습니다." };
+          if (N < 20000) return { ok: false, msg: "위성이 " + N.toLocaleString() + " 기뿐이라 계획한 20,000 기에 못 미칩니다." };
           if (rk > 2) return { ok: false, msg: "충돌 위험 " + rk.toFixed(2) + "% — 너무 높습니다. " + (rule !== "y5" ? "다 쓴 위성의 처리 규칙을 바꿔 보세요." : "위성 수를 줄여 보세요.") };
           return { ok: true, msg: N.toLocaleString() + " 기 · 5년 안 제거 → 충돌 위험 " + rk.toFixed(2) + "%. 서비스와 우주 환경을 함께 지켰습니다." };
         }
       };
     },
-    hints: ["‘5년 안에 끌어내림’을 골라 보세요.", "위성 수는 꼭 필요한 20 000 기로 맞추세요."],
-    solution: "<b>5년 안에 끌어내림</b>, 위성 <b>20 000 기</b>.",
+    hints: ["‘5년 안에 끌어내림’을 골라 보세요.", "위성 수는 꼭 필요한 20,000 기로 맞추세요."],
+    solution: "<b>5년 안에 끌어내림</b>, 위성 <b>20,000 기</b>.",
     why: "궤도에 위성과 쓰레기가 많아지면 충돌이 늘고, 충돌로 생긴 조각이 다시 충돌을 부르는 연쇄(케슬러 증후군)가 일어날 수 있습니다. 그래서 수명이 끝난 위성을 정해진 기간 안에 대기권으로 끌어내려 태우는 규칙이 논의되고, 여러 나라가 규범을 강화하고 있어요.<br>" +
       "첨단 기술의 발전 방향을 평가할 때는 편리함(기술 파급)과 함께 <b>환경과 미래 세대</b>에 미치는 영향까지 따져야 합니다. ※ 위험도 값은 수업용 모형입니다."
   }

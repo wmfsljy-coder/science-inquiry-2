@@ -20,8 +20,8 @@ window.sthLab({
     task: "물 온도와 시간을 정해 <b>흰자는 부드럽게 익고 노른자는 촉촉한</b> 달걀을 만드세요.",
     build: function (stage, api) {
       var H = api.h, cv = api.canvas(260), ctx = cv.ctx, W = cv.W, T = 80, tm = 20;
-      function white() { var k = Math.min(1, tm / 40); return T < 60 ? 0 : (T < 63 ? 0.35 * k : (T < 70 ? 0.7 * k : Math.min(1, 0.7 + (T - 70) * 0.03) * k)); }
-      function yolk() { var k = Math.min(1, tm / 45); return T < 62 ? 0 : (T < 67 ? 0.5 * k : Math.min(1, 0.5 + (T - 67) * 0.1) * k); }
+      function white() { var k = Math.min(1, tm / (40 * Math.pow(0.8, Math.max(0, T - 63) / 3))); return T < 60 ? 0 : (T < 63 ? 0.35 * k : (T < 70 ? 0.7 * k : Math.min(1, 0.7 + (T - 70) * 0.03) * k)); }
+      function yolk() { var k = Math.min(1, tm / (45 * Math.pow(0.8, Math.max(0, T - 62) / 3))); return T < 62 ? 0 : (T < 67 ? 0.5 * k : Math.min(1, 0.5 + (T - 67) * 0.1) * k); }
       function wN(w) { return w < 0.3 ? "날것처럼 흐름" : (w < 0.6 ? "살짝 엉김" : (w < 0.85 ? "부드럽게 몽글" : "단단하고 질김")); }
       function yN(y) { return y < 0.2 ? "날것" : (y < 0.6 ? "촉촉한 크림 같음" : (y < 0.9 ? "꾸덕함" : "퍽퍽하게 굳음")); }
       function draw() {
@@ -42,7 +42,7 @@ window.sthLab({
       cv.canvas._redraw = draw;
       api.slider({ label: "물 온도", min: 55, max: 90, step: 1, value: 80, fmt: function (x) { return x + " °C"; }, onInput: function (x) { T = x; draw(); } });
       api.slider({ label: "담가 두는 시간", min: 10, max: 60, step: 10, value: 20, fmt: function (x) { return x + "분"; }, onInput: function (x) { tm = x; draw(); } });
-      api.info("단백질은 열을 받으면 구조가 풀리며(변성) 서로 엉겨 굳습니다. 흰자의 주요 단백질은 약 63 °C, 노른자는 약 65 ~ 70 °C 부터 굳어요.");
+      api.info("단백질은 열을 받으면 구조가 풀리며(변성) 서로 엉겨 굳습니다. 흰자에서 가장 먼저 굳는 단백질(오보트랜스페린)은 약 62 °C, 흰자의 대부분인 오브알부민은 약 80 °C, 노른자는 약 65 ~ 70 °C 부터 굳어요. 온도가 높을수록 빨리 굳습니다.");
       draw();
       return {
         judge: function () {
@@ -57,7 +57,7 @@ window.sthLab({
       "끓는 물은 너무 뜨겁습니다. 흰자가 굳기 시작하는 63 °C 근처로 낮춰 보세요.",
       "63 ~ 67 °C 에서 40분 이상 두어 보세요."
     ],
-    solution: "물 온도 <b>63 ~ 67 °C</b>, 시간 <b>40 ~ 60분</b>.",
+    solution: "물 온도 <b>63 ~ 67 °C</b>, 시간 <b>40 ~ 60분</b> (65 °C 이상이면 30분부터).",
     why: "달걀의 단백질은 종류마다 굳는(변성) 온도가 다릅니다. 100 °C 물은 모든 단백질을 빠르게 굳혀 질기고 퍽퍽하지만, 63 ~ 67 °C 에서 오래 두면 일부 단백질만 천천히 굳어 전혀 다른 식감이 됩니다.<br>" +
       "일정한 낮은 온도의 물로 천천히 익히는 수비드 요리도 같은 원리입니다. 요리는 온도와 시간을 조절하는 과학 실험이에요. ※ 굳는 정도는 수업용 모형입니다."
   },
@@ -156,12 +156,12 @@ window.sthLab({
           if (con === "yes") return { ok: false, msg: "오차 범위(± " + m.toFixed(1) + "%p) 안에 ‘차이 없음(0)’이 들어 있습니다. 관련이 있다고 할 수 없어요." };
           if (con === "wait") return { ok: false, msg: "충분히 조사했으니 이제 결론을 내릴 수 있습니다." };
           if (!zeroIn) return { ok: false, msg: "범위 밖입니다." };
-          return { ok: true, msg: n + "명 조사: 차이 " + d + "%p ± " + m.toFixed(1) + "%p. 20명일 때의 12%p 차이는 우연이었습니다. ‘관련이 있다고 볼 수 없다’가 자료에 맞는 결론이에요." };
+          return { ok: true, msg: n + "명 조사: 차이 " + d + "%p ± " + m.toFixed(1) + "%p. 20명일 때의 12%p 차이는 우연으로 설명할 수 있는 크기였습니다. ‘관련이 있다고 볼 수 없다’가 자료에 맞는 결론이에요." };
         }
       };
     },
     hints: [
-      "오차 범위가 5%p 이하가 되려면 1,000명 가까이 조사해야 합니다.",
+      "이 모형(각 집단을 같은 수로 조사한다고 단순화)에서는 오차 범위가 5%p 이하가 되려면 1,000명 가까이 조사해야 합니다.",
       "1,000명 이상에서 범위 안에 0 이 들어 있다면, 차이가 있다고 할 수 없습니다."
     ],
     solution: "조사 인원 <b>1,000명 이상</b>, 결론 <b>‘관련이 있다고 볼 수 없다’</b>.",

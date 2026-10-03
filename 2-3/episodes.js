@@ -59,9 +59,10 @@ function log10(x) { return Math.log(x) / Math.LN10; }
     function state() {
       var P = PS[pi];
       if (T < 0) return P < pIce(T) ? "sub" : "ice";
+      if (P < 611) return "warm";
       return P < pWat(T) ? "boil" : "liq";
     }
-    var SN = { sub: "얼음이 곧바로 수증기로 (승화)", ice: "얼음 그대로 — 물이 빠지지 않음", boil: "얼음이 녹아 물이 되고, 그 물이 끓어 날아감", liq: "얼음이 녹아 물로 흘러내림" };
+    var SN = { sub: "얼음이 곧바로 수증기로 (승화)", ice: "얼음 그대로 — 물이 빠지지 않음", warm: "녹지는 않고 빠르게 승화 — 딸기가 데워짐", boil: "얼음이 녹아 물이 되고, 그 물이 끓어 날아감", liq: "얼음이 녹아 물로 흘러내림" };
     function draw() {
       paper(ctx, W, H);
       var x0 = 70, x1 = 520, y0 = 20, y1 = 250;
@@ -91,7 +92,7 @@ function log10(x) { return Math.log(x) / Math.LN10; }
     function update() {
       var ok = draw(), st = state();
       put("a-ph-info", T + " °C, " + PS[pi].toLocaleString() + " Pa: " + SN[st] + ". "
-        + (ok ? "✅ 딸기는 언 채로, 얼음만 수증기가 되어 빠져나갑니다. 동결 건조의 조건이에요." : (st === "sub" ? "승화는 일어나지만 −10 °C 보다 따뜻해 딸기가 물러질 수 있어요. 더 차갑게 해 보세요." : (T >= 0 ? "딸기가 녹아 버립니다. 온도를 영하로 낮추세요." : "압력이 높아 얼음이 그대로입니다. 압력을 더 낮춰 보세요."))));
+        + (ok ? "✅ 딸기는 언 채로, 얼음만 수증기가 되어 빠져나갑니다. 동결 건조의 조건이에요." : (st === "sub" ? "승화는 일어나지만 −10 °C 보다 따뜻해 딸기가 물러질 수 있어요. 더 차갑게 해 보세요." : (T >= 0 ? (st === "warm" ? "압력이 삼중점(611 Pa)보다 낮아 녹지는 않지만, 딸기가 데워져 얼음이 빠르게 승화하는 동안 조직이 상할 수 있어요. −10 °C 이하로 유지하세요." : "딸기가 녹아 버립니다. 온도를 영하로 낮추세요.") : "압력이 높아 얼음이 그대로입니다. 압력을 더 낮춰 보세요."))));
       if (ok && !got) { got = true; window.sthState("phGot", true); mission(); }
     }
     function mission() {
@@ -144,7 +145,7 @@ function log10(x) { return Math.log(x) / Math.LN10; }
       draw();
       var r = res();
       put("a-dry-info", (method === "freeze" ? "동결 건조" : "열풍 " + ht + " °C") + ": 비타민 C " + r.vit.toFixed(0) + "%, 부피 " + r.vol.toFixed(0) + "%, 약 " + r.time.toFixed(0) + " 시간. "
-        + (method === "hot" ? (ht >= 70 ? "온도를 높이면 빨리 마르지만 열에 약한 비타민이 더 많이 부서집니다." : "온도를 낮추면 오래 걸려, 그동안 비타민이 조금씩 부서집니다.") + " <span style='color:var(--mist)'>(확인한 열풍 온도: " + got.temps.sort(function (a, b) { return a - b; }).join(", ") + " °C)</span>" : "✅ 열을 거의 쓰지 않고 얼음을 승화시켜, 영양과 모양을 모두 지켰습니다. 대신 시간과 전기가 많이 들어 값이 비쌉니다."));
+        + (method === "hot" ? (ht >= 70 ? "온도를 높이면 빨리 마르지만 열에 약한 비타민이 더 많이 부서집니다." : "온도를 낮추면 오래 걸려, 그동안 비타민이 조금씩 부서집니다.") + " <span style='color:var(--mist)'>(확인한 열풍 온도: " + got.temps.sort(function (a, b) { return a - b; }).join(", ") + " °C)</span>" : "✅ 높은 온도 없이 얼음을 승화시켜, 영양과 모양을 모두 지켰습니다. 대신 시간과 전기가 많이 들어 값이 비쌉니다."));
       mission();
     }
     function mission() {
@@ -180,7 +181,7 @@ function log10(x) { return Math.log(x) / Math.LN10; }
       { t: "💡 자외선 살균기 — 짧은 파장의 자외선이 미생물의 DNA 를 망가뜨린다", a: "light", why: "빛의 에너지를 씁니다." },
       { t: "🕶️ 편광 선글라스 — 물이나 도로에 반사된 눈부신 빛을 걸러 낸다", a: "light", why: "빛의 편광을 씁니다." },
       { t: "🧴 보온병 — 진공층이 전도·대류를, 은색 면이 복사를 막는다", a: "heat", why: "세 가지 열 이동을 모두 막습니다." },
-      { t: "🔥 손난로 — 철가루가 산소와 반응하며 열을 낸다", a: "heat", why: "화학 반응에서 나온 열이 손으로 전달됩니다.", hint: "무엇이 손으로 옮겨 오나요?" },
+      { t: "🧊 아이스팩 — 차가운 팩을 대면 다친 곳의 열이 팩으로 옮겨 간다", a: "heat", why: "온도가 높은 몸에서 차가운 팩으로 열이 이동합니다.", hint: "열이 어느 쪽에서 어느 쪽으로 옮겨 가나요?" },
       { t: "🦎 게코 테이프 — 수많은 미세한 털이 표면과 분자 사이의 힘으로 붙는다", a: "surf", why: "도마뱀 발바닥을 본뜬 반데르발스 힘입니다." },
       { t: "☂️ 연잎 발수 우산 — 미세한 돌기가 물방울을 굴러떨어지게 한다", a: "surf", why: "표면 구조가 물이 퍼지지 못하게 합니다." }
     ],
@@ -224,7 +225,7 @@ function log10(x) { return Math.log(x) / Math.LN10; }
     var NM = { bumper: "범퍼카", coaster: "롤러코스터", drop: "자이로드롭" };
     function g(t) {
       if (ride === "bumper") return 1 + (Math.abs(t - 0.35) < 0.015 ? 1.8 : 0) + (Math.abs(t - 0.72) < 0.012 ? 1.3 : 0) + 0.05 * Math.sin(t * 60);
-      if (ride === "coaster") return t < 0.15 ? 1 : 1 + 2.2 * Math.pow(Math.abs(Math.sin((t - 0.15) * Math.PI * 4)), 2) - (Math.sin((t - 0.15) * Math.PI * 4) < -0.7 ? 0.6 : 0);
+      if (ride === "coaster") { if (t < 0.15) return 1; var s = Math.sin((t - 0.15) * Math.PI * 4); return 1 + 2.2 * Math.pow(Math.max(0, s), 2) - 0.8 * Math.pow(Math.max(0, -s), 2); }
       if (t < 0.3) return 1;
       if (t < 0.5) return 0.05;
       if (t < 0.56) return 4.2;
@@ -343,13 +344,13 @@ function log10(x) { return Math.log(x) / Math.LN10; }
   /* 장면 4 — 안전 장치 */
   window.sthSort({
     mount: "b-sort",
-    buckets: [{ id: "acc", label: "📳 가속도 센서" }, { id: "gyro", label: "🧭 기울기(자이로) 센서" }, { id: "press", label: "👣 압력 센서" }, { id: "opt", label: "💓 광학 센서" }],
+    buckets: [{ id: "acc", label: "📳 가속도 센서" }, { id: "gyro", label: "🧭 자이로(회전) 센서" }, { id: "press", label: "👣 압력 센서" }, { id: "opt", label: "💓 광학 센서" }],
     items: [
       { t: "🪖 충격 감지 헬멧 — 머리에 큰 충격이 오면 보호자에게 알린다", a: "acc", why: "짧고 큰 가속도(범퍼카처럼 뾰족한 값)를 감지합니다." },
       { t: "📱 낙상 감지 스마트폰 — 잠깐 0 g 가 된 뒤 큰 충격이 오면 넘어진 것으로 판단한다", a: "acc", why: "자이로드롭처럼 0 g → 큰 값의 모양을 찾습니다." },
       { t: "🦯 낙상 감지 지팡이 — 급격히 기울어지면 넘어진 것으로 판단한다", a: "gyro", why: "기울기와 회전 속도를 잽니다." },
       { t: "⛷️ 스키 자세 교정 밴드 — 무릎이 안쪽으로 꺾이는 각도를 알려 준다", a: "gyro", why: "관절의 회전 각도를 잽니다." },
-      { t: "🦵 무릎 보호대 — 강한 압력이 오면 속 재질이 순간 단단해져 충격을 나눈다", a: "press", why: "압력(힘)을 감지하고 분산합니다." },
+      { t: "🦵 스마트 무릎 보호대 — 무릎에 실리는 압력이 기준을 넘으면 진동으로 알린다", a: "press", why: "무릎에 실리는 압력(힘)을 재서 알려 줍니다." },
       { t: "👟 스마트 깔창 — 발바닥 압력이 한쪽에 쏠리면 부상 위험을 알려 준다", a: "press", why: "발바닥의 압력 분포를 잽니다.", hint: "발바닥이 무엇을 받나요?" },
       { t: "⌚ 심박 이상 감지 시계 — 운동 중 심박수가 위험 수준이면 쉬라고 알린다", a: "opt", why: "피부에 빛을 비춰 혈류 변화를 잽니다." },
       { t: "🏊 수영장 익수 감지 카메라 — 물속에 오래 멈춰 있는 사람을 알아본다", a: "opt", why: "빛(영상)으로 사람의 움직임을 분석합니다." }
@@ -416,7 +417,7 @@ function log10(x) { return Math.log(x) / Math.LN10; }
     function update() {
       var ok = draw(), a = A_(n);
       put("c-res-info", n + "층 건물의 고유 주기는 약 " + (0.1 * n).toFixed(1) + " 초, 땅은 0.5 초마다 흔들립니다. 건물은 땅보다 " + a.toFixed(1) + "배 흔들려요. "
-        + (ok ? "✅ 박자가 맞아 흔들림이 10배로 커졌습니다. 이것이 공진이에요." : (0.1 * n < TG ? "건물의 박자가 땅보다 빨라 땅을 그대로 따라 움직입니다." : "건물의 박자가 땅보다 느려 흔들림을 덜 따라갑니다.")));
+        + (ok ? "✅ 박자가 맞아 흔들림이 10배로 커졌습니다. 이것이 공진이에요." : (0.1 * n < TG ? (0.1 * n < 0.25 ? "건물의 박자가 땅보다 훨씬 빨라 땅을 그대로 따라 움직입니다." : "박자가 조금 어긋나 흔들림이 덜 쌓입니다.") : "건물의 박자가 땅보다 느려 흔들림을 덜 따라갑니다.")));
       if (ok && !got.a) { got.a = true; window.sthState("resGot", got); mission(); }
     }
     function mission() {
@@ -449,7 +450,7 @@ function log10(x) { return Math.log(x) / Math.LN10; }
       var z = t3 ? 0.25 : 0.05, r = t2 ? 2.0 / TG : 0.5 / TG;
       return PGA * amp(r, t2 ? Math.max(z, 0.1) : z);
     }
-    function cap() { return t1 ? 0.5 : 0.25; }
+    function cap() { return t1 ? 0.5 : 0.12; }
     function draw() {
       paper(ctx, W, H);
       var a = acc(), c = cap(), gy = 250, bx = 200, sway = Math.min(70, a * 60);
@@ -469,7 +470,7 @@ function log10(x) { return Math.log(x) / Math.LN10; }
       ctx.fillStyle = a <= c ? v("--green-700") : v("--rose-700"); ctx.fillRect(440, 110, Math.min(360, a / 1.0 * 360), 16);
       seg(ctx, 440 + c * 360, 104, 440 + c * 360, 132, v("--ink"), 2);
       text(ctx, "쓴 기술: " + ([t1 ? "내진" : "", t2 ? "면진" : "", t3 ? "제진" : ""].filter(function (s) { return s; }).join(" + ") || "없음"), 440, 160, { s: 12.5, w: "800" });
-      text(ctx, ok ? "학교 건물 안전" : "보완 필요", 440, 196, { s: 16, w: "900", c: ok ? v("--green-700") : v("--rose-700") });
+      text(ctx, ok ? "학교 건물 안전" : (!t1 && (t2 || t3) ? "보완 필요 — 기본 내진 없음" : "보완 필요"), 440, 196, { s: 16, w: "900", c: ok ? v("--green-700") : v("--rose-700") });
       return ok;
     }
     function update() {
@@ -634,9 +635,9 @@ function log10(x) { return Math.log(x) / Math.LN10; }
     window.sthPick({
       mount: "d-pol-pick",
       q: "측정 결과를 바탕으로 탐사대가 제안할 해결 방안으로 가장 알맞은 것은?",
-      options: ["측정기가 틀렸을 테니 다시는 재지 않는다", "등교 동선을 공원 쪽으로 바꾸고, 정문 앞에 나무 울타리를 심자고 제안하며, 측정 자료를 구청에 전달한다", "정문 앞에서 더 오래 머무르게 한다", "양파를 교실마다 둔다"],
+      options: ["측정기가 틀렸을 테니 다시는 재지 않는다", "등교 동선을 공원 쪽으로 바꾸고, 정문 앞에 나무를 심어 생울타리를 만들자고 제안하며, 측정 자료를 구청에 전달한다", "정문 앞에서 더 오래 머무르게 한다", "양파를 교실마다 둔다"],
       answer: 1,
-      why: ["세 곳의 값이 일관되게 다르니 측정은 믿을 만합니다.", "측정 자료가 해결 방안의 근거가 됩니다. 나무는 소음과 먼지를 어느 정도 막아 줘요. 적용한 뒤 다시 재서 효과를 확인하면 더 좋습니다.", "오염이 심한 곳에 오래 있으면 해롭습니다.", "측정 근거가 없는 방법입니다."],
+      why: ["한 번 잰 값만으로 버리지 말고, 여러 날 같은 시각에 되풀이해 재어 확인합니다.", "측정 자료가 해결 방안의 근거가 됩니다. 나무는 소음과 먼지를 어느 정도 막아 줘요. 적용한 뒤 다시 재서 효과를 확인하면 더 좋습니다.", "오염이 심한 곳에 오래 있으면 해롭습니다.", "측정 근거가 없는 방법입니다."],
       onDone: function () { got.q = true; window.sthState("polGot", got); mission(); }
     });
     update();
