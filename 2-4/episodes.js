@@ -81,12 +81,12 @@ function fmt(n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, " "); }
     }
     function update() {
       var ok = draw();
-      put("a-rule-info", "창문 " + T + " °C 초과, LED " + fmt(L) + " lux 미만, 펌프 " + S + "% 미만일 때 켜집니다. " + (ok ? "✅ 여섯 상황 모두 옳게 움직입니다. 딸기가 좋아하는 조건(과학 지식)이 기준값이 되었어요." : "빨간 줄의 상황을 보고 기준값을 고쳐 보세요."));
+      put("a-rule-info", "창문 " + T + " °C 초과, LED " + fmt(L) + " lux 미만, 펌프 " + S + "% 미만일 때 켜집니다. " + (ok ? "✅ 여섯 상황 모두 옳게 움직입니다. 딸기가 좋아하는 조건(과학 지식)이 기준값이 되었습니다." : "빨간 줄의 상황을 보고 기준값을 고쳐 보세요."));
       if (ok && !got) { got = true; window.sthState("ruleGot", true); mission(); }
     }
     function mission() {
       if (got) {
-        window.sthState("ruleBest", "창문 24 ~ 28 °C, LED 4 000 ~ 15 000 lux, 펌프 30 ~ 45% 에서 여섯 상황 모두 통과");
+        window.sthState("ruleBest", "창문 24~28 °C, LED 4 000~15 000 lux, 펌프 30~45%에서 여섯 상황 모두 통과");
         window.sthMission("m1-2", true, "<span class='m-tag'>미션 완료</span>" + window.sthState("ruleBest") + ". 센서 값을 기준과 비교하는 규칙이 온실의 ‘두뇌’입니다.");
         ep.clear(1);
       }
@@ -131,7 +131,7 @@ function fmt(n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, " "); }
     }
     function update() {
       var ok = draw(), td = detect();
-      put("a-fail-info", (td === null ? "고장을 알아챌 방법이 없어, 딸기는 한낮 38 °C 에 그대로 놓였습니다." : (f1 ? "두 센서의 값이 크게 달라지자 곧바로 고장 알림이 울렸습니다." : "3시간 뒤인 9시에야 알림이 울렸어요. 그사이 온실이 뜨거워질 수 있습니다."))
+      put("a-fail-info", (td === null ? "고장을 알아챌 방법이 없어, 딸기는 한낮 38 °C에 그대로 놓였습니다." : (f1 ? "두 센서의 값이 크게 달라지자 곧바로 고장 알림이 울렸습니다." : "3시간 뒤인 9시에야 알림이 울렸습니다. 그사이 온실이 뜨거워질 수 있습니다."))
         + (f3 ? " 정오 강제 개방은 추운 날이나 비 오는 날에도 창문을 열어 딸기를 해칠 수 있습니다." : "") + (ok ? " ✅ 1시간 안에 알아채고, 쓸데없는 동작도 없습니다." : ""));
       if (ok && !got.a) { got.a = true; window.sthState("failGot", got); mission(); }
     }
@@ -152,7 +152,7 @@ function fmt(n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, " "); }
       q: "자동 온실에 고장 대비 장치가 꼭 필요한 까닭으로 가장 알맞은 것은?",
       options: ["센서는 절대 고장 나지 않으므로 필요 없다", "장치는 센서 값만 믿고 움직이므로, 센서가 틀리면 생명(작물)이 위험해질 수 있기 때문에", "부품을 많이 달수록 멋있어서"],
       answer: 1,
-      why: ["센서도 고장 나거나 먼지·물 때문에 틀릴 수 있습니다.", "마이크로컨트롤러는 ‘틀린 값’도 그대로 믿습니다. 여러 센서를 비교하거나 이상한 값을 감지해 알려야 해요.", "필요한 만큼만, 목적에 맞게 설계해야 합니다."],
+      why: ["센서도 고장 나거나 먼지·물 때문에 틀릴 수 있습니다.", "마이크로컨트롤러는 ‘틀린 값’도 그대로 믿습니다. 여러 센서를 비교하거나 이상한 값을 감지해 알려야 합니다.", "필요한 만큼만, 목적에 맞게 설계해야 합니다."],
       onDone: function () { got.q = true; window.sthState("failGot", got); mission(); }
     });
     update(); mission();
@@ -243,12 +243,12 @@ function fmt(n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, " "); }
     function update() {
       var ok = draw(), r = sim();
       put("b-co2-info", "기준 " + th + " ppm: 수업 중 가장 높았던 농도는 " + r.mx + " ppm, 알림은 " + r.alarms + "번 울렸습니다. "
-        + (ok ? "✅ 공기는 맑게, 알림은 알맞게." : (r.mx > 1000 ? "기준이 너무 높아 1000 ppm 을 넘습니다." : "알림이 너무 자주 울립니다.")));
+        + (ok ? "✅ 공기는 맑게, 알림은 알맞게." : (r.mx > 1000 ? "기준이 너무 높아 1000 ppm을 넘습니다." : "알림이 너무 자주 울립니다.")));
       if (ok && !got) { got = true; window.sthState("co2Got", true); mission(); }
     }
     function mission() {
       if (got) {
-        window.sthState("co2Best", "알림 기준 700 ~ 1000 ppm → 1000 ppm 을 넘지 않고 알림 3번 이하");
+        window.sthState("co2Best", "알림 기준 700~1000 ppm → 1000 ppm을 넘지 않고 알림 3번 이하");
         window.sthMission("m2-2", true, "<span class='m-tag'>미션 완료</span>" + window.sthState("co2Best") + ". 과학 지식(1000 ppm)과 사용하는 사람의 편의(알림 횟수)를 함께 따져 기준을 정했습니다.");
         ep.clear(1);
       }
@@ -274,7 +274,7 @@ function fmt(n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, " "); }
       q: "햇볕 때문에 이상하게 나온 시험 자료 한 번은 어떻게 처리해야 할까요?",
       options: ["아무 말 없이 지운다", "그대로 평균에 넣는다", "원인(햇볕)을 기록하고, 그 자료를 뺀 까닭을 보고서에 밝히며, 가능하면 다시 시험한다", "다른 값과 비슷해 보이게 숫자를 고친다"],
       answer: 2,
-      why: ["몰래 지우면 다른 사람이 결과를 검증할 수 없습니다. 자료를 밝히지 않고 지우는 것도 변조(임의 삭제)에 들어갑니다.", "원인이 분명한 잘못된 측정을 섞으면 결과가 틀려집니다. 뺄 수는 있지만 밝혀야 해요.", "측정 과정의 실수도 정직하게 기록하는 것이 <b>연구 진실성</b>입니다.", "자료를 고치는 것은 <b>변조</b>로, 위조·표절과 함께 대표적인 연구 부정행위입니다."],
+      why: ["몰래 지우면 다른 사람이 결과를 검증할 수 없습니다. 자료를 밝히지 않고 지우는 것도 변조(임의 삭제)에 들어갑니다.", "원인이 분명한 잘못된 측정을 섞으면 결과가 틀려집니다. 뺄 수는 있지만 밝혀야 합니다.", "측정 과정의 실수도 정직하게 기록하는 것이 <b>연구 진실성</b>입니다.", "자료를 고치는 것은 <b>변조</b>로, 위조·표절과 함께 대표적인 연구 부정행위입니다."],
       onDone: function () { got.a = true; window.sthState("ethGot", got); mission(); }
     });
     window.sthPick({
@@ -282,7 +282,7 @@ function fmt(n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, " "); }
       q: "인터넷의 공개 코드를 발명품에 쓸 때 가장 알맞은 방법은?",
       options: ["공개되어 있으니 내가 짠 것처럼 쓴다", "사용 허락 조건(라이선스)을 확인해 지키고, 발표 자료에 출처를 밝힌다", "코드를 조금 바꾸면 출처를 밝히지 않아도 된다"],
       answer: 1,
-      why: ["공개되어 있어도 만든 사람의 권리가 있습니다.", "출처를 밝히고 조건을 지키는 것이 <b>지식 재산권 존중</b>입니다. 오픈 소스도 저마다 조건이 있어요.", "조금 바꿔도 원래 만든 사람의 기여를 밝혀야 합니다."],
+      why: ["공개되어 있어도 만든 사람의 권리가 있습니다.", "출처를 밝히고 조건을 지키는 것이 <b>지식 재산권 존중</b>입니다. 오픈 소스도 저마다 조건이 있습니다.", "조금 바꿔도 원래 만든 사람의 기여를 밝혀야 합니다."],
       onDone: function () { got.b = true; window.sthState("ethGot", got); mission(); }
     });
     mission();
@@ -419,7 +419,7 @@ function fmt(n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, " "); }
     }
     function update() {
       var ok = draw(), c0 = cost(n);
-      put("c-cost-info", "1단을 " + n + "번 쓰면 발사 한 번에 약 " + c0.toFixed(0) + "억 원이 듭니다. " + (ok ? "✅ 6번 쓰면 330억 원, 처음의 55% 로 떨어집니다. 그 뒤로는 정비비 때문에 조금씩만 줄어요." : (c0 <= 330 ? "330억 원 아래지만 더 적은 횟수로도 됩니다." : "아직 330억 원보다 비쌉니다.")));
+      put("c-cost-info", "1단을 " + n + "번 쓰면 발사 한 번에 약 " + c0.toFixed(0) + "억 원이 듭니다. " + (ok ? "✅ 6번 쓰면 330억 원, 처음의 55%로 떨어집니다. 그 뒤로는 정비비 때문에 조금씩만 줍니다." : (c0 <= 330 ? "330억 원 아래지만 더 적은 횟수로도 됩니다." : "아직 330억 원보다 비쌉니다.")));
       if (ok && !got) { got = true; window.sthState("costGot", true); mission(); }
     }
     function mission() {
@@ -448,7 +448,7 @@ function fmt(n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, " "); }
       { t: "수많은 위성 조각이 우주 쓰레기가 되어 충돌 위험을 높인다", a: "env", why: "우주 환경 문제입니다." },
       { t: "밤하늘을 가로지르는 수많은 위성이 천체 관측을 방해한다", a: "env", why: "과학 연구와 밤하늘이라는 공공의 가치를 해칩니다." }
     ],
-    onDone: function () { window.sthMission("m3-4", true, "<span class='m-tag'>미션 완료</span>네 관점의 근거가 모두 갖춰졌습니다. 찬성이든 반대든 이제 근거로 토론할 수 있어요."); ep.clear(3); ep.clear(4); }
+    onDone: function () { window.sthMission("m3-4", true, "<span class='m-tag'>미션 완료</span>네 관점의 근거가 모두 갖춰졌습니다. 찬성이든 반대든 이제 근거로 토론할 수 있습니다."); ep.clear(3); ep.clear(4); }
   });
   if (ep.cleared(3)) window.sthMission("m3-4", true);
 

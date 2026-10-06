@@ -79,7 +79,7 @@ function orderDone(mount, steps) {
     }
     function update() {
       var ok = draw(), r = R();
-      put("a-wave-info", "위상차 " + ph + "°, 세기 " + am.toFixed(1) + ": 귀에 들리는 소리는 소음의 " + Math.round(r * 100) + "% 입니다. "
+      put("a-wave-info", "위상차 " + ph + "°, 세기 " + am.toFixed(1) + ": 귀에 들리는 소리는 소음의 " + Math.round(r * 100) + "%입니다. "
         + (ok ? "✅ 마루와 골이 만나 서로 지웠습니다. 위상은 반대(180°), 세기는 같게 — 상쇄 간섭입니다." : (ph < 90 ? "마루와 마루가 겹치면 오히려 커집니다." : "위상과 세기를 모두 맞춰야 완전히 지워집니다.")));
       if (ok && !got.a) { got.a = true; window.sthState("waveGot", got); mission(); }
     }
@@ -99,7 +99,7 @@ function orderDone(mount, steps) {
       q: "헤드폰이 실수로 소음과 위상차 0° 인 소리(세기 1)를 만들면 어떻게 될까요?",
       options: ["소음이 사라진다", "마루와 마루가 겹쳐 소음이 약 2배로 커진다(보강 간섭)", "아무 변화가 없다"],
       answer: 1,
-      why: ["위상이 같으면 지우지 못합니다.", "같은 위상의 두 파동이 더해지면 진폭이 커집니다. 그래서 헤드폰은 위상을 정확히 뒤집어야 해요.", "두 소리가 더해지니 변화가 생깁니다."],
+      why: ["위상이 같으면 지우지 못합니다.", "같은 위상의 두 파동이 더해지면 진폭이 커집니다. 그래서 헤드폰은 위상을 정확히 뒤집어야 합니다.", "두 소리가 더해지니 변화가 생깁니다."],
       onDone: function () { got.q = true; window.sthState("waveGot", got); mission(); }
     });
     update(); mission();
@@ -131,14 +131,14 @@ function orderDone(mount, steps) {
       text(ctx, "진동수 " + f + " Hz", 610, 60, { s: 15, w: "900" });
       text(ctx, "0.1 ms 동안 위상이 " + err(f).toFixed(0) + "° 어긋남", 610, 90, { s: 12.5, w: "700", c: v("--mist") });
       text(ctx, red0 < 0 ? "오히려 " + Math.round(-red0 * 100) + "% 커짐" : "소음을 " + Math.round(red0 * 100) + "% 줄임", 610, 122, { s: 15, w: "900", c: red0 >= 0.5 ? v("--green-700") : v("--rose-700") });
-      text(ctx, "엔진 소리 약 100 ~ 300 Hz", 610, 170, { s: 11.5, w: "700", c: v("--mist") });
-      text(ctx, "말소리의 자음 약 1000 ~ 4000 Hz", 610, 192, { s: 11.5, w: "700", c: v("--mist") });
+      text(ctx, "엔진 소리 약 100~300 Hz", 610, 170, { s: 11.5, w: "700", c: v("--mist") });
+      text(ctx, "말소리의 자음 약 1000~4000 Hz", 610, 192, { s: 11.5, w: "700", c: v("--mist") });
       return R(f) <= 0.5 && R(f + 100) > 0.5;
     }
     function update() {
       var ok = draw(), red0 = 1 - R(f);
-      put("a-lag-info", f + " Hz 소음은 헤드폰이 소리를 만드는 0.1 ms 동안 위상이 " + err(f).toFixed(0) + "° 어긋나, " + (red0 < 0 ? "오히려 " + Math.round(-red0 * 100) + "% 커집니다(보강 간섭). " : Math.round(red0 * 100) + "% 만 줄어듭니다. ")
-        + (ok ? "✅ 800 Hz 가 절반 이상 줄일 수 있는 가장 높은 진동수입니다. 그보다 높은 소리는 위상이 너무 많이 어긋나요." : (red0 >= 0.5 ? "아직 절반 넘게 줄어듭니다. 더 높은 진동수는?" : "절반도 못 줄입니다. 진동수를 낮춰 보세요.")));
+      put("a-lag-info", f + " Hz 소음은 헤드폰이 소리를 만드는 0.1 ms 동안 위상이 " + err(f).toFixed(0) + "° 어긋나, " + (red0 < 0 ? "오히려 " + Math.round(-red0 * 100) + "% 커집니다(보강 간섭). " : Math.round(red0 * 100) + "%만 줄어듭니다. ")
+        + (ok ? "✅ 800 Hz가 절반 이상 줄일 수 있는 가장 높은 진동수입니다. 그보다 높은 소리는 위상이 너무 많이 어긋납니다." : (red0 >= 0.5 ? "아직 절반 넘게 줄어듭니다. 더 높은 진동수는?" : "절반도 못 줄입니다. 진동수를 낮춰 보세요.")));
       if (ok && !got.a) { got.a = true; window.sthState("lagGot", got); mission(); }
     }
     function mission() {
@@ -176,7 +176,7 @@ function orderDone(mount, steps) {
       { t: "🚗 자동차 에어백 — 부딪히는 시간을 늘려 몸이 받는 힘을 줄인다 (생활 안전)", a: "force", why: "충격량이 같을 때 시간이 길면 힘이 작아집니다." },
       { t: "⚽ 바나나킥 — 공을 회전시켜 휘어 날아가게 한다 (스포츠)", a: "force", why: "회전하는 공 둘레의 공기 흐름 차이가 옆으로 미는 힘(마그누스 힘)을 만듭니다." }
     ],
-    onDone: function () { window.sthMission("m1-4", true, "<span class='m-tag'>미션 완료</span>영화·건축·요리·스포츠·미디어, 어디에서나 몇 가지 과학 원리가 되풀이해 쓰입니다. 원리를 알면 처음 보는 기술도 설명할 수 있어요."); ep.clear(3); ep.clear(4); }
+    onDone: function () { window.sthMission("m1-4", true, "<span class='m-tag'>미션 완료</span>영화·건축·요리·스포츠·미디어, 어디에서나 몇 가지 과학 원리가 되풀이해 쓰입니다. 원리를 알면 처음 보는 기술도 설명할 수 있습니다."); ep.clear(3); ep.clear(4); }
   });
   if (ep.cleared(3)) window.sthMission("m1-4", true);
 
@@ -220,7 +220,7 @@ function orderDone(mount, steps) {
       function X(tt) { return x0 + tt / 120 * (x1 - x0); }
       function Y(hh) { return y1 - (hh - 20) / 60 * (y1 - y0); }
       ctx.fillStyle = A(v("--green-700"), 0.1); ctx.fillRect(x0, Y(60), x1 - x0, Y(40) - Y(60));
-      text(ctx, "알맞은 습도 40 ~ 60%", x1 - 6, Y(60) + 14, { s: 10.5, w: "800", a: "right", c: v("--green-700") });
+      text(ctx, "알맞은 습도 40~60%", x1 - 6, Y(60) + 14, { s: 10.5, w: "800", a: "right", c: v("--green-700") });
       axes(ctx, x0, y0, x1, y1);
       [20, 40, 60, 80].forEach(function (hh) { text(ctx, hh + "%", x0 - 6, Y(hh) + 4, { s: 10, a: "right", c: v("--mist") }); });
       [0, 30, 60, 90, 120].forEach(function (tt) { text(ctx, tt + "분", X(tt), y1 + 16, { s: 10, a: "center", c: v("--mist") }); });
@@ -243,13 +243,13 @@ function orderDone(mount, steps) {
       if (pow === "strong" && hh > 60 && !got.b) got.b = true;
       window.sthState("humGot", got);
       put("b-hum-info", P[pow].n + " " + t + "분 가동: 습도 " + hh.toFixed(1) + "%. "
-        + (hh > 60 ? "✅ 60% 를 넘었습니다. 창문에 물이 맺히고 곰팡이가 생기기 쉬워요." : (hh >= 40 ? (t <= 30 ? "✅ 30분 안에 알맞은 습도에 이르렀습니다." : "알맞은 습도지만 30분이 넘게 걸렸습니다.") : "아직 40% 가 안 됩니다.")));
+        + (hh > 60 ? "✅ 60%를 넘었습니다. 창문에 물이 맺히고 곰팡이가 생기기 쉽습니다." : (hh >= 40 ? (t <= 30 ? "✅ 30분 안에 알맞은 습도에 이르렀습니다." : "알맞은 습도지만 30분이 넘게 걸렸습니다.") : "아직 40%가 안 됩니다.")));
       mission();
     }
     function mission() {
       if (got.a) done("m2-2a"); if (got.b) done("m2-2b"); if (got.q) done("m2-2c");
       if (got.a && got.b && got.q && !ep.cleared(1)) {
-        window.sthState("humBest", "강하게 20 ~ 30분 → 40 ~ 50%, 1시간 넘게 틀면 60% 초과");
+        window.sthState("humBest", "강하게 20~30분 → 40~50%, 1시간 넘게 틀면 60% 초과");
         window.sthMission("m2-2", true, "<span class='m-tag'>미션 완료</span>" + window.sthState("humBest") + ". 가설(가습기로 습도가 오른다)이 지지되었고, 알맞게 쓰는 조건도 찾았습니다.");
         ep.clear(1);
       } else if (got.a && got.b && got.q) window.sthMission("m2-2", true);
@@ -260,9 +260,9 @@ function orderDone(mount, steps) {
     window.sthPick({
       mount: "b-hum-pick",
       q: "교실 습도를 알맞게 유지하는 방법으로 가장 알맞은 것은?",
-      options: ["가습기를 강하게 하루 종일 틀어 둔다", "습도계를 보며 40 ~ 60% 를 넘지 않도록 세기와 시간을 조절한다", "습도는 높을수록 좋으니 신경 쓰지 않는다"],
+      options: ["가습기를 강하게 하루 종일 틀어 둔다", "습도계를 보며 40~60%를 넘지 않도록 세기와 시간을 조절한다", "습도는 높을수록 좋으니 신경 쓰지 않는다"],
       answer: 1,
-      why: ["60% 를 넘어 결로와 곰팡이가 생깁니다.", "재면서 조절하는 것이 핵심입니다. 해결책도 결과를 확인하며 고쳐 가야 해요.", "너무 높은 습도는 곰팡이와 집먼지진드기를 늘립니다."],
+      why: ["60%를 넘어 결로와 곰팡이가 생깁니다.", "재면서 조절하는 것이 핵심입니다. 해결책도 결과를 확인하며 고쳐 가야 합니다.", "너무 높은 습도는 곰팡이와 집먼지진드기를 늘립니다."],
       onDone: function () { got.q = true; window.sthState("humGot", got); mission(); }
     });
     update();
@@ -294,7 +294,7 @@ function orderDone(mount, steps) {
     function update() {
       var ok = draw(), r = rise(n, win);
       put("b-towel-info", "수건 " + n + "장, 창문 " + (win === "shut" ? "닫음" : "20분마다 환기") + ": 한 시간 동안 습도가 " + r.toFixed(1) + "%p 오릅니다. "
-        + (ok ? "✅ 7장이 가장 적은 수입니다. 가설은 지지되지만, 가습기 한 대 몫을 내려면 수건 여러 장이 필요해요." : (win === "vent" ? "환기하면 수증기가 빠져나가 효과가 절반으로 줄어듭니다. 창문을 닫은 조건에서 찾으세요." : (r >= 10 ? "10%p 는 넘었지만 더 적은 수로도 됩니다." : "아직 10%p 가 안 됩니다."))));
+        + (ok ? "✅ 7장이 가장 적은 수입니다. 가설은 지지되지만, 가습기 한 대 몫을 내려면 수건 여러 장이 필요합니다." : (win === "vent" ? "환기하면 수증기가 빠져나가 효과가 절반으로 줄어듭니다. 창문을 닫은 조건에서 찾으세요." : (r >= 10 ? "10%p는 넘었지만 더 적은 수로도 됩니다." : "아직 10%p가 안 됩니다."))));
       if (ok && !got) { got = true; window.sthState("towelGot", true); mission(); }
     }
     function mission() {
@@ -314,7 +314,7 @@ function orderDone(mount, steps) {
   (function () {
     var STEPS = [
       "문제 인식 — 겨울 교실이 건조해 목이 아프고 정전기가 난다 (습도 25%)",
-      "가설 설정 — 가습기(또는 젖은 수건)를 쓰면 습도가 40 ~ 60% 로 오를 것이다",
+      "가설 설정 — 가습기(또는 젖은 수건)를 쓰면 습도가 40~60%로 오를 것이다",
       "탐구 설계 — 가동 시간·수건 수를 바꾸고, 교실 온도·창문 조건은 같게 한다",
       "탐구 수행 — 습도계로 5분마다 습도를 재어 기록한다",
       "자료 해석과 결론 — 그래프로 나타내 가설이 지지되는지 판단한다",

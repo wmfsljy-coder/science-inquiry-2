@@ -73,7 +73,7 @@ function fmtN(n) { return n >= 10000 ? Math.round(n).toLocaleString() : String(M
     function update() {
       var ok = draw(), a = acc(L);
       put("a-data-info", "학습 사진 " + fmtN(Math.pow(10, L)) + " 장: 처음 보는 사진을 " + (a * 100).toFixed(1) + "% 맞힙니다. "
-        + (ok ? "✅ 약 1,260 장이 90% 에 이르는 가장 적은 수입니다." : (a >= 0.9 ? "90% 는 넘었지만 더 적은 사진으로도 됩니다." : "아직 90% 에 못 미칩니다.")));
+        + (ok ? "✅ 약 1,260 장이 90%에 이르는 가장 적은 수입니다." : (a >= 0.9 ? "90%는 넘었지만 더 적은 사진으로도 됩니다." : "아직 90%에 못 미칩니다.")));
       if (ok && !got.a) { got.a = true; window.sthState("dataGot", got); mission(); }
     }
     function mission() {
@@ -89,9 +89,9 @@ function fmtN(n) { return n >= 10000 ? Math.round(n).toLocaleString() : String(M
     window.sthPick({
       mount: "a-data-pick",
       q: "학습 사진을 1만 장에서 10만 장, 100만 장으로 10배씩 늘리면 정답률은 어떻게 될까요?",
-      options: ["10배씩 늘 때마다 정답률도 10%p 씩 계속 오른다", "계속 오르긴 하지만, 오르는 폭이 점점 작아진다", "사진이 많아지면 오히려 떨어진다"],
+      options: ["10배씩 늘 때마다 정답률도 10%p씩 계속 오른다", "계속 오르긴 하지만, 오르는 폭이 점점 작아진다", "사진이 많아지면 오히려 떨어진다"],
       answer: 1,
-      why: ["그래프는 점점 평평해집니다.", "처음에는 조금만 늘려도 크게 오르지만, 이미 잘하는 인공지능은 훨씬 많은 사진이 있어야 조금 더 나아집니다.", "이 그래프에서는 떨어지지 않습니다. 다만 데이터의 질이 나쁘면 그럴 수도 있어요."],
+      why: ["그래프는 점점 평평해집니다.", "처음에는 조금만 늘려도 크게 오르지만, 이미 잘하는 인공지능은 훨씬 많은 사진이 있어야 조금 더 나아집니다.", "이 그래프에서는 떨어지지 않습니다. 다만 데이터의 질이 나쁘면 그럴 수도 있습니다."],
       onDone: function () { got.q = true; window.sthState("dataGot", got); mission(); }
     });
     update(); mission();
@@ -127,14 +127,14 @@ function fmtN(n) { return n >= 10000 ? Math.round(n).toLocaleString() : String(M
     }
     function update() {
       var ok = draw(), q = p / 100;
-      put("a-bias-info", "흰 고양이 " + p + "%, 검은 고양이 " + (100 - p) + "% 로 학습: 흰 고양이 " + (aw(q) * 100).toFixed(1) + "%, 검은 고양이 " + (aw(1 - q) * 100).toFixed(1) + "% 를 알아봅니다. "
-        + (ok ? "✅ 두 고양이를 모두 잘 알아봅니다. 학습 데이터를 고르게 섞었기 때문이에요." : "적게 본 쪽을 잘 못 알아봅니다."));
+      put("a-bias-info", "흰 고양이 " + p + "%, 검은 고양이 " + (100 - p) + "%로 학습: 흰 고양이 " + (aw(q) * 100).toFixed(1) + "%, 검은 고양이 " + (aw(1 - q) * 100).toFixed(1) + "%를 알아봅니다. "
+        + (ok ? "✅ 두 고양이를 모두 잘 알아봅니다. 학습 데이터를 고르게 섞었기 때문입니다." : "적게 본 쪽을 잘 못 알아봅니다."));
       if (ok && !got.a) { got.a = true; window.sthState("biasGot", got); mission(); }
     }
     function mission() {
       if (got.a) done("m1-3a"); if (got.q) done("m1-3b");
       if (got.a && got.q) {
-        window.sthState("biasBest", "흰·검은 고양이를 35 ~ 65% 로 섞으면 둘 다 85% 이상");
+        window.sthState("biasBest", "흰·검은 고양이를 35~65%로 섞으면 둘 다 85% 이상");
         window.sthMission("m1-3", true, "<span class='m-tag'>미션 완료</span>" + window.sthState("biasBest") + ". 인공지능의 판단은 학습 데이터를 닮습니다.");
         ep.clear(2);
       }
@@ -224,14 +224,14 @@ function fmtN(n) { return n >= 10000 ? Math.round(n).toLocaleString() : String(M
     }
     function update() {
       var ok = draw();
-      put("b-cal-info", "시험 흙 ① 은 " + read(raw(50)).toFixed(1) + "%, 시험 흙 ② 는 " + read(raw(30)).toFixed(1) + "% 로 읽힙니다. "
-        + (ok ? "✅ 두 시험 흙이 모두 제대로 읽힙니다. 센서의 숫자가 이제 ‘수분 %’라는 뜻을 갖게 되었어요." : "마른 흙과 젖은 흙에 꽂았을 때 실제로 나온 센서 값을 입력해 보세요."));
+      put("b-cal-info", "시험 흙 ① 은 " + read(raw(50)).toFixed(1) + "%, 시험 흙 ② 는 " + read(raw(30)).toFixed(1) + "%로 읽힙니다. "
+        + (ok ? "✅ 두 시험 흙이 모두 제대로 읽힙니다. 센서의 숫자가 이제 ‘수분 %’라는 뜻을 갖게 되었습니다." : "마른 흙과 젖은 흙에 꽂았을 때 실제로 나온 센서 값을 입력해 보세요."));
       if (ok && !got.a) { got.a = true; got.dry = dry; got.wet = wet; window.sthState("calGot", got); mission(); }
     }
     function mission() {
       if (got.a) done("m2-2a"); if (got.q) done("m2-2b");
       if (got.a && got.q) {
-        window.sthState("calBest", "마른 흙 " + (got.dry || 820) + " → 0%, 젖은 흙 " + (got.wet || 380) + " → 100% 로 보정");
+        window.sthState("calBest", "마른 흙 " + (got.dry || 820) + " → 0%, 젖은 흙 " + (got.wet || 380) + " → 100%로 보정");
         window.sthMission("m2-2", true, "<span class='m-tag'>미션 완료</span>" + window.sthState("calBest") + ". 센서의 숫자를 우리가 아는 단위로 바꾸는 것이 보정입니다.");
         ep.clear(1);
       }
@@ -244,7 +244,7 @@ function fmtN(n) { return n >= 10000 ? Math.round(n).toLocaleString() : String(M
       q: "센서를 쓰기 전에 보정해야 하는 가장 큰 까닭은?",
       options: ["센서가 새것이라 한 번 켜 줘야 해서", "센서가 내는 숫자는 센서와 흙마다 달라, 알려진 기준(마른 흙·젖은 흙)과 맞춰야 뜻 있는 값이 되기 때문에", "보정하면 센서가 더 오래가서"],
       answer: 1,
-      why: ["켜 두는 것과 보정은 다릅니다.", "같은 수분이라도 센서의 종류, 흙의 성분에 따라 숫자가 다릅니다. 기준점 두 개로 숫자와 실제 값을 이어 주는 것이 보정이에요.", "수명과는 관계가 없습니다."],
+      why: ["켜 두는 것과 보정은 다릅니다.", "같은 수분이라도 센서의 종류, 흙의 성분에 따라 숫자가 다릅니다. 기준점 두 개로 숫자와 실제 값을 이어 주는 것이 보정입니다.", "수명과는 관계가 없습니다."],
       onDone: function () { got.q = true; window.sthState("calGot", got); mission(); }
     });
     update(); mission();
@@ -295,7 +295,7 @@ function fmtN(n) { return n >= 10000 ? Math.round(n).toLocaleString() : String(M
     function mission() {
       if (got.a) done("m2-3a"); if (got.q) done("m2-3b");
       if (got.a && got.q) {
-        window.sthState("hysBest", "켜기 " + (got.on || on) + "% · 끄기 " + (got.off || off) + "% 처럼 기준 사이를 벌림");
+        window.sthState("hysBest", "켜기 " + (got.on || on) + "% · 끄기 " + (got.off || off) + "%처럼 기준 사이를 벌림");
         window.sthMission("m2-3", true, "<span class='m-tag'>미션 완료</span>" + window.sthState("hysBest") + ". 기준 사이의 간격이 센서 값의 떨림을 흡수합니다.");
         ep.clear(2);
       }
@@ -308,7 +308,7 @@ function fmtN(n) { return n >= 10000 ? Math.round(n).toLocaleString() : String(M
       q: "켜는 기준과 끄는 기준을 따로 두면 펌프가 떨지 않는 까닭은?",
       options: ["펌프가 더 강해지기 때문에", "센서 값이 기준 근처에서 조금 오르내려도, 두 기준 사이에서는 펌프 상태가 바뀌지 않기 때문에", "센서의 떨림이 완전히 사라지기 때문에"],
       answer: 1,
-      why: ["펌프의 힘은 그대로입니다.", "한 번 켜지면 끄는 기준까지 올라갈 때까지, 한 번 꺼지면 켜는 기준까지 내려갈 때까지 기다립니다. 보일러 온도 조절기도 같은 방법을 써요.", "센서 값은 여전히 떨립니다. 다만 그 떨림에 반응하지 않을 뿐이에요."],
+      why: ["펌프의 힘은 그대로입니다.", "한 번 켜지면 끄는 기준까지 올라갈 때까지, 한 번 꺼지면 켜는 기준까지 내려갈 때까지 기다립니다. 보일러 온도 조절기도 같은 방법을 씁니다.", "센서 값은 여전히 떨립니다. 다만 그 떨림에 반응하지 않을 뿐입니다."],
       onDone: function () { got.q = true; window.sthState("hysGot", got); mission(); }
     });
     update(); mission();
