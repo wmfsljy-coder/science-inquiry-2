@@ -686,6 +686,7 @@ window.sthWork({
     { key: "r4", label: "④ 동네 환경 탐사대" },
     { key: "rQuiz", label: "수준별 문제" },
     { key: "rLab", label: "응용 실험실" },
+    { key: "rInq", label: "교과서 실험" },
     { key: "rReal", label: "실제 자료" }
   ],
   items: [
@@ -705,6 +706,7 @@ window.sthShare({
     { key: "r4", label: "④ 동네 환경 탐사대" },
     { key: "rQuiz", label: "수준별 문제" },
     { key: "rLab", label: "응용 실험실" },
+    { key: "rInq", label: "교과서 실험" },
     { key: "rReal", label: "실제 자료" }
   ],
   line: { id: "all", label: "네 탐구를 꿰는 한 문장" }
