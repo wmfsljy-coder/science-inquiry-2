@@ -1,7 +1,8 @@
 /* 과학탐구실험2 Ⅰ 생활 속의 과학 탐구 — 실제 자료
    r1 우주 정거장의 속력 — 국제 우주 정거장(ISS)의 실제 궤도 주기와 높이로 속력 구하기
    r2 경주와 포항, 어느 지진이 더 컸나 — USGS 목록과 기상청 발표가 다른 까닭
-   자료: data/satcat.js (CelesTrak 위성 목록), data/usgs-korea.js (USGS 지진 목록) */
+   r3 우리 동네 속설 검증 — 삼한사온은 진짜일까(창원 2025~26 겨울)
+   자료: data/satcat.js (CelesTrak 위성 목록), data/usgs-korea.js (USGS 지진 목록), data/cw155.js */
 (function () {
 "use strict";
 var S = window.REAL_SAT || { iss: ["ISS (ZARYA)", 92.98, 425, 416, 51.63] }, Q = window.REAL_EQ || { rows: [] };
@@ -13,6 +14,13 @@ var DK = { N: "북", S: "남", E: "동", W: "서" };
 function where(r) { var m = /^(\d+)\s?km\s+([NSEW]+)\s+of\s+(.+?),/.exec(r[6]); if (m) { var n = KO[m[3]] || m[3]; return +m[1] >= 30 ? n + " " + m[2].split("").map(function (c) { return DK[c]; }).join("") + "쪽 " + m[1] + " km" : n; } return "북위 " + r[3].toFixed(1) + "°, 동경 " + r[4].toFixed(1) + "°"; }
 var SRC1 = "<small>출처: CelesTrak 위성 목록(SATCAT) — 국제 우주 정거장 " + I[0] + " 의 궤도 주기 " + I[1] + " 분, 원지점 " + I[2] + " km, 근지점 " + I[3] + " km, 궤도 기울기 " + I[4] + "°. 정거장은 공기 저항으로 조금씩 낮아져 가끔 엔진으로 높이를 올립니다. 사본은 data/satcat.js.</small>";
 var SRC2 = "<small>출처: 미국 지질조사국(USGS) 지진 목록 — 남한과 둘레 바다에서 1990~2025년 규모 2.5 이상으로 기록된 지진 " + EQ.length + "건(세계 관측망 기준이라 작은 지진은 빠진 것이 많음). 기상청 발표 규모(국지 규모 ML): 2016년 경주 5.8, 2017년 포항 5.4. 사본은 data/usgs-korea.js.</small>";
+var ZW = (window.REAL_CW155 || {}).winter2526 || [];      /* 2025-12-01 ~ 2026-02-28 날마다 평균 기온 */
+var ZWS = ZW.map(function (v, i) { var a = ZW.slice(Math.max(0, i - 1), i + 2); return a.reduce(function (s, x) { return s + x; }, 0) / a.length; });
+var ZMIN = []; for (var zi = 2; zi < ZWS.length - 2; zi++) { var zok = true; for (var zj = zi - 2; zj <= zi + 2; zj++) if (ZWS[zj] < ZWS[zi]) zok = false; if (zok) ZMIN.push(zi); }
+var ZGAPS = ZMIN.slice(1).map(function (v, i) { return v - ZMIN[i]; });
+var Z_AVG = ZMIN.length > 1 ? (ZMIN[ZMIN.length - 1] - ZMIN[0]) / (ZMIN.length - 1) : 7;
+function zW(i) { var t = new Date(Date.UTC(2025, 11, 1) + i * 864e5); return (t.getUTCMonth() + 1) + "/" + t.getUTCDate(); }
+var SRC_Z = "<small>출처: 기상청 날씨누리 과거 관측 일별 자료, 창원(155) 2025년 12월 1일 ~ 2026년 2월 28일 날마다 평균 기온. ‘추운 고비’는 사흘씩 평균한 기온이 앞뒤 이틀보다 낮은 날. 사본은 data/cw155.js.</small>";
 
 window.sthLab({
   mount: "real", key: "real", result: "rReal", label: "실제 자료",
@@ -100,6 +108,46 @@ window.sthLab({
     solution: "<b>" + (EQ[BIG] ? EQ[BIG][0] + " " + where(EQ[BIG]) : "2017-11-15 포항") + "</b>, 규모를 재는 척도가 달라서.",
     why: "지진의 규모는 하나의 정해진 값이 아니라, 무엇을 재어 계산하느냐에 따라 여러 척도가 있습니다. 국지 규모(ML)는 가까운 지진계에 기록된 흔들림의 최대 크기로, 모멘트 규모(Mw)는 단층의 넓이와 미끄러진 거리로 구합니다. 큰 지진일수록 Mw가 에너지를 더 잘 나타내 국제 비교에 쓰입니다. 규모가 1 커지면 에너지는 약 32 배가 됩니다.<br>"
       + "포항 지진은 규모에 비해 피해가 컸는데, 진원이 얕고 무른 퇴적층 위에 도시가 있었기 때문입니다. 정부 조사 연구단은 2019년, 이 지진이 근처 지열 발전소의 물 주입으로 촉발되었다고 결론 내렸습니다. 피해에는 규모뿐 아니라 깊이·땅의 성질·건물의 흔들림(공진)이 함께 작용합니다."
+  },
+  {
+    id: "r3", tag: "실제 자료 · 우리 동네 속설 검증", title: "‘삼한사온’은 진짜일까 — 지난겨울 창원", short: "삼한사온",
+    who: "📍", name: "창원기상대(기상청)",
+    say: "“‘사흘 춥고 나흘 따뜻하다(삼한사온)’는 말이 맞다면, 추운 고비가 <b>7일마다</b> 규칙적으로 와야 합니다. 아래는 진해와 가까운 <b>창원기상대</b>의 지난겨울(2025년 12월 ~ 2026년 2월) 날마다 평균 기온이고, 파란 점이 <b>추운 고비</b>예요. 첫 고비부터 마지막 고비까지 평균 며칠마다 추위가 왔는지 구해 주세요.”",
+    predict: {
+      q: "속설이 맞는지 알아보려면 어떻게 해야 할까요?",
+      options: ["㉠ 어른들이 오래 써 온 말이니 맞다고 본다", "㉡ ‘7일마다 추위가 온다’처럼 확인할 수 있는 예측으로 바꿔 실제 자료와 견준다", "㉢ 지난주 날씨 하나만 보고 정한다"],
+      answer: 1
+    },
+    task: "<b>(마지막 고비 날 − 첫 고비 날) ÷ (고비 수 − 1)</b>을 슬라이더로 맞추세요(± 0.5일).",
+    build: function (stage, api) {
+      var H = api.h, cv = api.canvas(290), ctx = cv.ctx, W = cv.W, k = 3;
+      var x0 = 50, x1 = 640, y0 = 24, y1 = 250, n = ZW.length || 1;
+      function X(i) { return x0 + i / (n - 1) * (x1 - x0); }
+      function Y(t) { return y1 - (t + 6) / 22 * (y1 - y0); }
+      function draw() {
+        H.paper(ctx, W, cv.H); H.axes(ctx, x0, y0, x1, y1);
+        [-5, 0, 5, 10, 15].forEach(function (t) { H.text(ctx, t + "°", x0 - 8, Y(t) + 4, { s: 10, a: "right", c: H.v("--mist") }); H.dash(ctx, x0, Y(t), x1, Y(t), H.v("--line"), 0.5); });
+        H.line(ctx, ZW.map(function (v, i) { return [X(i), Y(v)]; }), H.v("--mist"), 1.2);
+        H.line(ctx, ZWS.map(function (v, i) { return [X(i), Y(v)]; }), H.v("--coral-700"), 2.2);
+        ZMIN.forEach(function (i, j) { H.dot(ctx, X(i), Y(ZWS[i]), 5, H.v("--brand")); H.text(ctx, zW(i), X(i), Y(ZWS[i]) + 16, { s: 9, w: "800", a: "center", c: H.v("--brand") }); });
+        [0, 31, 62, 89].forEach(function (i) { if (i < n) H.text(ctx, zW(i), X(i), y1 + 15, { s: 10, a: "center", c: H.v("--mist") }); });
+        H.rows(ctx, 680, 34, [["추운 고비 수", ZMIN.length + "번", "--brand"], ["첫 고비 → 마지막", ZMIN.length ? zW(ZMIN[0]) + " → " + zW(ZMIN[ZMIN.length - 1]) : ""], ["그 사이 날 수", ZMIN.length ? (ZMIN[ZMIN.length - 1] - ZMIN[0]) + "일" : ""], ["내 답", k.toFixed(1) + "일마다", null, true]], 50);
+      }
+      cv.canvas._redraw = draw;
+      api.slider({ label: "추위가 오는 평균 간격", min: 2, max: 14, step: 0.1, value: 3, fmt: function (x) { return x.toFixed(1) + "일"; }, onInput: function (x) { k = x; api.changed(); draw(); } });
+      api.info("회색 선은 날마다 평균 기온, 빨간 선은 사흘씩 평균해 들쭉날쭉함을 줄인 선입니다. 고비가 n번이면 그 사이 간격은 n − 1개입니다. " + SRC_Z);
+      draw();
+      return {
+        judge: function () {
+          if (Math.abs(k - Z_AVG) <= 0.5) return { ok: true, msg: "평균 " + Z_AVG.toFixed(1) + "일마다 추위가 왔습니다 — 7일에 가깝습니다. 하지만 간격 하나하나는 " + Math.min.apply(null, ZGAPS) + " ~ " + Math.max.apply(null, ZGAPS) + "일로 들쭉날쭉했습니다." };
+          return { ok: false, msg: k.toFixed(1) + "일은 " + (k < Z_AVG ? "짧습니다" : "깁니다") + ". 오른쪽 ‘그 사이 날 수’를 (고비 수 − 1)로 나누세요." };
+        }
+      };
+    },
+    hints: ["그 사이 날 수 = " + (ZMIN.length ? (ZMIN[ZMIN.length - 1] - ZMIN[0]) : 0) + "일, 간격 수 = " + (ZMIN.length - 1) + "개", (ZMIN.length ? (ZMIN[ZMIN.length - 1] - ZMIN[0]) : 0) + " ÷ " + (ZMIN.length - 1) + " = ?"],
+    solution: (ZMIN.length ? (ZMIN[ZMIN.length - 1] - ZMIN[0]) : 0) + " ÷ " + (ZMIN.length - 1) + " ≈ <b>" + Z_AVG.toFixed(1) + "일</b> (간격 하나하나: " + ZGAPS.join(", ") + "일).",
+    why: "지난겨울 창원에서 추위는 평균 " + Z_AVG.toFixed(1) + "일마다 찾아와 ‘일주일 안팎’이라는 삼한사온의 느낌과 비슷했습니다. 겨울에 시베리아 고기압이 세졌다 약해졌다를 되풀이하며 찬 공기를 몇 날씩 내려보내기 때문입니다. 하지만 간격 하나하나는 " + Math.min.apply(null, ZGAPS) + "일부터 " + Math.max.apply(null, ZGAPS) + "일까지 들쭉날쭉해서, ‘사흘 춥고 나흘 따뜻하다’는 정확한 규칙이라기보다 대강의 경향입니다.<br>"
+      + "유사과학과 과학을 가르는 것은 ‘확인할 수 있는 예측을 내놓고, 자료로 시험받는가’입니다. 속설도 이렇게 예측으로 바꿔 자료와 견주면 어디까지 맞고 어디부터 틀리는지 알 수 있습니다. 한 겨울만 보았으니 다른 해 겨울도 날씨누리에서 확인해 보세요."
   }
   ]
 });
