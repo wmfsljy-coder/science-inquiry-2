@@ -51,7 +51,7 @@ window.sthLab({
       draw();
       return {
         judge: function () {
-          if (Math.abs(g - GR) <= 0.2 + 1e-9) return { ok: true, msg: "(" + A25.toFixed(2) + " − " + A15.toFixed(2) + ") ÷ 10 ≈ " + GR.toFixed(2) + " ppm/년 — 1960년(" + (A60 ? A60.toFixed(0) : "317") + " ppm)에는 해마다 1 ppm 도 안 늘었는데, 지금은 두 배 넘게 빨라졌습니다." };
+          if (Math.abs(g - GR) <= 0.2 + 1e-9) return { ok: true, msg: "(" + A25.toFixed(2) + " − " + A15.toFixed(2) + ") ÷ 10 ≈ " + GR.toFixed(2) + " ppm/년 — 1960년(" + (A60 ? A60.toFixed(0) : "317") + " ppm)에는 해마다 1 ppm 도 안 늘었는데, 지금은 세 배 넘게 빨라졌습니다." };
           return { ok: false, msg: "+" + g.toFixed(1) + " 은 맞지 않습니다. 두 해의 차이를 햇수(10)로 나누세요." };
         }
       };
@@ -91,7 +91,7 @@ window.sthLab({
       cv.canvas._redraw = draw;
       api.slider({ label: "2025년은 2015년의 몇 배", min: 1, max: 10, step: 0.1, value: 1, fmt: function (x) { return x.toFixed(1) + " 배"; }, onInput: function (x) { g = x; api.changed(); draw(); } });
       api.info("빨간 막대가 2007년(중국의 위성 요격 시험), 2009년(이리듐·코스모스 위성 충돌), 2021년(러시아의 위성 요격 시험)에 껑충 뛰는 것을 찾아보세요. 2020년대 파편 수가 조금 줄어든 것은 태양 활동이 강해져 높은 대기가 부풀고, 공기 저항으로 낮은 궤도의 파편이 빨리 떨어졌기 때문으로 보입니다. 2021년 요격 시험 파편이 낮은 궤도에 있어 빨리 떨어진 것도 한몫했어요. " + SRC2
-        + "<div data-link='{\"id\":\"esa-debris\",\"title\":\"숫자로 보는 우주 쓰레기\",\"src\":\"유럽 우주국 ESA\",\"url\":\"https://www.esa.int/Space_Safety/Space_Debris/Space_debris_by_the_numbers\",\"ask\":\"지구 둘레에 있는 1 cm 이상, 10 cm 이상 우주 쓰레기는 각각 몇 개로 추정되는지 적고, 추적되지 않는 작은 조각이 왜 위험한지 한 문장으로 적어 오세요.\"}'></div>");
+        + "<div data-link='{\"id\":\"esa-debris\",\"title\":\"숫자로 보는 우주 쓰레기\",\"src\":\"유럽 우주국 ESA\",\"url\":\"https://www.esa.int/Space_Safety/Space_Debris/Space_debris_by_the_numbers\",\"ask\":\"지구 둘레에 있는 1 ~ 10 cm 조각과 10 cm 이상 조각이 각각 몇 개로 추정되는지 적고, 추적되지 않는 작은 조각이 왜 위험한지 한 문장으로 적어 오세요.\"}'></div>");
       draw();
       return {
         judge: function () {

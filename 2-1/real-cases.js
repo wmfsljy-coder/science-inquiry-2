@@ -55,7 +55,7 @@ window.sthLab({
       cv.canvas._redraw = draw;
       api.slider({ label: "22 °C 교실의 상대 습도", min: 0, max: 100, step: 1, value: 50, fmt: function (x) { return x + "%"; }, onInput: function (x) { g = x; api.changed(); draw(); } });
       api.info("상대 습도 = 실제 수증기량 ÷ 그 온도의 포화 수증기량 × 100. 공기 속 실제 수증기량은 이슬점의 포화 수증기량과 같아요. " + SRC
-        + "<div data-link='{\"id\":\"kma-now\",\"title\":\"기상청 날씨누리\",\"src\":\"기상청\",\"url\":\"https://www.weather.go.kr/w/index.do\",\"ask\":\"오늘 우리 지역의 기온과 습도를 찾아 적고, 그 공기를 22 °C 로 데우면 상대 습도가 높아질지 낮아질지 까닭과 함께 적어 오세요.\"}'></div>");
+        + "<div data-link='{\"id\":\"kma-now\",\"title\":\"기상청 날씨누리\",\"src\":\"기상청\",\"url\":\"https://www.weather.go.kr/w/index.do\",\"ask\":\"오늘 우리 지역의 기온과 습도를 찾아 적고, 그 공기를 실내 온도 22 °C 로 바꾸면(데우거나 식히면) 상대 습도가 높아질지 낮아질지 까닭과 함께 적어 오세요.\"}'></div>");
       draw();
       return {
         judge: function () {

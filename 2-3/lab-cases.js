@@ -42,7 +42,7 @@ window.sthLab({
       cv.canvas._redraw = draw;
       api.slider({ label: "물 온도", min: 55, max: 90, step: 1, value: 80, fmt: function (x) { return x + " °C"; }, onInput: function (x) { T = x; draw(); } });
       api.slider({ label: "담가 두는 시간", min: 10, max: 60, step: 10, value: 20, fmt: function (x) { return x + "분"; }, onInput: function (x) { tm = x; draw(); } });
-      api.info("단백질은 열을 받으면 구조가 풀리며(변성) 서로 엉겨 굳습니다. 흰자에서 가장 먼저 굳는 단백질(오보트랜스페린)은 약 62 °C, 흰자의 대부분인 오브알부민은 약 80 °C, 노른자는 약 65 ~ 70 °C 부터 굳어요. 온도가 높을수록 빨리 굳습니다.");
+      api.info("단백질은 열을 받으면 구조가 풀리며(변성) 서로 엉겨 굳습니다. 흰자에서 가장 먼저 굳는 단백질(오보트랜스페린)은 약 62 °C, 흰자의 대부분인 오브알부민은 약 80 °C, 노른자는 약 63 ~ 65 °C 부터 천천히 굳기 시작해 70 °C 를 넘으면 빨리 굳어요. 온도가 높을수록 빨리 굳습니다.");
       draw();
       return {
         judge: function () {

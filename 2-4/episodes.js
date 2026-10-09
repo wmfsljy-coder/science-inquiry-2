@@ -34,7 +34,7 @@ function segWire(id, attr, onPick) {
     b.addEventListener("click", function () { btns.forEach(function (x) { x.classList.toggle("on", x === b); }); onPick(b.getAttribute(attr)); });
   });
 }
-function fmt(n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, " "); }
+function fmt(n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ","); }
 
 /* =========================================================================
    이야기 ① 겨울 딸기 온실
@@ -56,8 +56,8 @@ function fmt(n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, " "); }
     var CASES = [
       { d: "맑은 한낮, 온도 29 °C", dev: "창문", want: true, act: function () { return 29 > T; } },
       { d: "선선한 아침, 온도 24 °C", dev: "창문", want: false, act: function () { return 24 > T; } },
-      { d: "흐린 낮, 밝기 3 000 lux", dev: "LED", want: true, act: function () { return 3000 < L; } },
-      { d: "맑은 낮, 밝기 15 000 lux", dev: "LED", want: false, act: function () { return 15000 < L; } },
+      { d: "흐린 낮, 밝기 3,000 lux", dev: "LED", want: true, act: function () { return 3000 < L; } },
+      { d: "맑은 낮, 밝기 15,000 lux", dev: "LED", want: false, act: function () { return 15000 < L; } },
       { d: "흙 수분 25%", dev: "펌프", want: true, act: function () { return 25 < S; } },
       { d: "흙 수분 45%", dev: "펌프", want: false, act: function () { return 45 < S; } }
     ];
@@ -86,7 +86,7 @@ function fmt(n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, " "); }
     }
     function mission() {
       if (got) {
-        window.sthState("ruleBest", "창문 24 ~ 28 °C, LED 4 000 ~ 15 000 lux, 펌프 30 ~ 45% 에서 여섯 상황 모두 통과");
+        window.sthState("ruleBest", "창문 24 ~ 28 °C, LED 4,000 ~ 15,000 lux, 펌프 30 ~ 45% 에서 여섯 상황 모두 통과");
         window.sthMission("m1-2", true, "<span class='m-tag'>미션 완료</span>" + window.sthState("ruleBest") + ". 센서 값을 기준과 비교하는 규칙이 온실의 ‘두뇌’입니다.");
         ep.clear(1);
       }
@@ -343,8 +343,8 @@ function fmt(n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, " "); }
       { y: "1957", n: "스푸트니크 1호 발사", tech: "인류 최초의 인공위성으로, 뒤의 통신·기상·항법(GPS) 위성 산업 전체의 출발점이 되었습니다.", cost: "체제 경쟁 속에서 막대한 비용이 들었지만, 뒤에 위성 통신 산업이 그 비용을 여러 배로 거두는 바탕이 되었습니다.", coop: "냉전 경쟁의 산물로 국제 협력과는 거리가 멀었고, 오히려 우주 개발 경쟁을 불붙였습니다." },
       { y: "1969", n: "아폴로 11호 유인 달 착륙", tech: "정밀 유도 항법, 소형 컴퓨터, 신소재 등 뒤에 민간 산업으로 퍼진 기술이 많이 개발되었습니다.", cost: "천문학적인 비용이 들어 실효성 논쟁이 꾸준히 이어졌습니다.", coop: "미국 단독 사업으로, 협력보다는 냉전 시대 국가 경쟁을 상징했습니다." },
       { y: "1998", n: "국제 우주 정거장 건설 시작", tech: "미세 중력 환경의 실험으로 신약·신소재 연구가 발전했습니다.", cost: "여러 나라가 비용을 나누었지만, 유지·보수에 계속 막대한 비용이 드는 것이 과제입니다.", coop: "미국·러시아·유럽·일본·캐나다 등이 함께한 대표적인 <b>국제 협력</b> 사업입니다." },
-      { y: "2015~", n: "궤도 로켓 1단 회수·재사용", tech: "로켓 1단을 회수해 다시 쓰는 기술이 발전해 발사 비용을 크게 낮추는 계기가 되었습니다.", cost: "처음 개발 비용은 컸지만, 길게 보면 발사 한 번의 비용을 크게 낮춰 <b>실효성</b>을 높였습니다.", coop: "민간 기업이 이끌며 여러 나라의 위성을 함께 실어 쏘는 상업적 협력 모델을 만들었습니다." },
-      { y: "2020년대", n: "저궤도 위성 인터넷망 구축", tech: "수천 개의 소형 위성으로 지상 통신망이 닿지 않는 곳까지 인터넷을 공급합니다.", cost: "초기 투자가 막대하지만, 오지·바다·항공 통신 같은 새 수요로 사업성을 검증받는 중입니다.", coop: "급증한 위성만큼 <b>우주 쓰레기</b>와 전파 간섭 문제가 생겨 국제 규범 논의가 활발합니다." }
+      { y: "2015~", n: "궤도 로켓 1단 회수·재사용", tech: "2015년 처음으로 궤도 로켓 1단을 땅에 내려 회수했고, 2017년 회수한 1단으로 다시 발사했습니다. 이 기술이 발전해 발사 비용을 크게 낮추는 계기가 되었습니다.", cost: "처음 개발 비용은 컸지만, 길게 보면 발사 한 번의 비용을 크게 낮춰 <b>실효성</b>을 높였습니다.", coop: "민간 기업이 이끌며 여러 나라의 위성을 함께 실어 쏘는 상업적 협력 모델을 만들었습니다." },
+      { y: "2020년대", n: "저궤도 위성 인터넷망 구축", tech: "수천 개의 소형 위성으로 지상 통신망이 닿지 않는 곳까지 인터넷을 공급합니다.", cost: "초기 투자가 막대하지만, 오지·바다·항공 통신 같은 새 수요로 사업성을 검증받는 중입니다.", coop: "수천 개의 위성이 같은 궤도와 주파수를 나눠 써야 해서, 국제전기통신연합(ITU) 같은 국제기구에서 나라와 기업이 함께 주파수·궤도를 조정하고 우주 쓰레기를 줄일 규범을 논의합니다." }
     ];
     var LN = { tech: "기술 파급 효과", cost: "비용과 실효성", coop: "국제 협력" };
     function draw() {
