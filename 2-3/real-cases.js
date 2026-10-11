@@ -51,7 +51,7 @@ window.sthLab({
       cv.canvas._redraw = draw;
       api.slider({ label: "정거장의 속력", min: 3, max: 12, step: 0.05, value: 3, fmt: function (x) { return x.toFixed(2) + " km/s"; }, onInput: function (x) { g = x; api.changed(); draw(); } });
       api.info("속력 = 한 바퀴 거리 ÷ 걸린 시간 = 2 × 3.14 × 궤도 반지름 ÷ (주기를 초로). " + SRC1
-        + "<div data-link='{\"id\":\"spot-station\",\"title\":\"Spot the Station\",\"src\":\"미국 항공우주국\",\"url\":\"https://www.nasa.gov/spot-the-station/\",\"ask\":\"우리 지역(가까운 도시)을 골라, 국제 우주 정거장이 하늘을 지나가는 다음 날짜·시각과 보이는 시간(분)을 적어 오세요.\"}'></div>");
+        + "<div data-link='{\"id\":\"spot-station\",\"title\":\"Spot the Station\",\"src\":\"미국 항공우주국\",\"url\":\"https://www.nasa.gov/spot-the-station/\",\"ask\":\"쪽 가운데 ‘View Sightings by City’에서 Country 는 South Korea, City 는 Pusan(부산, 우리 학교에서 가장 가까운 곳)을 골라, 국제 우주 정거장이 하늘을 지나가는 다음 날짜·시각과 보이는 시간(분)을 적어 오세요.\"}'></div>");
       draw();
       return {
         judge: function () {
