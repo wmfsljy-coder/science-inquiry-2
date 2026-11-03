@@ -48,15 +48,19 @@
         <section class="scene" data-title="얼음이 곧바로 수증기로">
           <div class="story"><div class="who">❄️</div><div class="say"><span class="name">식품 연구소장</span>“물은 온도와 압력에 따라 얼음·물·수증기가 돼. 압력을 아주 낮추면 얼음이 녹지 않고 곧바로 수증기가 되는 <b><span data-view="law:승화 (화학)">승화</span></b>가 일어나지. 딸기를 얼린 채로(<b>−10 °C 이하</b>) 얼음을 승화시킬 수 있는 온도와 압력을 찾아 줘.”</div></div>
           <div class="stage-card">
-            <div class="canvas-wrap"><canvas id="a-c-ph" width="900" height="300"></canvas></div>
-            <div class="controls">
-              <div class="ctrl-group">
-                <div class="ctrl-label">건조실 온도<span class="val" id="a-t-val">20 °C</span></div>
-                <input type="range" id="a-t" min="-40" max="60" step="5" value="20">
-              </div>
-              <div class="ctrl-group">
-                <div class="ctrl-label">건조실 압력<span class="val" id="a-p-val">101,325 Pa (1기압)</span></div>
-                <input type="range" id="a-p" min="0" max="7" step="1" value="7">
+            <div class="canvas-wrap stage"><canvas id="a-c-ph" width="900" height="340"></canvas></div>
+            <div class="sim-side">
+              <div class="readout" id="a-ph-read"></div>
+              <div style="display:flex;flex-direction:column;gap:14px">
+                <div class="ctrl-group">
+                  <div class="ctrl-label">건조실 온도<span class="val" id="a-t-val">20 °C</span></div>
+                  <input type="range" id="a-t" min="-40" max="60" step="5" value="20">
+                </div>
+                <div class="ctrl-group">
+                  <div class="ctrl-label">건조실 압력<span class="val" id="a-p-val">101,325 Pa (1기압)</span></div>
+                  <input type="range" id="a-p" min="0" max="7" step="1" value="7">
+                </div>
+                <button type="button" class="btn sm" id="a-ph-play">⏸ 움직임 멈추기</button>
               </div>
             </div>
             <div class="info-card" id="a-ph-info"></div>
@@ -67,7 +71,7 @@
         <section class="scene" data-title="열풍 건조와 동결 건조">
           <div class="story"><div class="who">⚖️</div><div class="say"><span class="name">우주 식량 심사관</span>“두 방법으로 말린 딸기를 비교해 봅시다. 우주 식량 합격 기준은 <b>비타민 C 80% 이상, 원래 부피 90% 이상</b>. 열풍 건조는 온도를 바꿔 가며 확인하고, 동결 건조와도 비교해 주세요.”</div></div>
           <div class="stage-card">
-            <div class="canvas-wrap"><canvas id="a-c-dry" width="900" height="270"></canvas></div>
+            <div class="canvas-wrap stage"><canvas id="a-c-dry" width="900" height="320"></canvas></div>
             <div class="controls">
               <div class="ctrl-group">
                 <div class="ctrl-label">건조 방식</div>
@@ -125,12 +129,13 @@
         <section class="scene" data-title="세 놀이기구의 그래프">
           <div class="story"><div class="who">📱</div><div class="say"><span class="name">물리 선생님</span>“스마트폰 가속도 센서는 몸이 느끼는 무게를 ‘g’로 알려 줘요. 가만히 서 있으면 1 g, 몸이 두 배로 무겁게 느껴지면 2 g 이지요. 세 놀이기구의 기록을 <b>모두</b> 살펴보고, 자이로드롭에서 센서가 <b>거의 0 g</b>를 가리킨 구간이 무엇을 뜻하는지 생각해 보세요. 실제 앱(예: phyphox)으로 잴 때는 ‘중력 포함’ 가속도 모드를 고르세요.”</div></div>
           <div class="stage-card">
-            <div class="canvas-wrap"><canvas id="b-c-acc" width="900" height="290"></canvas></div>
+            <div class="canvas-wrap stage"><canvas id="b-c-acc" width="900" height="330"></canvas></div>
             <div class="controls">
               <div class="ctrl-group" style="flex:1 1 100%">
                 <div class="ctrl-label">놀이기구</div>
                 <div class="seg" id="b-ride"><button class="on" data-v="bumper">범퍼카</button><button data-v="coaster">롤러코스터</button><button data-v="drop">자이로드롭</button></div>
               </div>
+              <button type="button" class="btn sm" id="b-acc-play">⏸ 탑승 멈추기</button>
             </div>
             <div class="info-card" id="b-acc-info"></div>
           </div>
@@ -141,19 +146,23 @@
         <section class="scene" data-title="안전한 루프 설계">
           <div class="story"><div class="who">🌀</div><div class="say"><span class="name">놀이기구 설계자 (인터뷰)</span>“루프 꼭대기에서는 몸이 좌석 쪽으로 <b>0.3 g 이상</b> 눌려야 안정감이 있고, 루프 바닥에서는 <b>5 g를 넘으면</b> 위험해요. 꼭대기 속력과 루프 크기, 모양을 정해 두 조건을 모두 맞춰 보세요. 둥근 루프로도 될까요?”</div></div>
           <div class="stage-card">
-            <div class="canvas-wrap"><canvas id="b-c-loop" width="900" height="280"></canvas></div>
-            <div class="controls">
-              <div class="ctrl-group">
-                <div class="ctrl-label">루프 모양</div>
-                <div class="seg" id="b-shape"><button class="on" data-v="circle">동그란 루프</button><button data-v="drop">물방울 모양 루프</button></div>
-              </div>
-              <div class="ctrl-group">
-                <div class="ctrl-label">꼭대기에서의 속력<span class="val" id="b-v-val">10 m/s</span></div>
-                <input type="range" id="b-v" min="5" max="25" step="1" value="10">
-              </div>
-              <div class="ctrl-group">
-                <div class="ctrl-label">꼭대기 곡률 반지름<span class="val" id="b-r-val">10 m</span></div>
-                <input type="range" id="b-r" min="5" max="20" step="1" value="10">
+            <div class="canvas-wrap stage"><canvas id="b-c-loop" width="900" height="340"></canvas></div>
+            <div class="sim-side">
+              <div class="readout" id="b-loop-read"></div>
+              <div style="display:flex;flex-direction:column;gap:14px">
+                <div class="ctrl-group">
+                  <div class="ctrl-label">루프 모양</div>
+                  <div class="seg" id="b-shape"><button class="on" data-v="circle">동그란 루프</button><button data-v="drop">물방울 모양 루프</button></div>
+                </div>
+                <div class="ctrl-group">
+                  <div class="ctrl-label">꼭대기에서의 속력<span class="val" id="b-v-val">10 m/s</span></div>
+                  <input type="range" id="b-v" min="5" max="25" step="1" value="10">
+                </div>
+                <div class="ctrl-group">
+                  <div class="ctrl-label">꼭대기 곡률 반지름<span class="val" id="b-r-val">10 m</span></div>
+                  <input type="range" id="b-r" min="5" max="20" step="1" value="10">
+                </div>
+                <button type="button" class="btn sm" id="b-loop-play">⏸ 열차 멈추기</button>
               </div>
             </div>
             <div class="info-card" id="b-loop-info"></div>
@@ -203,11 +212,15 @@
         <section class="scene" data-title="건물마다의 박자">
           <div class="story"><div class="who">🎵</div><div class="say"><span class="name">구조 공학자</span>“건물은 저마다 좌우로 한 번 흔들리는 데 걸리는 시간, <b>고유 주기</b>가 있어요(대략 층수 × 0.1 초). 이번 지진은 땅이 약 <b>0.5 초</b>마다 한 번씩 흔들렸습니다. 층수를 바꿔 가며, 이 지진에 <b>가장 크게 흔들리는 건물</b>을 찾아보세요.”</div></div>
           <div class="stage-card">
-            <div class="canvas-wrap"><canvas id="c-c-res" width="900" height="290"></canvas></div>
-            <div class="controls">
-              <div class="ctrl-group">
-                <div class="ctrl-label">건물 층수<span class="val" id="c-n-val">2층</span></div>
-                <input type="range" id="c-n" min="1" max="12" step="1" value="2">
+            <div class="canvas-wrap stage"><canvas id="c-c-res" width="900" height="340"></canvas></div>
+            <div class="sim-side">
+              <div class="readout" id="c-res-read"></div>
+              <div style="display:flex;flex-direction:column;gap:14px">
+                <div class="ctrl-group">
+                  <div class="ctrl-label">건물 층수<span class="val" id="c-n-val">2층</span></div>
+                  <input type="range" id="c-n" min="1" max="12" step="1" value="2">
+                </div>
+                <button type="button" class="btn sm" id="c-res-play">⏸ 흔들림 멈추기</button>
               </div>
             </div>
             <div class="info-card" id="c-res-info"></div>
@@ -219,7 +232,7 @@
         <section class="scene" data-title="학교 건물 지키기">
           <div class="story"><div class="who">🏫</div><div class="say"><span class="name">조사단장</span>“우리 학교 본관도 5층이에요. 세 가지 기술을 켜고 꺼 보며, 꼭대기 층이 받는 흔들림이 건물이 견디는 힘보다 작아지게 해 주세요. 비용을 생각해 필요한 것만 고르되, 적어도 <b>두 가지 기술</b>을 함께 써야 합니다.”</div></div>
           <div class="stage-card">
-            <div class="canvas-wrap"><canvas id="c-c-tech" width="900" height="290"></canvas></div>
+            <div class="canvas-wrap stage"><canvas id="c-c-tech" width="900" height="340"></canvas></div>
             <div class="controls">
               <div class="ctrl-group">
                 <div class="ctrl-label">내진 — 기둥·벽 보강</div>
@@ -233,6 +246,7 @@
                 <div class="ctrl-label">제진 — 댐퍼</div>
                 <div class="seg" id="c-t3"><button class="on" data-v="0">끔</button><button data-v="1">켬</button></div>
               </div>
+              <button type="button" class="btn sm" id="c-tech-play">⏸ 흔들림 멈추기</button>
             </div>
             <div class="info-card" id="c-tech-info"></div>
           </div>
@@ -281,11 +295,14 @@
         <section class="scene" data-title="저수지의 뉴트리아">
           <div class="story"><div class="who">🦫</div><div class="say"><span class="name">생태 연구원</span>“저수지의 뉴트리아는 남아메리카가 원산지인 외래종이에요. 수를 조절하지 않으면 수초와 토종 생물이 크게 줄지요. 해마다 뉴트리아를 몇 %씩 포획해야, 10년 뒤 토종 생물이 <b>60% 이상</b> 남을까요? 포획에도 인력과 비용이 드니 <b>가장 낮은 포획률</b>을 찾아 주세요.”</div></div>
           <div class="stage-card">
-            <div class="canvas-wrap"><canvas id="d-c-eco" width="900" height="280"></canvas></div>
-            <div class="controls">
-              <div class="ctrl-group">
-                <div class="ctrl-label">해마다 포획하는 뉴트리아 비율<span class="val" id="d-h-val">0%</span></div>
-                <input type="range" id="d-h" min="0" max="60" step="5" value="0">
+            <div class="canvas-wrap stage"><canvas id="d-c-eco" width="900" height="330"></canvas></div>
+            <div class="sim-side">
+              <div class="readout" id="d-eco-read"></div>
+              <div style="display:flex;flex-direction:column;gap:14px">
+                <div class="ctrl-group">
+                  <div class="ctrl-label">해마다 포획하는 뉴트리아 비율<span class="val" id="d-h-val">0%</span></div>
+                  <input type="range" id="d-h" min="0" max="60" step="5" value="0">
+                </div>
               </div>
             </div>
             <div class="info-card" id="d-eco-info"></div>
@@ -297,12 +314,13 @@
         <section class="scene" data-title="등굣길 측정">
           <div class="story"><div class="who">📟</div><div class="say"><span class="name">동아리 부장</span>“간이 측정기로 등교 시간(8시)에 세 곳을 쟀어. 미세먼지(PM2.5)는 <b>35 ㎍/m³</b>를 넘으면 ‘나쁨’, 도로변 소음은 낮 <b>65 dB</b>를 넘으면 기준 초과야. 세 곳을 모두 재 보고, <b>두 항목 모두 기준을 넘는 곳</b>을 찾아 줘. 기준은 평균값으로 정해져 있으니, 한 번 잰 값은 ‘의심되는 곳’을 찾는 첫 단서야.”</div></div>
           <div class="stage-card">
-            <div class="canvas-wrap"><canvas id="d-c-pol" width="900" height="260"></canvas></div>
+            <div class="canvas-wrap stage"><canvas id="d-c-pol" width="900" height="320"></canvas></div>
             <div class="controls">
               <div class="ctrl-group">
                 <div class="ctrl-label">측정 장소</div>
                 <div class="seg" id="d-loc"><button class="on" data-v="park">학교 뒤 공원</button><button data-v="field">운동장</button><button data-v="gate">정문 앞 큰길</button></div>
               </div>
+              <button type="button" class="btn sm" id="d-pol-play">⏸ 움직임 멈추기</button>
             </div>
             <div class="info-card" id="d-pol-info"></div>
           </div>
@@ -384,6 +402,7 @@
 <script src="../assets/account.js"></script>
 <script src="episodes.js"></script>
 <script src="worked.js"></script>
+<script src="handoff.js"></script>
 <script src="quiz-items.js"></script>
 <script src="../assets/review.js"></script>
 <script src="../assets/peer.js"></script>

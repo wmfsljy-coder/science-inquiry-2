@@ -47,7 +47,7 @@
         <section class="scene" data-title="규칙 설계">
           <div class="story"><div class="who">🧑‍💻</div><div class="say"><span class="name">나 (온실 설계자)</span>“딸기는 28 °C를 넘으면 힘들어하고, 흐린 날에는 빛이 모자라며, 흙 수분이 30% 아래면 목말라해. 창문·LED·펌프가 켜지는 기준을 정해서, 온실에서 일어날 <b>여섯 가지 상황</b>에 모두 옳게 움직이게 해 보자.”</div></div>
           <div class="stage-card">
-            <div class="canvas-wrap"><canvas id="a-c-rule" width="900" height="290"></canvas></div>
+            <div class="canvas-wrap stage"><canvas id="a-c-rule" width="900" height="340"></canvas></div>
             <div class="controls">
               <div class="ctrl-group">
                 <div class="ctrl-label">이 온도보다 높으면 창문 열기<span class="val" id="a-t-val">32 °C</span></div>
@@ -70,19 +70,23 @@
         <section class="scene" data-title="센서가 고장 나면">
           <div class="story"><div class="who">⚠️</div><div class="say"><span class="name">나 (온실 설계자)</span>“큰일 날 뻔했어! 오늘 아침 온도 센서가 고장 나서 계속 <b>20 °C</b>만 가리켰대. 한낮 온실은 38 °C까지 올랐는데 창문이 안 열렸지 뭐야. 고장을 <b>1시간 안에</b> 알아채면서, 쓸데없이 창문을 열지도 않는 안전장치를 골라 보자.”</div></div>
           <div class="stage-card">
-            <div class="canvas-wrap"><canvas id="a-c-fail" width="900" height="270"></canvas></div>
-            <div class="controls">
-              <div class="ctrl-group">
-                <div class="ctrl-label">온도 센서 두 개 두고 서로 비교</div>
-                <div class="seg" id="a-f1"><button class="on" data-v="0">안 씀</button><button data-v="1">씀</button></div>
-              </div>
-              <div class="ctrl-group">
-                <div class="ctrl-label">3시간 동안 값이 안 변하면 경고</div>
-                <div class="seg" id="a-f2"><button class="on" data-v="0">안 씀</button><button data-v="1">씀</button></div>
-              </div>
-              <div class="ctrl-group">
-                <div class="ctrl-label">날씨와 상관없이 정오에 창문 열기</div>
-                <div class="seg" id="a-f3"><button class="on" data-v="0">안 씀</button><button data-v="1">씀</button></div>
+            <div class="canvas-wrap stage"><canvas id="a-c-fail" width="900" height="330"></canvas></div>
+            <div class="sim-side">
+              <div class="readout" id="a-fail-read"></div>
+              <div style="display:flex;flex-direction:column;gap:14px">
+                <div class="ctrl-group">
+                  <div class="ctrl-label">온도 센서 두 개 두고 서로 비교</div>
+                  <div class="seg" id="a-f1"><button class="on" data-v="0">안 씀</button><button data-v="1">씀</button></div>
+                </div>
+                <div class="ctrl-group">
+                  <div class="ctrl-label">3시간 동안 값이 안 변하면 경고</div>
+                  <div class="seg" id="a-f2"><button class="on" data-v="0">안 씀</button><button data-v="1">씀</button></div>
+                </div>
+                <div class="ctrl-group">
+                  <div class="ctrl-label">날씨와 상관없이 정오에 창문 열기</div>
+                  <div class="seg" id="a-f3"><button class="on" data-v="0">안 씀</button><button data-v="1">씀</button></div>
+                </div>
+                <button type="button" class="btn sm" id="a-fail-play">⏸ 하루 멈추기</button>
               </div>
             </div>
             <div class="info-card" id="a-fail-info"></div>
@@ -132,11 +136,15 @@
         <section class="scene" data-title="환기 알림 장치">
           <div class="story"><div class="who">🟢</div><div class="say"><span class="name">발명 동아리장</span>“이산화 탄소 센서로 재 보니 창문을 닫으면 1분에 약 25 ppm씩 오르더라. <b>1000 ppm</b>을 넘으면 환기가 부족하다는 신호라, 졸림·집중력 저하와 함께 나타나기 쉽대. 알림이 울리면 5분 동안 창문을 여는 거야. 50분 수업 동안 <b>1000 ppm을 넘지 않으면서</b>, 알림이 <b>3번 이하</b>로 울리게(너무 자주 울리면 귀찮으니까) 알림 기준을 정해 줘.”</div></div>
           <div class="stage-card">
-            <div class="canvas-wrap"><canvas id="b-c-co2" width="900" height="270"></canvas></div>
-            <div class="controls">
-              <div class="ctrl-group">
-                <div class="ctrl-label">환기 알림 기준<span class="val" id="b-th-val">1200 ppm</span></div>
-                <input type="range" id="b-th" min="600" max="1500" step="100" value="1200">
+            <div class="canvas-wrap stage"><canvas id="b-c-co2" width="900" height="330"></canvas></div>
+            <div class="sim-side">
+              <div class="readout" id="b-co2-read"></div>
+              <div style="display:flex;flex-direction:column;gap:14px">
+                <div class="ctrl-group">
+                  <div class="ctrl-label">환기 알림 기준<span class="val" id="b-th-val">1200 ppm</span></div>
+                  <input type="range" id="b-th" min="600" max="1500" step="100" value="1200">
+                </div>
+                <button type="button" class="btn sm" id="b-co2-play">⏸ 수업 멈추기</button>
               </div>
             </div>
             <div class="info-card" id="b-co2-info"></div>
@@ -197,7 +205,7 @@
         <section class="scene" data-title="관점을 바꿔 보는 우주 개발사">
           <div class="story"><div class="who">🛰️</div><div class="say"><span class="name">지도 교사</span>“우주 개발의 다섯 사건을 세 가지 관점으로 살펴보자. <b>다섯 사건을 모두</b> 보고, <b>세 관점도 모두</b> 바꿔 보렴. 같은 사건이 관점에 따라 어떻게 달리 보이니?”</div></div>
           <div class="stage-card">
-            <div class="canvas-wrap"><canvas id="c-c-tl" width="900" height="200"></canvas></div>
+            <div class="canvas-wrap stage"><canvas id="c-c-tl" width="900" height="260"></canvas></div>
             <div class="controls">
               <div class="ctrl-group">
                 <div class="ctrl-label">사건<span class="val" id="c-ev-val">1957</span></div>
@@ -217,11 +225,14 @@
         <section class="scene" data-title="로켓을 다시 쓰면">
           <div class="story"><div class="who">🚀</div><div class="say"><span class="name">동아리 부장</span>“‘우주 개발은 너무 비싸다’는 반론에 답하려면 숫자가 필요해. 로켓 한 번 발사에 600억 원이 드는데, 그중 1단 로켓이 360억 원이야. 1단을 회수해 다시 쓰면 한 번 정비에 36억 원이 든대. 한 개의 1단을 몇 번 쓰면 발사 한 번의 비용이 <b>330억 원 이하</b>가 될까? <b>가장 적은 횟수</b>를 찾아 줘.”</div></div>
           <div class="stage-card">
-            <div class="canvas-wrap"><canvas id="c-c-cost" width="900" height="260"></canvas></div>
-            <div class="controls">
-              <div class="ctrl-group">
-                <div class="ctrl-label">1단 로켓 한 개를 쓰는 횟수<span class="val" id="c-n-val">1번</span></div>
-                <input type="range" id="c-n" min="1" max="20" step="1" value="1">
+            <div class="canvas-wrap stage"><canvas id="c-c-cost" width="900" height="320"></canvas></div>
+            <div class="sim-side">
+              <div class="readout" id="c-cost-read"></div>
+              <div style="display:flex;flex-direction:column;gap:14px">
+                <div class="ctrl-group">
+                  <div class="ctrl-label">1단 로켓 한 개를 쓰는 횟수<span class="val" id="c-n-val">1번</span></div>
+                  <input type="range" id="c-n" min="1" max="20" step="1" value="1">
+                </div>
               </div>
             </div>
             <div class="info-card" id="c-cost-info"></div>
@@ -303,6 +314,7 @@
 <script src="../assets/account.js"></script>
 <script src="episodes.js"></script>
 <script src="worked.js"></script>
+<script src="handoff.js"></script>
 <script src="quiz-items.js"></script>
 <script src="../assets/review.js"></script>
 <script src="../assets/peer.js"></script>
