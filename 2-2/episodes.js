@@ -386,49 +386,115 @@ function catFace(ctx, x, y, r, white, alpha) {
       return { starts: starts, mn: mn, mx: mx, ms: ms, ps: ps };
     }
     var cs = 60, playing = !REDUCE;
+    /* 위: 교실 창가의 자동 급수 장치를 블록으로 잘라 본 모형 · 아래: 하루 기록 */
+    var TOP = 432;
+    var I = K.iso({ ox: 330, oy: 95, s: 0.85, L: 520, D: 210 });
+    var PX0 = 40, PX1 = 280, PY0 = 50, PY1 = 200, PZ0 = 20, PZ1 = 112, SZ = 98;   /* 화분 */
+    var TX0 = 440, TX1 = 515, TY0 = 20, TY1 = 105;                               /* 물통 */
+    function hx(c) { var h = Math.max(0, Math.min(255, Math.round(c))).toString(16); return h.length < 2 ? "0" + h : h; }
+    function soilCol(M, f) {
+      var q = Math.max(0, Math.min(1, (M - 10) / 70));
+      return K.tint("#" + hx(196 - 144 * q) + hx(154 - 122 * q) + hx(94 - 76 * q), f || 1);
+    }
+    function quad(a, b, c, d, fill, stroke) { I.quad(ctx, a, b, c, d, fill, stroke); }
+    function drawModel(r, si, M, pump, hr, day) {
+      var i, P = I.P;
+      K.studio(ctx, 0, 0, W, TOP - 8, { x: P(I.L / 2, I.D / 2, 0).x, y: P(I.L, I.D, 0).y - 40, rx: 360, ry: 50 });
+      ctx.save(); ctx.beginPath(); ctx.roundRect(0, 0, W, TOP - 8, 14); ctx.clip();
+      if (!day) { ctx.fillStyle = "rgba(16,24,64,.30)"; ctx.fillRect(0, 0, W, TOP - 8); }
+      /* 책상 */
+      I.box(ctx, 0, 0, 0, I.L, I.D, 20, "#d9b98a", "#b98f5d", "#9a7246");
+      /* 물통(유리) — 펌프가 쓴 만큼 물이 줄어든다 */
+      var used = 0, all = 0; for (i = 0; i < 144; i++) { if (r.ps[i]) { all++; if (i <= si) used++; } }
+      var lvl = 20 + 100 * (0.95 - 0.55 * (all ? used / all : 0));
+      I.box(ctx, TX0, TY0, 20, TX1, TY1, lvl, "rgba(120,190,245,.95)", "rgba(40,110,200,.92)", "rgba(30,85,170,.92)");
+      quad(P(TX0, TY1, 20), P(TX1, TY1, 20), P(TX1, TY1, 128), P(TX0, TY1, 128), "rgba(210,232,255,.16)", "rgba(255,255,255,.75)");
+      quad(P(TX1, TY0, 20), P(TX1, TY1, 20), P(TX1, TY1, 128), P(TX1, TY0, 128), "rgba(190,215,250,.14)", "rgba(255,255,255,.65)");
+      quad(P(TX0, TY0, 128), P(TX1, TY0, 128), P(TX1, TY1, 128), P(TX0, TY1, 128), "rgba(230,242,255,.12)", "rgba(255,255,255,.7)");
+      /* 마이크로컨트롤러 */
+      I.box(ctx, 320, 30, 20, 380, 80, 25, "#1f8a5a", "#156b44", "#0f5233");
+      I.box(ctx, 342, 45, 25, 362, 62, 29, "#23262e", "#16181d", "#0e0f12");
+      var led = P(372, 72, 26); K.glow(ctx, led.x, led.y, 1.8, "rgba(255,90,90,.95)", 3);
+      /* 펌프 */
+      I.box(ctx, 400, 125, 20, 445, 172, 52, "#3a4160", "#2b3150", "#1e2338");
+      var pl = P(438, 172, 44); K.glow(ctx, pl.x, pl.y, 2.6, pump ? "rgba(63,211,163,.98)" : "rgba(255,107,129,.8)", pump ? 4 : 2.5);
+      /* 전선 */
+      ctx.lineWidth = 1.6;
+      var w1 = P(372, 80, 24), w2 = P(410, 128, 46), w3 = P(322, 60, 24), w4 = P(232, 194, 128);
+      ctx.strokeStyle = "#e05a4a"; ctx.beginPath(); ctx.moveTo(w1.x, w1.y); ctx.quadraticCurveTo((w1.x + w2.x) / 2, w2.y - 30, w2.x, w2.y); ctx.stroke();
+      ctx.strokeStyle = "#2f6fd0"; ctx.beginPath(); ctx.moveTo(w3.x, w3.y); ctx.bezierCurveTo(w3.x - 40, w3.y - 70, w4.x + 40, w4.y - 90, w4.x, w4.y); ctx.stroke();
+      /* 화분: 오른쪽 면, 흙 윗면, 테두리, 앞면(잘라 낸 단면) */
+      quad(P(PX1, PY0, PZ0), P(PX1, PY1, PZ0), P(PX1, PY1, PZ1), P(PX1, PY0, PZ1), "#9c4a24");
+      quad(P(PX0 + 8, PY0 + 8, SZ), P(PX1 - 8, PY0 + 8, SZ), P(PX1 - 8, PY1 - 8, SZ), P(PX0 + 8, PY1 - 8, SZ), soilCol(M, 1.05));
+      quad(P(PX0, PY0, PZ1), P(PX1, PY0, PZ1), P(PX1 - 8, PY0 + 8, PZ1), P(PX0 + 8, PY0 + 8, PZ1), "#c8693d");
+      quad(P(PX0, PY0, PZ1), P(PX0 + 8, PY0 + 8, PZ1), P(PX0 + 8, PY1, PZ1), P(PX0, PY1, PZ1), "#b85f34");
+      quad(P(PX1 - 8, PY0 + 8, PZ1), P(PX1, PY0, PZ1), P(PX1, PY1, PZ1), P(PX1 - 8, PY1, PZ1), "#b85f34");
+      quad(P(PX0, PY1, PZ0), P(PX1, PY1, PZ0), P(PX1, PY1, PZ1), P(PX0, PY1, PZ1), "#c8693d");
+      var c0 = P(PX0 + 8, PY1, PZ0 + 6), c1 = P(PX1 - 8, PY1, PZ0 + 6), c2 = P(PX1 - 8, PY1, SZ), c3 = P(PX0 + 8, PY1, SZ);
+      ctx.save(); ctx.beginPath(); ctx.moveTo(c0.x, c0.y); ctx.lineTo(c1.x, c1.y); ctx.lineTo(c2.x, c2.y); ctx.lineTo(c3.x, c3.y); ctx.closePath(); ctx.clip();
+      var sg = ctx.createLinearGradient(0, (c2.y + c3.y) / 2, 0, (c0.y + c1.y) / 2); sg.addColorStop(0, soilCol(M, 0.95)); sg.addColorStop(1, soilCol(Math.min(80, M + 12), 0.75));
+      var yT = Math.min(c2.y, c3.y), yB = Math.max(c0.y, c1.y);
+      ctx.fillStyle = sg; ctx.fillRect(c3.x - 5, yT - 5, c1.x - c3.x + 10, yB - yT + 10);
+      var Rg = K.rng(11);
+      for (i = 0; i < 140; i++) { var gp = P(PX0 + 10 + Rg() * (PX1 - PX0 - 20), PY1, PZ0 + 8 + Rg() * (SZ - PZ0 - 10)); ctx.fillStyle = Rg() > .5 ? "rgba(255,240,210,.22)" : "rgba(30,18,8,.35)"; ctx.fillRect(gp.x, gp.y, 1.8, 1.8); }
+      /* 뿌리 */
+      ctx.strokeStyle = "rgba(240,225,190,.75)"; ctx.lineWidth = 1.3;
+      var rt = P(150, PY1, SZ);
+      [[-40, 50], [-15, 62], [10, 66], [35, 52], [55, 38]].forEach(function (q) { var e = P(150 + q[0], PY1, SZ - q[1]); ctx.beginPath(); ctx.moveTo(rt.x, rt.y); ctx.quadraticCurveTo(rt.x + q[0] * 0.2, (rt.y + e.y) / 2, e.x, e.y); ctx.stroke(); });
+      /* 흙 속 물기(수분이 많을수록 많이) */
+      var nd = Math.round(Math.max(0, M - 15) / 4);
+      for (i = 0; i < nd; i++) { var dp = P(PX0 + 14 + Rg() * (PX1 - PX0 - 28), PY1, PZ0 + 10 + Rg() * (SZ - PZ0 - 16)); K.glow(ctx, dp.x, dp.y, 1.3, "rgba(127,211,255,.85)", 2.2); }
+      ctx.restore();
+      ctx.strokeStyle = "rgba(255,255,255,.45)"; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(c3.x, c3.y); ctx.lineTo(c2.x, c2.y); ctx.stroke();
+      /* 센서 — 갈래가 단면 안 흙에 꽂혀 있다 */
+      var s1 = P(224, PY1, SZ + 2), s2 = P(224, PY1, 52), s3 = P(240, PY1, SZ + 2), s4 = P(240, PY1, 52);
+      ctx.strokeStyle = "#e3c25a"; ctx.lineWidth = 2.4; ctx.beginPath(); ctx.moveTo(s1.x, s1.y); ctx.lineTo(s2.x, s2.y); ctx.moveTo(s3.x, s3.y); ctx.lineTo(s4.x, s4.y); ctx.stroke();
+      I.box(ctx, 218, 192, SZ, 246, 200, 128, "#2a5fb8", "#1f4a92", "#173a74");
+      /* 식물 */
+      var B = P(150, 125, SZ), droop = M < 25 ? 0.5 : 0, sc = 1.1;
+      ctx.strokeStyle = "#3c8a3a"; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(B.x, B.y); ctx.quadraticCurveTo(B.x - 4, B.y - 44 * sc, B.x + 2, B.y - (84 - droop * 30) * sc); ctx.stroke();
+      [[-1, 36], [1, 54], [-1, 72], [1, 84]].forEach(function (lf) {
+        var lx = B.x + (lf[1] > 64 ? 2 : -2), ly = B.y - (lf[1] - droop * 24) * sc, ang = lf[0] > 0 ? (-0.5 + droop * 1.4) : (Math.PI + 0.5 - droop * 1.4);
+        ctx.save(); ctx.translate(lx, ly); ctx.rotate(ang);
+        var lgd = ctx.createLinearGradient(0, -8, 30, 8); lgd.addColorStop(0, droop ? "#b8c870" : "#7be07a"); lgd.addColorStop(1, droop ? "#7a7a32" : "#2b7a32");
+        ctx.fillStyle = lgd; ctx.beginPath(); ctx.ellipse(20, 0, 22, 8, 0, 0, 6.2832); ctx.fill(); ctx.restore();
+      });
+      /* 호스와 물 */
+      var h0 = P(420, 140, 52), h1 = P(215, 95, 128), hc = P(330, 90, 200);
+      ctx.strokeStyle = "rgba(170,195,230,.95)"; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(h0.x, h0.y); ctx.quadraticCurveTo(hc.x, hc.y, h1.x, h1.y); ctx.stroke();
+      if (pump) {
+        for (i = 0; i < 6; i++) { var u = ((cs * 0.5 + i / 6) % 1), bx = (1 - u) * (1 - u) * h0.x + 2 * (1 - u) * u * hc.x + u * u * h1.x, byy = (1 - u) * (1 - u) * h0.y + 2 * (1 - u) * u * hc.y + u * u * h1.y; K.glow(ctx, bx, byy, 2, "rgba(127,211,255,.95)", 2.6); }
+        var tp = P(215, 95, SZ); for (i = 0; i < 3; i++) { var fy = h1.y + ((cs * 0.9 + i / 3) % 1) * (tp.y - h1.y); K.glow(ctx, h1.x, fy, 1.8, "rgba(127,211,255,.95)", 2.4); }
+      }
+      I.edges(ctx, 20, 20);
+      ctx.restore();
+      /* 이름표 */
+      var box = [0, W];
+      I.label(ctx, TX1, (TY0 + TY1) / 2, lvl - 10, "물통", 46, -24, "#bfe6ff", box);
+      I.label(ctx, 445, 150, 40, pump ? "펌프 켜짐" : "펌프 꺼짐", 60, 30, pump ? "#3fd3a3" : "#ffb3c0", box);
+      I.label(ctx, 350, 30, 27, "마이크로컨트롤러", 60, -46, "#e8ecff", box);
+      I.label(ctx, 232, 196, 128, "토양 수분 센서 " + M.toFixed(0) + "%", 70, 40, M >= 25 && M <= 70 ? "#3fd3a3" : "#ff9aac", box);
+      I.label(ctx, 80, PY1, 55, "흙 단면", -50, 40, "#f4e2c4", box);
+      /* 큰 글자 */
+      var h1t, h2t, hc2 = "#ffd35a";
+      if (off <= on) { h1t = "펌프가 딸깍딸깍 떤다"; h2t = "켜고 끄는 기준이 같거나 거꾸로 · 켜짐 " + r.starts + "번"; hc2 = "#ff9aac"; }
+      else if (r.starts <= 4 && r.mn >= 25 && r.mx <= 70) { h1t = "떨지 않는 자동 급수"; h2t = "하루 켜짐 " + r.starts + "번 · 수분 " + r.mn.toFixed(0) + "~" + r.mx.toFixed(0) + "%"; hc2 = "#3fd3a3"; }
+      else if (r.starts > 4) { h1t = "아직 펌프가 자주 켜진다"; h2t = "하루 켜짐 " + r.starts + "번"; }
+      else if (r.mn < 25) { h1t = "흙이 너무 마른다"; h2t = "가장 마를 때 수분 " + r.mn.toFixed(0) + "%"; }
+      else { h1t = "흙이 너무 축축하다"; h2t = "가장 젖을 때 수분 " + r.mx.toFixed(0) + "%"; }
+      K.bigText(ctx, h1t, 22, 46, 26, "#ffffff");
+      K.bigText(ctx, h2t, 22, 76, 15, hc2);
+      K.warn(ctx, W - 14, 26, "⚠ 크기는 보기 쉽게 바꿈 · 흙 색은 수분을 과장", "right");
+      K.pill(ctx, (day ? "☀ 낮 " : "☾ 밤 ") + (hr < 10 ? "0" : "") + Math.floor(hr) + ":" + (si % 6) + "0", W - 14, 56, { a: "right", s: 12, c: day ? KC.yellow : KC.blue });
+    }
     function draw() {
       ctx.clearRect(0, 0, W, H);
-      var r = sim(), ok = r.starts <= 4 && r.mn >= 25 && r.mx <= 70 && off > on, LW = 300, i;
+      var r = sim(), ok = r.starts <= 4 && r.mn >= 25 && r.mx <= 70 && off > on, i;
       var si = Math.min(143, Math.floor(cs)), M = r.ms[si], pump = r.ps[si], hr = si / 6, day = hr >= 6 && hr < 18;
-      /* ── 왼쪽: 화분과 펌프 ── */
-      K.stage(ctx, 0, 0, LW, H, day ? "sky" : "space", { seed: 18, title: (hr < 10 ? "0" : "") + Math.floor(hr) + ":" + (si % 6) + "0 · " + (day ? "낮" : "밤") });
-      if (day) K.sun(ctx, 250, 46, 11); else { ctx.fillStyle = "#f4f1d0"; ctx.beginPath(); ctx.arc(250, 46, 11, 0, 6.2832); ctx.fill(); ctx.fillStyle = "#0b1030"; ctx.beginPath(); ctx.arc(256, 42, 10, 0, 6.2832); ctx.fill(); }
-      ctx.save(); ctx.beginPath(); ctx.roundRect(0, 0, LW, H, 14); ctx.clip();
-      var fl = ctx.createLinearGradient(0, H - 46, 0, H); fl.addColorStop(0, "#4a3a2c"); fl.addColorStop(1, "#231910"); ctx.fillStyle = fl; ctx.fillRect(0, H - 46, LW, 46);
-      ctx.restore();
-      /* 물통과 펌프 */
-      var tg = ctx.createLinearGradient(30, 0, 86, 0); tg.addColorStop(0, "rgba(170,200,240,.25)"); tg.addColorStop(0.5, "rgba(220,235,255,.4)"); tg.addColorStop(1, "rgba(170,200,240,.2)");
-      ctx.fillStyle = tg; ctx.beginPath(); ctx.roundRect(30, 190, 56, 104, 8); ctx.fill();
-      var wg = ctx.createLinearGradient(0, 220, 0, 294); wg.addColorStop(0, "#5fb6f0"); wg.addColorStop(1, "#1d4f9a");
-      ctx.fillStyle = wg; ctx.beginPath(); ctx.roundRect(33, 220, 50, 71, 6); ctx.fill();
-      ctx.fillStyle = "#2b3150"; ctx.beginPath(); ctx.roundRect(92, 262, 34, 30, 6); ctx.fill();
-      K.glow(ctx, 118, 270, 2.6, pump ? "rgba(63,211,163,.95)" : "rgba(255,107,129,.7)", 3);
-      ctx.strokeStyle = "#8da2c8"; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(110, 262); ctx.bezierCurveTo(110, 150, 190, 140, 196, 186); ctx.stroke();
-      if (pump) for (i = 0; i < 6; i++) {
-        var u = ((cs * 0.5 + i / 6) % 1), bx = Math.pow(1 - u, 3) * 110 + 3 * Math.pow(1 - u, 2) * u * 110 + 3 * (1 - u) * u * u * 190 + u * u * u * 196, byy = Math.pow(1 - u, 3) * 262 + 3 * Math.pow(1 - u, 2) * u * 150 + 3 * (1 - u) * u * u * 140 + u * u * u * 186;
-        K.glow(ctx, bx, byy, 2, "rgba(127,211,255,.95)", 2.6);
-      }
-      /* 화분과 식물 */
-      var pg = ctx.createLinearGradient(140, 0, 250, 0); pg.addColorStop(0, "#7a3418"); pg.addColorStop(0.4, "#c8693d"); pg.addColorStop(1, "#6a2c13");
-      ctx.fillStyle = pg; ctx.beginPath(); ctx.moveTo(142, 206); ctx.lineTo(246, 206); ctx.lineTo(234, 294); ctx.lineTo(154, 294); ctx.closePath(); ctx.fill();
-      var q = Math.max(0, Math.min(1, (M - 10) / 70));
-      ctx.fillStyle = "rgb(" + Math.round(196 - 144 * q) + "," + Math.round(154 - 122 * q) + "," + Math.round(94 - 76 * q) + ")"; ctx.beginPath(); ctx.ellipse(194, 206, 52, 7, 0, 0, 6.2832); ctx.fill();
-      var droop = M < 25 ? 0.5 : 0;
-      ctx.strokeStyle = "#3c8a3a"; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(194, 204); ctx.quadraticCurveTo(190, 160, 196, 120 + droop * 30); ctx.stroke();
-      [[-1, 168], [1, 150], [-1, 132], [1, 120]].forEach(function (lf) {
-        var lx = 194 + (lf[1] < 140 ? 2 : -2), ly = lf[1] + droop * 24, ang = lf[0] > 0 ? (-0.5 + droop * 1.4) : (Math.PI + 0.5 - droop * 1.4);
-        ctx.save(); ctx.translate(lx, ly); ctx.rotate(ang);
-        var lgd = ctx.createLinearGradient(0, -8, 30, 8); lgd.addColorStop(0, "#7be07a"); lgd.addColorStop(1, "#2b7a32");
-        ctx.fillStyle = lgd; ctx.beginPath(); ctx.ellipse(18, 0, 18, 7, 0, 0, 6.2832); ctx.fill(); ctx.restore();
-      });
-      K.pill(ctx, "물통", 58, 182, { a: "center", s: 11, c: KC.blue });
-      K.pill(ctx, pump ? "펌프 켜짐" : "펌프 꺼짐", 109, H - 14, { a: "center", s: 11, c: pump ? KC.green : KC.mute });
-      K.pill(ctx, "흙 수분 " + M.toFixed(0) + "%", 210, H - 14, { a: "center", s: 11.5, c: M >= 25 && M <= 70 ? KC.green : KC.red, box: [150, LW] });
-
-      /* ── 오른쪽: 하루 기록 ── */
-      var RX = LW + 8;
-      K.stage(ctx, RX, 0, W - RX, H, "lab", { seed: 6, title: "하루 동안의 흙 수분과 펌프" });
-      var g = K.chart(ctx, { x: RX + 4, y: 40, w: W - RX - 12, h: H - 46, x0: 0, x1: 24, y0: 10, y1: 80, xt: 4, yt: 7, xl: "시각 (시)", yf: function (m) { return Math.round(m) + "%"; } });
+      drawModel(r, si, M, pump, hr, day);
+      /* ── 아래: 하루 기록 ── */
+      K.stage(ctx, 0, TOP, W, H - TOP, "lab", { seed: 6, title: "하루 동안의 흙 수분과 펌프" });
+      var g = K.chart(ctx, { x: 4, y: TOP + 36, w: W - 12, h: H - TOP - 42, x0: 0, x1: 24, y0: 10, y1: 80, xt: 4, yt: 7, xl: "시각 (시)", yf: function (m) { return Math.round(m) + "%"; } });
       ctx.fillStyle = A(KC.green, 0.11); ctx.fillRect(g.L, g.Y(70), g.R - g.L, g.Y(25) - g.Y(70));
       var cw = (g.R - g.L) / 144;
       for (i = 0; i < 144; i++) if (r.ps[i]) { ctx.fillStyle = A(KC.blue, 0.2); ctx.fillRect(g.X(i / 6), g.T, cw + 0.5, g.B - g.T); }
@@ -441,7 +507,7 @@ function catFace(ctx, x, y, r, white, alpha) {
       var cx = g.X(hr);
       vline(ctx, cx, g.T, g.B, A(KC.yellow, 0.7));
       K.glow(ctx, cx, g.Y(M), 4.5, "rgba(255,211,107,.95)", 4);
-      K.t(ctx, "파란 띠 = 펌프가 켜진 때", RX + 16, H - 6, { s: 10, c: KC.blue });
+      K.t(ctx, "파란 띠 = 펌프가 켜진 때", W - 200, TOP + 24, { s: 10.5, c: KC.blue });
       return ok;
     }
     function update() {
