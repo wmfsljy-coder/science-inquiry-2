@@ -541,41 +541,183 @@ function greenhouse(ctx, x, y, w, h, o) {
     update();
   })();
 
-  /* 장면 3 — 재사용 로켓 비용 */
+  /* 장면 3 — 재사용 로켓 비용 (잘라 보는 발사장 디오라마 + 발사 한 번 비용 블록 + 횟수별 막대) */
   (function () {
     var canvas = $("c-c-cost"), ctx = window.setupCanvas(canvas), W = canvas._w, H = canvas._h, n = 1;
     var got = window.sthState("costGot") || false;
+    var playing = !REDUCE, ph = 0.84;
     function cost(k) { return 360 / k + 36 * (k - 1) / k + 240; }
-    function draw() {
-      ctx.clearRect(0, 0, W, H);
-      var c0 = cost(n), ok = c0 <= 330 && cost(n - 1 > 0 ? n - 1 : 1) > 330 && n > 1, LW = 300, i, s1 = 360 / n + 36 * (n - 1) / n;
-      /* ── 왼쪽: 로켓과 발사 한 번 비용 ── */
-      K.stage(ctx, 0, 0, LW, H, "space", { seed: 33, title: "1단을 " + n + "번 쓰는 로켓" });
-      var rx = 92, top = 52, bot = H - 40;
-      var bg = ctx.createLinearGradient(rx - 18, 0, rx + 18, 0); bg.addColorStop(0, "#8a93ab"); bg.addColorStop(0.5, "#f1f4fb"); bg.addColorStop(1, "#6f7891");
-      ctx.fillStyle = bg; ctx.beginPath(); ctx.moveTo(rx, top); ctx.quadraticCurveTo(rx + 18, top + 26, rx + 18, top + 50); ctx.lineTo(rx - 18, top + 50); ctx.quadraticCurveTo(rx - 18, top + 26, rx, top); ctx.fill();
-      ctx.fillRect(rx - 18, top + 50, 36, 70);
-      ctx.fillStyle = "#3a4466"; ctx.fillRect(rx - 18, top + 118, 36, 4);
-      var s1g = ctx.createLinearGradient(rx - 18, 0, rx + 18, 0); s1g.addColorStop(0, "#6a7390"); s1g.addColorStop(0.5, n > 1 ? "#d9c9a8" : "#e9edf8"); s1g.addColorStop(1, "#5a6380");
-      ctx.fillStyle = s1g; ctx.fillRect(rx - 18, top + 122, 36, bot - top - 150);
-      if (n > 1) { ctx.fillStyle = "rgba(60,40,20,.35)"; for (i = 0; i < Math.min(n - 1, 8); i++) ctx.fillRect(rx - 18, bot - 40 - i * 12, 36, 4); }
-      ctx.strokeStyle = "#c9cfdd"; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.moveTo(rx - 16, bot - 30); ctx.lineTo(rx - 32, bot - 6); ctx.moveTo(rx + 16, bot - 30); ctx.lineTo(rx + 32, bot - 6); ctx.stroke();
-      K.glow(ctx, rx, bot - 18, 6, "rgba(255,179,92,.95)", 3);
-      K.pill(ctx, "2단 · 연료 등 (매번)", rx + 30, top + 80, { s: 10.5, c: KC.mute, box: [0, 228] });
-      K.pill(ctx, n > 1 ? "1단 ♻ " + n + "번째 비행" : "1단 · 한 번 쓰고 버림", rx + 30, top + 170, { s: 10.5, c: n > 1 ? KC.green : KC.orange, box: [0, 228] });
-      /* 발사 한 번 비용 막대 (1단 몫 + 나머지) */
-      var bx = 236, bw = 46, yB = H - 34, sc = (yB - 70) / 600;
-      ctx.fillStyle = "rgba(255,255,255,.06)"; ctx.beginPath(); ctx.roundRect(bx, yB - 600 * sc, bw, 600 * sc, 8); ctx.fill();
-      var g1 = ctx.createLinearGradient(0, yB - c0 * sc, 0, yB); g1.addColorStop(0, KC.orange); g1.addColorStop(1, "#8a4a1a");
-      ctx.fillStyle = "#3d5fa8"; ctx.fillRect(bx, yB - 240 * sc, bw, 240 * sc);
-      ctx.fillStyle = g1; ctx.fillRect(bx, yB - c0 * sc, bw, s1 * sc);
-      hline(ctx, bx - 8, bx + bw + 8, yB - 330 * sc, KC.yellow, [3, 3]);
-      K.t(ctx, "나머지 240", bx + bw / 2, yB - 120 * sc + 4, { s: 10, a: "center", c: "#dfe6ff" });
-      K.t(ctx, "발사 한 번", bx + bw / 2, yB + 18, { s: 10.5, a: "center", c: KC.mute });
-      /* ── 오른쪽: 쓰는 횟수에 따른 비용 ── */
-      var RX = LW + 8;
-      K.stage(ctx, RX, 0, W - RX, H, "lab", { seed: 14, title: "발사 한 번 비용 (억 원)" });
-      var g = K.chart(ctx, { x: RX + 4, y: 40, w: W - RX - 12, h: H - 46, x0: 0, x1: 20, y0: 0, y1: 700, xt: 4, yt: 7, xl: "1단을 쓰는 횟수", xf: function () { return ""; }, yf: function (q) { return Math.round(q) + ""; } });
+    var DH = 430;                                         /* 위: 발사장 모형, 아래: 횟수별 막대 */
+    var I = K.iso({ ox: 360, oy: 160, s: 0.62, L: 600, D: 240 });
+    var L = I.L, D = I.D, LAND = 360, GZ = 40, SEA = 34, FLOOR = 10;
+    var J = K.iso({ ox: 842, oy: 318, s: 0.62, L: 56, D: 56 });   /* 발사 한 번 비용 블록 */
+    var ZC = 0.5;                                         /* 1억 원 = 0.5 그림 단위 */
+    var box = [0, W];
+    function quad(a, b, c, d, fill) { ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.lineTo(c.x, c.y); ctx.lineTo(d.x, d.y); ctx.closePath(); ctx.fillStyle = fill; ctx.fill(); }
+    function cyl(x, yb, w, h, c0, c1, c2) {
+      var g = ctx.createLinearGradient(x - w / 2, 0, x + w / 2, 0); g.addColorStop(0, c0); g.addColorStop(0.42, c1); g.addColorStop(1, c2);
+      ctx.fillStyle = g; ctx.fillRect(x - w / 2, yb - h, w, h);
+    }
+    /* 1단(부스터) 하나: 바닥 가운데 (0,0) 기준, 위로 h. soot 0~1, legs 착륙 다리, flame 불꽃 */
+    function booster(h, soot, legs, flame) {
+      var w = 14, i;
+      if (flame) {
+        var fg = ctx.createLinearGradient(0, 0, 0, 34); fg.addColorStop(0, "rgba(255,240,180,.95)"); fg.addColorStop(0.5, "rgba(255,150,60,.75)"); fg.addColorStop(1, "rgba(255,90,40,0)");
+        ctx.fillStyle = fg; ctx.beginPath(); ctx.moveTo(-6, 0); ctx.lineTo(6, 0); ctx.lineTo(0, 26 + flame * 10); ctx.closePath(); ctx.fill();
+        K.glow(ctx, 0, 4, 4, "rgba(255,190,90,.9)", 3);
+      }
+      cyl(0, 0, w, h, "#6a7390", soot > 0 ? "#d6c7a8" : "#eef2fa", "#55607d");
+      if (soot > 0) { ctx.fillStyle = "rgba(55,38,20," + (0.18 + soot * 0.4).toFixed(2) + ")"; ctx.fillRect(-w / 2, -h * 0.55, w, h * 0.55); }
+      ctx.fillStyle = "#2b3046"; ctx.fillRect(-w / 2, -4, w, 4);
+      ctx.strokeStyle = "#c9cfdd"; ctx.lineWidth = 2;
+      ctx.beginPath();
+      if (legs) { ctx.moveTo(-6, -14); ctx.lineTo(-17, 2); ctx.moveTo(6, -14); ctx.lineTo(17, 2); }
+      else { ctx.moveTo(-7, -18); ctx.lineTo(-9, -2); ctx.moveTo(7, -18); ctx.lineTo(9, -2); }
+      ctx.stroke();
+      ctx.fillStyle = "#3a4466"; for (i = -1; i <= 1; i += 2) ctx.fillRect(i * 7 + (i < 0 ? -4 : 0), -h + 4, 4, 5);   /* 격자 날개 */
+    }
+    function drawModel(c0, ok) {
+      var i, k, p;
+      K.studio(ctx, 0, 0, W, DH, { x: 520, y: 395, rx: 380, ry: 52 });
+      ctx.save(); ctx.beginPath(); ctx.roundRect(0, 0, W, DH, 14); ctx.clip();
+      /* ── 블록 몸통: 앞면(땅 단면 + 바다 단면) ── */
+      I.face(ctx, "front", function () {
+        var g = ctx.createLinearGradient(0, 0, 0, GZ); g.addColorStop(0, "#5e4630"); g.addColorStop(0.6, "#8a6a45"); g.addColorStop(1, "#b49468");
+        ctx.fillStyle = g; ctx.fillRect(0, 0, LAND, GZ);
+        ctx.fillStyle = "#9aa0a8"; ctx.fillRect(0, GZ - 4, LAND, 4);                    /* 콘크리트 판 */
+        ctx.strokeStyle = "rgba(50,35,20,.35)"; ctx.lineWidth = 1;
+        for (k = 8; k < GZ - 6; k += 9) { ctx.beginPath(); ctx.moveTo(0, k); ctx.lineTo(LAND, k + 1.5); ctx.stroke(); }
+        var sg = ctx.createLinearGradient(0, 0, 0, FLOOR); sg.addColorStop(0, "#6b5a45"); sg.addColorStop(1, "#c9b083");
+        ctx.fillStyle = sg; ctx.fillRect(LAND, 0, L - LAND, FLOOR);
+        var wg = ctx.createLinearGradient(0, SEA, 0, FLOOR); wg.addColorStop(0, "rgba(70,160,230,.72)"); wg.addColorStop(1, "rgba(15,60,130,.85)");
+        ctx.fillStyle = wg; ctx.fillRect(LAND, FLOOR, L - LAND, SEA - FLOOR);
+        ctx.strokeStyle = "rgba(255,255,255,.8)"; ctx.lineWidth = 1.4; ctx.beginPath(); ctx.moveTo(LAND, SEA); ctx.lineTo(L, SEA); ctx.stroke();
+      });
+      I.face(ctx, "right", function () {
+        var sg = ctx.createLinearGradient(0, 0, 0, FLOOR); sg.addColorStop(0, "#5a4a38"); sg.addColorStop(1, "#a8926b");
+        ctx.fillStyle = sg; ctx.fillRect(0, 0, D, FLOOR);
+        var wg = ctx.createLinearGradient(0, SEA, 0, FLOOR); wg.addColorStop(0, "rgba(50,130,200,.78)"); wg.addColorStop(1, "rgba(10,45,105,.9)");
+        ctx.fillStyle = wg; ctx.fillRect(0, FLOOR, D, SEA - FLOOR);
+        ctx.strokeStyle = "rgba(255,255,255,.7)"; ctx.lineWidth = 1.4; ctx.beginPath(); ctx.moveTo(0, SEA); ctx.lineTo(D, SEA); ctx.stroke();
+      });
+      /* 땅 윗면(발사장 콘크리트)과 바닷가 옹벽 */
+      I.plane(ctx, GZ, "#c3c7cd", null, 0, LAND, 0, D);
+      ctx.strokeStyle = "rgba(255,255,255,.35)"; ctx.lineWidth = 1;
+      for (k = 60; k < LAND; k += 60) { var a1 = I.P(k, 0, GZ), b1 = I.P(k, D, GZ); ctx.beginPath(); ctx.moveTo(a1.x, a1.y); ctx.lineTo(b1.x, b1.y); ctx.stroke(); }
+      quad(I.P(LAND, 0, FLOOR), I.P(LAND, D, FLOOR), I.P(LAND, D, GZ), I.P(LAND, 0, GZ), "#7d736a");
+      /* 바다 윗면 */
+      var s0 = I.P(LAND, 0, SEA), s1 = I.P(L, D, SEA), sgr = ctx.createLinearGradient(s0.x, s0.y, s1.x, s1.y);
+      sgr.addColorStop(0, "rgba(120,200,250,.78)"); sgr.addColorStop(1, "rgba(30,110,195,.82)");
+      I.plane(ctx, SEA, sgr, "rgba(255,255,255,.6)", LAND, L, 0, D);
+      ctx.strokeStyle = "rgba(255,255,255,.45)"; ctx.lineWidth = 1;
+      for (i = 0; i < 8; i++) {
+        var gx = LAND + 12 + ((i * 0.41 + ph * 0.3) % 1) * (L - LAND - 30), gy = 14 + ((i * 0.63) % 1) * (D - 28);
+        var w1 = I.P(gx - 12, gy, SEA), w2 = I.P(gx + 8, gy, SEA);
+        ctx.beginPath(); ctx.moveTo(w1.x, w1.y); ctx.quadraticCurveTo((w1.x + w2.x) / 2, w1.y - 3, w2.x, w2.y); ctx.stroke();
+      }
+      I.edges(ctx, SEA, SEA);
+      /* ── 정비 격납고(앞쪽 왼편, 지붕과 앞벽은 잘라 냄) ── */
+      I.box(ctx, 15, 150, GZ, 125, 232, GZ + 2, "#d9dbe0", "#b8bcc4", "#9da2ab");
+      I.box(ctx, 15, 150, GZ, 125, 156, GZ + 44, "#e3e5ea", "#cfd3da", "#aeb3bc");
+      I.box(ctx, 15, 150, GZ, 21, 232, GZ + 44, "#e3e5ea", "#b9bec7", "#c9cdd4");
+      if (n > 1) {
+        var h1 = I.P(32, 194, GZ + 10), h2 = I.P(112, 194, GZ + 10);
+        ctx.save(); ctx.lineCap = "round";
+        ctx.strokeStyle = "#5c6378"; ctx.lineWidth = 12; ctx.beginPath(); ctx.moveTo(h1.x, h1.y); ctx.lineTo(h2.x, h2.y); ctx.stroke();
+        ctx.strokeStyle = "#d6c7a8"; ctx.lineWidth = 7; ctx.beginPath(); ctx.moveTo(h1.x, h1.y - 2); ctx.lineTo(h2.x, h2.y - 2); ctx.stroke();
+        ctx.restore();
+        [[40, 190], [100, 190]].forEach(function (q) { I.box(ctx, q[0] - 4, q[1] - 4, GZ + 2, q[0] + 4, q[1] + 8, GZ + 6, "#ffcf4a", "#d9a92a", "#b98e1e"); });
+        I.person(ctx, 70, 218, GZ + 2, "#ffd35a", 0.95);
+        I.person(ctx, 96, 214, GZ + 2, "#4fb6ff", 0.95);
+      }
+      I.label(ctx, 30, 232, GZ + 6, n > 1 ? "정비 격납고 · 한 번 정비 36억" : "격납고 비어 있음 · 정비할 1단 없음", -46, 46, n > 1 ? "#bff5dd" : "#e8ecff", box);
+      /* ── 발사대·정비탑·로켓 ── */
+      I.box(ctx, 160, 32, GZ, 238, 96, GZ + 12, "#cfd2d8", "#a9adb5", "#8d929b");
+      I.box(ctx, 170, 62, GZ + 12, 180, 72, GZ + 250, "#9aa0ab", "#7b8190", "#636978");
+      var tp = I.P(175, 72, GZ + 12);
+      ctx.strokeStyle = "rgba(60,64,78,.6)"; ctx.lineWidth = 1;
+      for (k = 0; k < 14; k++) { ctx.beginPath(); ctx.moveTo(tp.x - 6, tp.y - k * 11); ctx.lineTo(tp.x + 4, tp.y - k * 11 - 8); ctx.stroke(); }
+      p = I.P(200, 60, GZ + 12);
+      var rx = p.x, yb = p.y, s1h = 96;
+      ctx.save(); ctx.translate(rx, yb); booster(s1h, n > 1 ? Math.min(1, (n - 1) / 8) : 0, false, 0); ctx.restore();
+      if (n > 1) { ctx.fillStyle = "rgba(55,38,20,.45)"; for (i = 0; i < Math.min(n - 1, 8); i++) ctx.fillRect(rx - 7, yb - 18 - i * 9, 14, 2.5); }
+      ctx.fillStyle = "#2b3046"; ctx.fillRect(rx - 7, yb - s1h - 4, 14, 4);
+      cyl(rx, yb - s1h - 4, 14, 30, "#8a93ab", "#f4f6fb", "#6f7891");
+      var ft = yb - s1h - 34;
+      var fg = ctx.createLinearGradient(rx - 8, 0, rx + 8, 0); fg.addColorStop(0, "#8a93ab"); fg.addColorStop(0.45, "#ffffff"); fg.addColorStop(1, "#6f7891");
+      ctx.fillStyle = fg; ctx.beginPath(); ctx.moveTo(rx - 8, ft); ctx.lineTo(rx + 8, ft); ctx.lineTo(rx + 8, ft - 8); ctx.quadraticCurveTo(rx + 7, ft - 20, rx, ft - 24); ctx.quadraticCurveTo(rx - 7, ft - 20, rx - 8, ft - 8); ctx.closePath(); ctx.fill();
+      /* 로켓 이름표: 2단은 오른쪽, 1단은 왼쪽 */
+      K.line(ctx, { x: rx + 8, y: yb - s1h - 18 }, { x: rx + 22, y: yb - s1h - 22 }, "rgba(20,25,40,.75)", 1.2);
+      K.pill(ctx, "2단·연료 (매번 새로)", rx + 26, yb - s1h - 17, { s: 11.5, c: "#e8ecff", box: box });
+      K.line(ctx, { x: rx - 8, y: yb - 50 }, { x: rx - 32, y: yb - 54 }, "rgba(20,25,40,.75)", 1.2);
+      K.pill(ctx, n > 1 ? "1단 ♻ " + n + "번째 비행" : "1단 · 새로 만든 것", rx - 36, yb - 50, { s: 11.5, a: "right", c: n > 1 ? "#5ff0c0" : "#ffb35c", box: box });
+      /* ── 무인 회수선과 지난 발사의 1단 ── */
+      if (n > 1) {
+        I.box(ctx, 445, 100, SEA - 3, 525, 170, SEA + 5, "#5a606c", "#41464f", "#30343b");
+        var dk = I.P(485, 135, SEA + 5);
+        ctx.strokeStyle = "rgba(255,211,90,.9)"; ctx.lineWidth = 2; ctx.beginPath(); ctx.ellipse(dk.x, dk.y, 17, 9, 0, 0, 6.2832); ctx.stroke();
+        I.label(ctx, 520, 160, SEA + 5, ph < 0.68 ? "무인 회수선 · 지난 1단이 내려앉는 중" : "무인 회수선 · 지난 1단 회수 완료", 34, 34, "#bff5dd", box);
+        var t = ph, e = Math.min(1, t / 0.68), zb = SEA + 5 + 200 * Math.pow(1 - e, 2), q = I.P(485, 135, zb);
+        if (t > 0.68) { ctx.fillStyle = "rgba(255,255,255," + (0.35 * (1 - (t - 0.68) / 0.32)).toFixed(2) + ")"; ctx.beginPath(); ctx.ellipse(dk.x, dk.y - 4, 26, 9, 0, 0, 6.2832); ctx.fill(); }
+        ctx.save(); ctx.translate(q.x, q.y); booster(s1h, 0.6, e > 0.75, t < 0.68 ? 1 : 0); ctx.restore();
+
+      } else {
+        var t2 = ph, e2 = Math.min(1, t2 / 0.6), zf = SEA + 200 * (1 - e2 * e2), qf = I.P(430, 190, zf);
+        if (t2 < 0.6) { ctx.save(); ctx.translate(qf.x, qf.y); ctx.rotate(0.3 + e2 * 1.1); booster(s1h, 0, false, 0); ctx.restore(); }
+        else {
+          var r = (t2 - 0.6) / 0.4, sp = I.P(430, 190, SEA);
+          ctx.strokeStyle = "rgba(255,255,255," + (0.8 * (1 - r)).toFixed(2) + ")"; ctx.lineWidth = 2;
+          ctx.beginPath(); ctx.ellipse(sp.x, sp.y, 10 + r * 34, 5 + r * 16, 0, 0, 6.2832); ctx.stroke();
+          ctx.save(); ctx.beginPath(); ctx.rect(sp.x - 80, sp.y - 120, 160, 120); ctx.clip();
+          ctx.translate(sp.x + 6, sp.y + 2 + r * 6); ctx.rotate(1.25); booster(s1h * 0.55, 0, false, 0); ctx.restore();
+        }
+        var sp2 = I.P(430, 190, SEA); K.line(ctx, { x: sp2.x + 4, y: sp2.y + 4 }, { x: sp2.x + 40, y: sp2.y + 36 }, "rgba(20,25,40,.75)", 1.2); K.pill(ctx, "지난 발사의 1단 · 바다에 떨어져 버려짐", sp2.x + 44, sp2.y + 44, { s: 11.5, c: "#ffb35c", box: box });
+      }
+      ctx.restore();
+      /* ── 오른쪽: 발사 한 번 비용 블록 ── */
+      var zR = 240 * ZC, zT = c0 * ZC, zG = 330 * ZC, zO = 600 * ZC, fl = J.P(28, 28, 0);
+      ctx.fillStyle = "rgba(20,30,50,.18)"; ctx.beginPath(); ctx.ellipse(fl.x + 4, fl.y + 6, 50, 14, 0, 0, 6.2832); ctx.fill();
+      J.box(ctx, 0, 0, 0, 56, 56, zR, "#7fa6f0", "#3d5fa8", "#2c4682");
+      J.box(ctx, 0, 0, zR, 56, 56, zT, "#ffd08a", "#e08a32", "#a85c1c");
+      if (n > 1) {
+        ctx.save(); ctx.setLineDash([4, 4]); ctx.strokeStyle = "rgba(60,70,95,.7)"; ctx.lineWidth = 1.2;
+        var o1 = J.P(0, 56, zO), o2 = J.P(56, 56, zO), o3 = J.P(56, 0, zO), o4 = J.P(0, 0, zO);
+        ctx.beginPath(); ctx.moveTo(o1.x, o1.y); ctx.lineTo(o2.x, o2.y); ctx.lineTo(o3.x, o3.y); ctx.lineTo(o4.x, o4.y); ctx.closePath();
+        [[0, 56], [56, 56], [56, 0]].forEach(function (c) { var a2 = J.P(c[0], c[1], zT), b2 = J.P(c[0], c[1], zO); ctx.moveTo(a2.x, a2.y); ctx.lineTo(b2.x, b2.y); });
+        ctx.stroke(); ctx.restore();
+      }
+      J.plane(ctx, zG, "rgba(255,211,107,.30)", "#e0a800", -14, 70, -14, 70);
+      var labs = [
+        { z: zT, t: "발사 한 번 " + Math.round(c0) + "억", c: c0 <= 330 ? "#5ff0c0" : "#ffb35c" },
+        { z: zG, t: "목표 330억", c: "#ffd35a" },
+        { z: (zR + zT) / 2, t: "1단 몫 " + Math.round(c0 - 240) + "억", c: "#ffcf9a" },
+        { z: zR / 2, t: "나머지 240억", c: "#b9d0ff" }
+      ];
+      if (n > 1) labs.push({ z: zO, t: "처음 600억", c: "#c3c9da" });
+      labs.forEach(function (l) { l.ay = J.P(0, 56, l.z).y; l.y = l.ay; });
+      labs.sort(function (a3, b3) { return a3.y - b3.y; });
+      for (i = 1; i < labs.length; i++) if (labs[i].y < labs[i - 1].y + 23) labs[i].y = labs[i - 1].y + 23;
+      var ax = J.P(0, 56, 0).x;
+      labs.forEach(function (l) {
+        K.line(ctx, { x: 790, y: l.y - 4 }, { x: ax - 1, y: l.ay }, "rgba(20,25,40,.6)", 1);
+        K.pill(ctx, l.t, 786, l.y, { s: 11.5, a: "right", c: l.c, box: box });
+      });
+      K.pill(ctx, "발사 한 번 비용 블록", fl.x, fl.y + 38, { s: 11, a: "center", c: "#e8ecff", box: box });
+      /* ── 큰 제목·과장 표시 ── */
+      var t1, t2b, c2 = "#ffd35a";
+      if (n === 1) { t1 = "한 번 쓰고 바다에 버린다"; t2b = "발사 한 번 600억 원 · 1단은 매번 새로"; }
+      else if (ok) { t1 = "330억 아래, 가장 적은 횟수"; t2b = "1단 " + n + "번 재사용 · 발사 한 번 " + Math.round(c0) + "억 원"; c2 = "#5ff0c0"; }
+      else if (c0 <= 330) { t1 = "330억 아래로 내려왔다"; t2b = "1단 " + n + "번 · 더 적은 횟수로도 될까?"; c2 = "#5ff0c0"; }
+      else { t1 = "다시 쓰지만 아직 비싸다"; t2b = "1단 " + n + "번 · 발사 한 번 " + Math.round(c0) + "억 원"; }
+      K.bigText(ctx, t1, 22, 52, 27, "#ffffff");
+      K.bigText(ctx, t2b, 22, 86, 17, c2);
+      K.warn(ctx, 14, DH - 12, "⚠ 로켓·배·격납고 크기와 거리는 실제 비율이 아님");
+    }
+    function drawChart(c0) {
+      var y0 = DH + 8, h = H - y0;
+      K.stage(ctx, 0, y0, W, h, "lab", { seed: 14 });
+      K.pill(ctx, "1단을 쓰는 횟수에 따른 발사 한 번 비용 (억 원)", 14, y0 + 24, { s: 12, c: KC.blue });
+      var g = K.chart(ctx, { x: 4, y: y0 + 30, w: W - 12, h: h - 34, pt: 8, x0: 0, x1: 20, y0: 0, y1: 700, xt: 4, yt: 7, xl: "1단을 쓰는 횟수", xf: function () { return ""; }, yf: function (q) { return Math.round(q) + ""; } });
       var bwd = (g.R - g.L) / 20;
       for (var k = 1; k <= 20; k++) {
         var c = cost(k), on = k === n, x = g.L + (k - 1) * bwd + bwd * 0.16, tp = g.Y(c);
@@ -587,7 +729,13 @@ function greenhouse(ctx, x, y, w, h, o) {
       }
       hline(ctx, g.L, g.R, g.Y(330), KC.yellow);
       K.pill(ctx, "목표 330억", g.L + 8, g.Y(330) + 20, { s: 10.5, c: KC.yellow });
-      K.pill(ctx, Math.round(c0) + "억", g.L + (n - 0.5) * bwd, g.Y(c0) - 10, { a: "center", s: 11.5, c: c0 <= 330 ? KC.green : KC.orange, box: [RX, W] });
+      K.pill(ctx, Math.round(c0) + "억", g.L + (n - 0.5) * bwd, g.Y(c0) - 10, { a: "center", s: 11.5, c: c0 <= 330 ? KC.green : KC.orange, box: [0, W] });
+    }
+    function draw() {
+      ctx.clearRect(0, 0, W, H);
+      var c0 = cost(n), ok = c0 <= 330 && cost(n - 1 > 0 ? n - 1 : 1) > 330 && n > 1;
+      drawModel(c0, ok);
+      drawChart(c0);
       return ok;
     }
     function update() {
@@ -608,6 +756,8 @@ function greenhouse(ctx, x, y, w, h, o) {
       }
     }
     canvas._redraw = draw;
+    playBtn("c-cost-play", function () { return playing; }, function (q) { playing = q; draw(); }, "⏸ 회수 장면 멈추기", "▶ 1단 회수 장면 보기");
+    K.animate(canvas, function (dt) { if (playing) { ph = (ph + dt / 1000 / 4.2) % 1; draw(); } }, 24);
     $("c-n").addEventListener("input", function (e) { n = +e.target.value; $("c-n-val").textContent = n + "번"; update(); });
     update(); mission();
   })();

@@ -700,69 +700,160 @@ function berry(ctx, x, y, r, o) {
     }
     function cap() { return t1 ? 0.5 : 0.12; }
     var tt = 0, playing = !REDUCE;
+    /* ── 블록 모형: 땅 블록 위 5층 학교 본관, x = 운동장 쪽(오른쪽 아래), y = 깊이 ── */
+    var DH = 410;
+    var I = K.iso({ ox: 330, oy: 150, s: 0.62, L: 560, D: 280 });
+    var GZ = 56, X0 = 170, X1 = 420, Y0 = 70, Y1 = 200, FH = 40, BH = 30;
+    function shade(hex, f) { return K.tint(hex, f); }
+    function quad(c, a, b, d, e, fill) { c.beginPath(); c.moveTo(a.x, a.y); c.lineTo(b.x, b.y); c.lineTo(d.x, d.y); c.lineTo(e.x, e.y); c.closePath(); c.fillStyle = fill; c.fill(); }
+    function lineP(c, a, b, col, w) { c.strokeStyle = col; c.lineWidth = w; c.beginPath(); c.moveTo(a.x, a.y); c.lineTo(b.x, b.y); c.stroke(); }
+    /* 땅 블록(흔들림만큼 x 로 밀림) */
+    function ground(gx) {
+      var P = I.P, L = I.L, D = I.D;
+      /* 앞면: 흙·자갈·암반 지층 */
+      var layers = [[0, 18, "#5a4a3c"], [18, 36, "#7a6248"], [36, GZ - 6, "#9a7a55"], [GZ - 6, GZ, "#6f8f4a"]];
+      layers.forEach(function (q, k) {
+        quad(ctx, P(gx, D, q[0]), P(L + gx, D, q[0]), P(L + gx, D, q[1]), P(gx, D, q[1]), shade(q[2], 1));
+        quad(ctx, P(L + gx, 0, q[0]), P(L + gx, D, q[0]), P(L + gx, D, q[1]), P(L + gx, 0, q[1]), shade(q[2], 0.72));
+      });
+      var R = K.rng(41);
+      for (var i = 0; i < 150; i++) {
+        var u = R() * L, z = R() * (GZ - 8), p = P(u + gx, D, z);
+        ctx.fillStyle = R() > 0.5 ? "rgba(255,255,255,.14)" : "rgba(30,20,10,.28)"; ctx.fillRect(p.x, p.y, 2, 2);
+      }
+      /* 윗면: 운동장 흙(앞쪽)과 잔디 */
+      quad(ctx, P(gx, 0, GZ), P(L + gx, 0, GZ), P(L + gx, D, GZ), P(gx, D, GZ), "#8fb06a");
+      quad(ctx, P(440 + gx, 20, GZ + 0.1), P(L - 20 + gx, 20, GZ + 0.1), P(L - 20 + gx, D - 20, GZ + 0.1), P(440 + gx, D - 20, GZ + 0.1), "#c9a874");
+      lineP(ctx, P(470 + gx, 140, GZ + 0.2), P(L - 50 + gx, 140, GZ + 0.2), "rgba(255,255,255,.6)", 1.2);
+      /* 블록 모서리 */
+      lineP(ctx, P(gx, D, 0), P(L + gx, D, 0), "rgba(255,255,255,.5)", 1.2);
+      lineP(ctx, P(L + gx, D, 0), P(L + gx, 0, 0), "rgba(255,255,255,.5)", 1.2);
+      lineP(ctx, P(L + gx, D, 0), P(L + gx, D, GZ), "rgba(255,255,255,.5)", 1.2);
+      /* 나무 몇 그루 */
+      [[60, 40], [40, 150], [90, 250], [300, 18], [520, 40]].forEach(function (t, k) { I.tree(ctx, t[0] + gx, t[1], GZ, 0.9 + (k % 2) * 0.15); });
+    }
+    /* 고무 받침(면진): 층층이 겹친 고무·철판, 아래는 땅을 따라, 위는 건물을 따라 움직인다 */
+    function bearings(gx, b0) {
+      var pts = [[X0 + 18, Y0 + 16], [(X0 + X1) / 2, Y0 + 16], [X1 - 18, Y0 + 16], [X0 + 18, Y1 - 16], [(X0 + X1) / 2, Y1 - 16], [X1 - 18, Y1 - 16]];
+      /* 받침이 놓인 기초판 */
+      I.box(ctx, X0 - 8 + gx, Y0 - 8, GZ, X1 + 8 + gx, Y1 + 8, GZ + 3, "#b9bec8", "#9ba1ad", "#7e8592");
+      pts.forEach(function (q) {
+        for (var k = 0; k < 6; k++) {
+          var f0 = k / 6, f1 = (k + 1) / 6, off = gx + (b0 - gx) * (f0 + f1) / 2;
+          I.box(ctx, q[0] - 10 + off, q[1] - 10, GZ + 3 + (BH - 3) * f0, q[0] + 10 + off, q[1] + 10, GZ + 3 + (BH - 3) * f1,
+            k % 2 ? "#d7dbe3" : "#3a3d46", k % 2 ? "#b8bdc8" : "#24262d", k % 2 ? "#9ea4b0" : "#17181d");
+        }
+      });
+    }
+    function building(b0, topX, a, c, gx) {
+      var P = I.P, zb = GZ + (t2 ? BH : 0), f, over = a > c;
+      if (!t2) I.box(ctx, X0 - 6 + gx, Y0 - 6, GZ, X1 + 6 + gx, Y1 + 6, zb + 2, "#a4a9b3", "#8c919c", "#6f7480");
+      for (f = 0; f < 5; f++) {
+        var s0 = b0 + (topX - b0) * Math.pow(f / 5, 1.3), s1 = b0 + (topX - b0) * Math.pow((f + 1) / 5, 1.3);
+        var z0 = zb + f * FH, z1 = z0 + FH;
+        var heat = over ? Math.min(1, (a - c) / 0.4) * (0.35 + 0.65 * (f + 1) / 5) : 0;
+        var wall = heat > 0 ? "rgb(" + Math.round(214 + 30 * heat) + "," + Math.round(214 - 90 * heat) + "," + Math.round(206 - 100 * heat) + ")" : "#d6d3c8";
+        /* 앞면·오른쪽 면(층마다 기울어진 평행사변형) */
+        quad(ctx, P(X0 + s0, Y1, z0), P(X1 + s0, Y1, z0), P(X1 + s1, Y1, z1), P(X0 + s1, Y1, z1), wall);
+        quad(ctx, P(X1 + s0, Y0, z0), P(X1 + s0, Y1, z0), P(X1 + s1, Y1, z1), P(X1 + s1, Y0, z1), shade(wall.charAt(0) === "#" ? wall : "#c9b9ad", heat > 0 ? 0.8 : 0.74));
+        /* 층 바닥판 */
+        quad(ctx, P(X0 + s0, Y1, z0), P(X1 + s0, Y1, z0), P(X1 + s0, Y1, z0 + 4), P(X0 + s0, Y1, z0 + 4), "#8a8f9a");
+        quad(ctx, P(X1 + s0, Y0, z0), P(X1 + s0, Y1, z0), P(X1 + s0, Y1, z0 + 4), P(X1 + s0, Y0, z0 + 4), "#6f7480");
+        function F(u, v) { return P(X0 + (X1 - X0) * u + s0 + (s1 - s0) * v, Y1, z0 + (z1 - z0) * v); }
+        function Rf(u, v) { return P(X1 + s0 + (s1 - s0) * v, Y0 + (Y1 - Y0) * u, z0 + (z1 - z0) * v); }
+        /* 창문 */
+        var wi;
+        for (wi = 0; wi < 6; wi++) {
+          var u0 = 0.06 + wi * 0.155, u1 = u0 + 0.1, lit = (f + wi) % 3 !== 0;
+          quad(ctx, F(u0, 0.3), F(u1, 0.3), F(u1, 0.8), F(u0, 0.8), lit ? "#ffe39a" : "#4c6a9a");
+        }
+        for (wi = 0; wi < 3; wi++) {
+          var r0 = 0.1 + wi * 0.3, r1 = r0 + 0.18;
+          quad(ctx, Rf(r0, 0.3), Rf(r1, 0.3), Rf(r1, 0.8), Rf(r0, 0.8), (f + wi) % 2 ? "#e0c784" : "#3d5680");
+        }
+        /* 내진: 굵은 기둥 + X 자 철골 가새 */
+        if (t1) {
+          [0, 0.5, 1].forEach(function (u) { quad(ctx, F(u - 0.018, 0), F(u + 0.018, 0), F(u + 0.018, 1), F(u - 0.018, 1), "#4a4f5c"); });
+          ctx.save(); ctx.lineCap = "round";
+          [[0.03, 0.47], [0.53, 0.97]].forEach(function (bay) {
+            lineP(ctx, F(bay[0], 0.06), F(bay[1], 0.94), "#e08a3a", 3);
+            lineP(ctx, F(bay[1], 0.06), F(bay[0], 0.94), "#e08a3a", 3);
+          });
+          ctx.restore();
+        }
+        /* 제진: 오른쪽 면 대각선 오일 댐퍼(1·3·5층) */
+        if (t3 && f % 2 === 0) {
+          var d0 = Rf(0.12, 0.08), d1 = Rf(0.88, 0.92);
+          lineP(ctx, d0, d1, "#c9cfdd", 2.4);
+          var mx = (d0.x + d1.x) / 2, my = (d0.y + d1.y) / 2, ang = Math.atan2(d1.y - d0.y, d1.x - d0.x);
+          ctx.save(); ctx.translate(mx, my); ctx.rotate(ang);
+          var yg = ctx.createLinearGradient(0, -6, 0, 6); yg.addColorStop(0, "#ffe08a"); yg.addColorStop(1, "#b5862a");
+          ctx.fillStyle = yg; ctx.beginPath(); ctx.roundRect(-15, -5.5, 30, 11, 4); ctx.fill(); ctx.restore();
+        }
+        /* 층 모서리 선 */
+        lineP(ctx, P(X1 + s0, Y1, z0), P(X1 + s1, Y1, z1), "rgba(255,255,255,.55)", 1);
+      }
+      /* 옥상 */
+      var zt = zb + 5 * FH;
+      quad(ctx, P(X0 + topX, Y0, zt), P(X1 + topX, Y0, zt), P(X1 + topX, Y1, zt), P(X0 + topX, Y1, zt), "#9aa0ab");
+      quad(ctx, P(X0 + 10 + topX, Y0 + 10, zt + 0.1), P(X1 - 10 + topX, Y0 + 10, zt + 0.1), P(X1 - 10 + topX, Y1 - 10, zt + 0.1), P(X0 + 10 + topX, Y1 - 10, zt + 0.1), "#b6bcc6");
+      I.box(ctx, X0 + 30 + topX, Y0 + 30, zt, X0 + 70 + topX, Y0 + 60, zt + 14, "#e8ecf2", "#c9ced6", "#9aa3b0");
+      return zt;
+    }
     function draw() {
       ctx.clearRect(0, 0, W, H);
-      var a = acc(), c = cap(), ok = a <= c && t1 && (t1 + t2 + t3) >= 2, LW = 470, i, f;
-      /* ── 왼쪽: 5층 학교 건물 ── */
-      K.stage(ctx, 0, 0, LW, H, "night", { seed: 27, title: "우리 학교 본관 (5층)" });
-      var w = 2 * Math.PI / TG, gy = H - 50, bx = 210, bw = 170, fh = 40, base = gy - (t2 ? 18 : 0);
-      var gx0 = 4 * Math.sin(w * tt), topX = Math.min(70, a * 70) * Math.sin(w * tt - 0.6) + (t2 ? gx0 * 0.2 : gx0);
-      ctx.save(); ctx.beginPath(); ctx.roundRect(0, 0, LW, H, 14); ctx.clip();
-      var eg = ctx.createLinearGradient(0, gy, 0, H); eg.addColorStop(0, "#4a3626"); eg.addColorStop(1, "#1d140c");
-      ctx.fillStyle = eg; ctx.fillRect(-10 + gx0, gy, LW + 20, H - gy);
-      ctx.restore();
+      var a = acc(), c = cap(), ok = a <= c && t1 && (t1 + t2 + t3) >= 2, n = t1 + t2 + t3;
+      var w = 2 * Math.PI / TG, gx0 = 7 * Math.sin(w * tt);
       var b0 = t2 ? gx0 * 0.2 : gx0;
-      if (t2) {
-        for (i = 0; i < 4; i++) {
-          var ix = bx - bw / 2 + 14 + i * 44;
-          for (var L = 0; L < 5; L++) { ctx.fillStyle = L % 2 ? "#c9cfdd" : "#22252e"; ctx.fillRect(ix + gx0 * (1 - L / 5) + b0 * L / 5, gy - 18 + L * 3.6, 30, 3.6); }
-        }
-        K.pill(ctx, "고무 받침", bx + bw / 2 + 12, gy - 4, { s: 10.5, c: KC.mute, box: [0, LW] });
-      }
-      for (f = 0; f < 5; f++) {
-        var s0 = b0 + (topX - b0) * f / 5, s1 = b0 + (topX - b0) * (f + 1) / 5, yb = base - f * fh, yt = base - (f + 1) * fh;
-        var cg = ctx.createLinearGradient(bx - bw / 2, 0, bx + bw / 2, 0); cg.addColorStop(0, "#5b6378"); cg.addColorStop(0.5, "#a3abc0"); cg.addColorStop(1, "#4a5167");
-        ctx.fillStyle = cg; ctx.beginPath(); ctx.moveTo(bx - bw / 2 + s0, yb); ctx.lineTo(bx + bw / 2 + s0, yb); ctx.lineTo(bx + bw / 2 + s1, yt); ctx.lineTo(bx - bw / 2 + s1, yt); ctx.closePath(); ctx.fill();
-        ctx.fillStyle = "#3a4058"; ctx.fillRect(bx - bw / 2 + s1 - 2, yt, bw + 4, 4);
-        var m = (s0 + s1) / 2;
-        for (var wi = 0; wi < 4; wi++) { ctx.fillStyle = (f + wi) % 3 ? "rgba(255,226,150,.8)" : "rgba(40,60,110,.9)"; ctx.fillRect(bx - 66 + wi * 36 + m, yt + 12, 20, 16); }
-        if (t1) {
-          ctx.strokeStyle = "#e08a3a"; ctx.lineWidth = 3;
-          ctx.beginPath(); ctx.moveTo(bx - bw / 2 + 4 + s0, yb - 2); ctx.lineTo(bx - 4 + s1, yt + 4); ctx.moveTo(bx - 4 + s0, yb - 2); ctx.lineTo(bx - bw / 2 + 4 + s1, yt + 4); ctx.stroke();
-          ctx.fillStyle = "#2a2e40"; [bx - bw / 2, bx - 3, bx + bw / 2 - 6].forEach(function (px) { ctx.beginPath(); ctx.moveTo(px + s0, yb); ctx.lineTo(px + 6 + s0, yb); ctx.lineTo(px + 6 + s1, yt); ctx.lineTo(px + s1, yt); ctx.closePath(); ctx.fill(); });
-        }
-        if (t3 && f % 2 === 1) {
-          var dx0 = bx + 10 + s0, dy0 = yb - 4, dx1 = bx + bw / 2 - 10 + s1, dy1 = yt + 6;
-          ctx.strokeStyle = "#c9cfdd"; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(dx0, dy0); ctx.lineTo(dx1, dy1); ctx.stroke();
-          ctx.save(); ctx.translate((dx0 + dx1) / 2, (dy0 + dy1) / 2); ctx.rotate(Math.atan2(dy1 - dy0, dx1 - dx0));
-          var yg = ctx.createLinearGradient(0, -6, 0, 6); yg.addColorStop(0, "#ffe08a"); yg.addColorStop(1, "#b5862a");
-          ctx.fillStyle = yg; ctx.beginPath(); ctx.roundRect(-16, -6, 32, 12, 4); ctx.fill(); ctx.restore();
-        }
-      }
-      if (t1) K.pill(ctx, "철골 가새·굵은 기둥", 16, 70, { s: 10.5, c: KC.orange });
-      if (t3) K.pill(ctx, "오일 댐퍼", 16, t1 ? 96 : 70, { s: 10.5, c: KC.yellow });
-      K.arrow(ctx, { x: 60 + gx0, y: gy + 26 }, { x: 90 + gx0, y: gy + 26 }, KC.yellow, 2, 8);
-      K.arrow(ctx, { x: 60 + gx0, y: gy + 26 }, { x: 30 + gx0, y: gy + 26 }, KC.yellow, 2, 8);
-      K.pill(ctx, "땅의 흔들림 0.5초", 104, gy + 32, { s: 10.5, c: KC.yellow, box: [0, LW] });
-      K.warn(ctx, LW - 12, gy + 32, "⚠ 흔들림 폭 과장", "right");
+      var topX = b0 + Math.min(70, a * 70) * Math.sin(w * tt - 0.6);
+      var box = [0, W];
+      /* ── 위: 블록 모형 ── */
+      K.studio(ctx, 0, 0, W, DH, { x: I.P(I.L / 2, I.D / 2, 0).x, y: I.P(I.L, I.D, 0).y - 30, rx: 360, ry: 60 });
+      ctx.save(); ctx.beginPath(); ctx.roundRect(0, 0, W, DH, 14); ctx.clip();
+      ground(gx0);
+      if (t2) bearings(gx0, b0);
+      var zt = building(b0, topX, a, c, gx0);
+      /* 땅의 흔들림 화살표(앞면) */
+      var ga = I.P(70 + gx0, I.D, GZ / 2);
+      K.arrow(ctx, { x: ga.x + 4, y: ga.y + 6 }, { x: ga.x + 40, y: ga.y + 26 }, KC.yellow, 2.4, 9);
+      K.arrow(ctx, { x: ga.x + 4, y: ga.y + 6 }, { x: ga.x - 32, y: ga.y - 14 }, KC.yellow, 2.4, 9);
+      ctx.restore();
+      /* 이름표 */
+      I.label(ctx, X1 - 20 + topX, Y0 + 10, zt, "우리 학교 본관 (5층)", 70, -30, "#e8ecff", box);
+      var tp = I.P(X1 + topX, Y1, zt);
+      K.pill(ctx, "꼭대기 흔들림 " + a.toFixed(2) + " g", tp.x + 16, tp.y + 6, { s: 12, c: a <= c ? KC.green : KC.red, box: box });
+      I.label(ctx, 70 + gx0, I.D, 6, "땅의 흔들림 · 0.5초마다", -30, 34, "#ffd36b", box);
+      if (t1) I.label(ctx, X0 + 40 + b0, Y1, GZ + (t2 ? BH : 0) + 30, "철골 가새·굵은 기둥 (내진)", -70, -10, "#ffb35c", box);
+      if (t2) I.label(ctx, X1 - 18 + b0, Y1 - 6, GZ + BH / 2, "고무 받침 (면진)", 90, 34, "#7fd3ff", box);
+      if (t3) I.label(ctx, X1 + (b0 + topX) / 2, (Y0 + Y1) / 2, GZ + 120, "오일 댐퍼 (제진)", 110, -20, "#ffd36b", box);
+      /* 큰 제목 */
+      var h1, h2, c2 = "#ffd35a";
+      if (ok) { h1 = "흔들려도 버틴다"; h2 = "흔들림 " + a.toFixed(2) + " g ≤ 견디는 힘 " + c.toFixed(2) + " g"; c2 = "#7ef0c0"; }
+      else if (!t1 && n >= 1) { h1 = "기본 뼈대가 빠졌다"; h2 = "견디는 힘 " + c.toFixed(2) + " g · 장치만으로는 부족"; }
+      else if (a > c) { h1 = n === 0 ? "박자가 맞아 크게 흔들린다" : "꼭대기가 견디는 힘을 넘었다"; h2 = "흔들림 " + a.toFixed(2) + " g > 견디는 힘 " + c.toFixed(2) + " g"; c2 = "#ff9aac"; }
+      else { h1 = "기술 하나로는 부족하다"; h2 = "흔들림 " + a.toFixed(2) + " g · 견디는 힘 " + c.toFixed(2) + " g"; }
+      K.bigText(ctx, h1, 22, 50, 28, "#ffffff");
+      K.bigText(ctx, h2, 22, 82, 17, c2);
+      K.warn(ctx, W - 14, 30, "⚠ 흔들림 폭·받침·장치 크기는 보기 쉽게 과장", "right");
 
-      /* ── 오른쪽: 흔들림과 견디는 힘 ── */
-      var RX = LW + 8, RW = W - RX, gx = RX + 24, gw = RW - 48;
-      K.stage(ctx, RX, 0, RW, H, "lab", { seed: 8, title: "꼭대기 층 흔들림 vs 견디는 힘" });
+      /* ── 아래: 흔들림과 견디는 힘 ── */
+      var y0 = DH + 8, gx = 40, gw = W - 300;
+      K.stage(ctx, 0, y0, W, H - y0, "lab", { seed: 8 });
+      K.pill(ctx, "꼭대기 층 흔들림 vs 견디는 힘", 16, y0 + 24, { s: 12, c: KC.blue });
       function BX(q) { return gx + gw * Math.min(1, q); }
-      var col = a <= c ? KC.green : KC.red;
-      ctx.fillStyle = "rgba(255,255,255,.07)"; ctx.beginPath(); ctx.roundRect(gx, 96, gw, 26, 13); ctx.fill();
+      var col = a <= c ? KC.green : KC.red, by = y0 + 72;
+      ctx.fillStyle = "rgba(255,255,255,.07)"; ctx.beginPath(); ctx.roundRect(gx, by, gw, 26, 13); ctx.fill();
       var fg = ctx.createLinearGradient(gx, 0, BX(a), 0); fg.addColorStop(0, A(col, 0.35)); fg.addColorStop(1, col);
-      ctx.save(); ctx.shadowColor = col; ctx.shadowBlur = 12; ctx.fillStyle = fg; ctx.beginPath(); ctx.roundRect(gx, 96, Math.max(14, BX(a) - gx), 26, 13); ctx.fill(); ctx.restore();
-      ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.moveTo(BX(c), 86); ctx.lineTo(BX(c), 132); ctx.stroke();
-      K.pill(ctx, "흔들림 " + a.toFixed(2) + " g", gx, 76, { s: 12.5, c: col, box: [RX, W] });
-      K.pill(ctx, "견디는 힘 " + c.toFixed(2) + " g", BX(c), 152, { a: "center", s: 11.5, c: KC.ink, box: [RX, W] });
-      K.t(ctx, "0", gx, 182, { s: 10, c: KC.dim }); K.t(ctx, "1 g", gx + gw, 182, { s: 10, a: "right", c: KC.dim });
+      ctx.save(); ctx.shadowColor = col; ctx.shadowBlur = 12; ctx.fillStyle = fg; ctx.beginPath(); ctx.roundRect(gx, by, Math.max(14, BX(a) - gx), 26, 13); ctx.fill(); ctx.restore();
+      ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.moveTo(BX(c), by - 10); ctx.lineTo(BX(c), by + 36); ctx.stroke();
+      K.pill(ctx, "흔들림 " + a.toFixed(2) + " g", gx, by - 14, { s: 12.5, c: col, box: [0, W - 250] });
+      K.pill(ctx, "견디는 힘 " + c.toFixed(2) + " g", BX(c), by + 56, { a: "center", s: 11.5, c: KC.ink, box: [0, W - 250] });
+      K.t(ctx, "0", gx, by + 86, { s: 10, c: KC.dim }); K.t(ctx, "1 g", gx + gw, by + 86, { s: 10, a: "right", c: KC.dim });
+      var RX = W - 220;
       [["내진", t1, KC.orange], ["면진", t2, KC.blue], ["제진", t3, KC.yellow]].forEach(function (q, k) {
-        var x = gx + k * (gw / 3) + gw / 6;
-        K.pill(ctx, (q[1] ? "● " : "○ ") + q[0], x, 222, { a: "center", s: 12, c: q[1] ? q[2] : KC.dim, box: [RX, W] });
+        K.pill(ctx, (q[1] ? "● " : "○ ") + q[0], RX + 10 + k * 68, y0 + 60, { s: 12, c: q[1] ? q[2] : KC.dim, box: [RX, W] });
       });
-      K.pill(ctx, ok ? "학교 건물 안전" : (!t1 && (t2 || t3) ? "보완 필요 · 기본 내진 없음" : "보완 필요"), RX + RW / 2, H - 22, { a: "center", s: 14, c: ok ? KC.green : KC.red, box: [RX, W] });
+      K.pill(ctx, ok ? "학교 건물 안전" : (!t1 && (t2 || t3) ? "보완 필요 · 기본 내진 없음" : "보완 필요"), RX + 100, y0 + 124, { a: "center", s: 14, c: ok ? KC.green : KC.red, box: [RX, W] });
       return ok;
     }
     function update() {
