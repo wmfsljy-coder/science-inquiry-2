@@ -5,6 +5,33 @@
    자료: data/satcat.js (CelesTrak 위성 목록), data/usgs-korea.js (USGS 지진 목록), data/cw155.js */
 (function () {
 "use strict";
+/* ---- 밝은 스튜디오 + 입체 미니어처 (../assets/kit.js 의 K.studio · K.card) ---- */
+var K = window.sthKit, LT = K.LT;
+function lt(ctx, s, x, y, o) { o = o || {}; K.t(ctx, s, x, y, { s: o.s || 12, w: o.w || "700", a: o.a, c: o.c || LT.ink }); }
+function sideCard(ctx, x, W, H, title) { K.card(ctx, x, 0, W - x, H, title); return { px: x + 18, R: W - 18, w: W - x - 36 }; }
+function tag(ctx, s, x, y, c, a, box) { return K.pill(ctx, s, x, y, { s: 11.5, a: a, c: c || LT.ink, bg: "rgba(255,255,255,.92)", line: "rgba(20,40,90,.18)", box: box }); }
+function floorSh(ctx, x, y, rx, ry, a) {
+  var g = ctx.createRadialGradient(x, y, 2, x, y, rx);
+  g.addColorStop(0, "rgba(20,30,50," + (a || .28) + ")"); g.addColorStop(.6, "rgba(20,30,50,.07)"); g.addColorStop(1, "rgba(20,30,50,0)");
+  ctx.save(); ctx.translate(x, y); ctx.scale(1, ry / rx); ctx.translate(-x, -y); ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, rx, 0, 6.2832); ctx.fill(); ctx.restore();
+}
+function metalG(ctx, x0, y0, x1, y1) { var g = ctx.createLinearGradient(x0, y0, x1, y1); g.addColorStop(0, "#f6f8fb"); g.addColorStop(.5, "#aab3c3"); g.addColorStop(1, "#5b6476"); return g; }
+/* 앞에서 비스듬히 내려다본 판: 윗면 + 앞면 + 오른쪽 옆면 (x, y = 앞면 왼쪽 위) */
+function slab(ctx, x, y, w, h, d, cTop, cFront, cSide) {
+  ctx.fillStyle = cTop; ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + d, y - d * .55); ctx.lineTo(x + w + d, y - d * .55); ctx.lineTo(x + w, y); ctx.closePath(); ctx.fill();
+  if (cSide) { ctx.fillStyle = cSide; ctx.beginPath(); ctx.moveTo(x + w, y); ctx.lineTo(x + w + d, y - d * .55); ctx.lineTo(x + w + d, y + h - d * .55); ctx.lineTo(x + w, y + h); ctx.closePath(); ctx.fill(); }
+  ctx.fillStyle = cFront; ctx.fillRect(x, y, w, h);
+}
+/* 비스듬한 상자: 앞면 x..x+w, 바닥 y, 높이 h, 깊이 d */
+function box3(ctx, x, y, w, h, d, col, front) {
+  if (h < .5) return;
+  ctx.fillStyle = K.tint(col, 1.18); ctx.beginPath(); ctx.moveTo(x, y - h); ctx.lineTo(x + d, y - h - d * .55); ctx.lineTo(x + w + d, y - h - d * .55); ctx.lineTo(x + w, y - h); ctx.closePath(); ctx.fill();
+  ctx.fillStyle = K.tint(col, .72); ctx.beginPath(); ctx.moveTo(x + w, y - h); ctx.lineTo(x + w + d, y - h - d * .55); ctx.lineTo(x + w + d, y - d * .55); ctx.lineTo(x + w, y); ctx.closePath(); ctx.fill();
+  var g = ctx.createLinearGradient(0, y - h, 0, y); g.addColorStop(0, K.tint(col, 1.02)); g.addColorStop(1, K.tint(col, .85)); ctx.fillStyle = front || g; ctx.fillRect(x, y - h, w, h);
+}
+function wheel(ctx, x, y, r) { K.planet(ctx, x, y, r, "#6b7484", "#1f232b"); ctx.fillStyle = "#c9d0da"; ctx.beginPath(); ctx.arc(x, y, r * .38, 0, 6.2832); ctx.fill(); }
+/* 카드 안 가로 막대 + 기준 눈금 */
+function gauge(ctx, x, y, w, f, col, mark) { K.bar(ctx, x, y, w, f, col); if (mark != null) { ctx.fillStyle = LT.ink; ctx.fillRect(x + w * Math.max(0, Math.min(1, mark)) - 1, y - 4, 2, 18); } }
 var S = window.REAL_SAT || { iss: ["ISS (ZARYA)", 92.98, 425, 416, 51.63] }, Q = window.REAL_EQ || { rows: [] };
 var I = S.iss, RE = 6371, HM = (I[2] + I[3]) / 2, V = 2 * Math.PI * (RE + HM) / (I[1] * 60);
 var EQ = Q.rows;                                       /* [날짜, 규모, 종류, 위도, 경도, 깊이, 설명] */
@@ -37,16 +64,43 @@ window.sthLab({
     },
     task: "정거장의 속력을 슬라이더로 맞추세요(± 0.1 km/s).",
     build: function (stage, api) {
-      var H = api.h, cv = api.canvas(270), ctx = cv.ctx, W = cv.W, g = 3;
+      var H = api.h, cv = api.canvas(300), ctx = cv.ctx, W = cv.W, g = 3;
       function draw() {
-        H.paper(ctx, W, cv.H);
-        var cx = 200, cy = 135, r = 95, ro = r * (RE + HM) / RE;
-        ctx.save(); ctx.fillStyle = H.v("--brand"); ctx.globalAlpha = 0.25; ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.fill(); ctx.restore();
-        ctx.save(); ctx.strokeStyle = H.v("--amber-700"); ctx.setLineDash([5, 4]); ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(cx, cy, ro, 0, Math.PI * 2); ctx.stroke(); ctx.restore();
-        H.dot(ctx, cx + ro, cy, 6, H.v("--amber-700"));
-        H.text(ctx, "지구", cx, cy + 4, { s: 12, w: "900", a: "center" });
-        H.text(ctx, "궤도 (같은 비율로 그리면 이렇게 지구에 바짝 붙어 있어요)", cx, cy + ro + 22, { s: 10.5, a: "center", c: H.v("--mist") });
-        H.rows(ctx, 440, 24, [["궤도 주기", I[1] + " 분"], ["평균 높이", HM + " km"], ["궤도 반지름", (RE + HM).toLocaleString() + " km"], ["내 답 (속력)", g.toFixed(2) + " km/s", null, true]], 54);
+        /* 입체 미니어처: 스튜디오에 띄운 지구본과 실제 비율로 그린 궤도 고리(지구에 바짝 붙어 있음), 고리 앞쪽의 정거장 모형과 속도 화살표 */
+        var CH = cv.H, LW = 600, cx = 300, cy = 168, r = 104, ro = r * (RE + HM) / RE, k;
+        ctx.clearRect(0, 0, W, CH);
+        K.studio(ctx, 0, 0, LW, CH, null);
+        floorSh(ctx, cx + 10, cy + r + 18, 150, 16, .3);
+        ctx.save(); ctx.strokeStyle = "rgba(232,89,12,.55)"; ctx.lineWidth = 2.2; ctx.setLineDash([6, 5]);
+        ctx.beginPath(); ctx.ellipse(cx, cy, ro, ro * .32, -0.18, Math.PI, 2 * Math.PI); ctx.stroke(); ctx.restore();
+        var eg = ctx.createRadialGradient(cx - r * .4, cy - r * .45, r * .1, cx, cy, r);
+        eg.addColorStop(0, "#d0ebff"); eg.addColorStop(.45, "#339af0"); eg.addColorStop(1, "#1c4f8a");
+        ctx.fillStyle = eg; ctx.beginPath(); ctx.arc(cx, cy, r, 0, 6.2832); ctx.fill();
+        ctx.save(); ctx.beginPath(); ctx.arc(cx, cy, r, 0, 6.2832); ctx.clip();
+        ctx.fillStyle = "rgba(81,207,102,.85)";
+        [[-30, -30, 34, 22, .5], [30, 10, 30, 40, -.3], [-50, 40, 20, 14, .2], [50, -50, 22, 12, .8]].forEach(function (q) { ctx.beginPath(); ctx.ellipse(cx + q[0], cy + q[1], q[2], q[3], q[4], 0, 6.2832); ctx.fill(); });
+        ctx.fillStyle = "rgba(255,255,255,.6)"; ctx.beginPath(); ctx.ellipse(cx, cy - r + 10, 40, 10, 0, 0, 6.2832); ctx.fill();
+        ctx.restore();
+        ctx.save(); ctx.strokeStyle = "#e8590c"; ctx.lineWidth = 2.4; ctx.setLineDash([6, 5]);
+        ctx.beginPath(); ctx.ellipse(cx, cy, ro, ro * .32, -0.18, 0, Math.PI); ctx.stroke(); ctx.restore();
+        var an = 0.55, sx = cx + ro * Math.cos(an) * Math.cos(-0.18) - ro * .32 * Math.sin(an) * Math.sin(-0.18), sy = cy + ro * Math.cos(an) * Math.sin(-0.18) + ro * .32 * Math.sin(an) * Math.cos(-0.18);
+        ctx.fillStyle = "#4dabf7"; ctx.fillRect(sx - 20, sy - 4, 13, 8); ctx.fillRect(sx + 7, sy - 4, 13, 8);
+        ctx.strokeStyle = "#1c4f8a"; ctx.lineWidth = 1; ctx.strokeRect(sx - 20, sy - 4, 13, 8); ctx.strokeRect(sx + 7, sy - 4, 13, 8);
+        ctx.fillStyle = metalG(ctx, sx - 6, 0, sx + 6, 0); ctx.fillRect(sx - 6, sy - 3, 12, 6);
+        K.arrow(ctx, { x: sx + 4, y: sy + 8 }, { x: sx - 60, y: sy + 26 }, LT.orange, 3, 11);
+        tag(ctx, "국제 우주 정거장", sx + 26, sy + 2, LT.orange, "left", [0, LW]);
+        tag(ctx, "지구 반지름 6,371 km", cx - r - 10, cy + 6, LT.blue, "right", [0, LW]);
+        K.warn(ctx, LW - 12, CH - 10, "⚠ 궤도 높이는 실제 비율 · 정거장 크기는 과장", "right");
+        K.bigText(ctx, "한 바퀴 " + I[1] + "분", 16, 40, 24, "#ffffff");
+        K.bigText(ctx, "평균 높이 " + HM + " km", 16, 64, 14, "#ffd35a");
+        var cd = sideCard(ctx, LW + 10, W, CH, "정거장의 속력 구하기");
+        K.row(ctx, "궤도 주기", I[1] + " 분", cd.px, cd.R, 60);
+        K.row(ctx, "평균 높이", HM + " km", cd.px, cd.R, 86);
+        K.row(ctx, "궤도 반지름", (RE + HM).toLocaleString() + " km", cd.px, cd.R, 112, LT.orange);
+        lt(ctx, g.toFixed(2) + " km/s", cd.px, 160, { s: 24, w: "900", c: LT.blue });
+        lt(ctx, "내 답", cd.R, 160, { s: 11, a: "right", c: LT.mute });
+        K.tip(ctx, "속력 = 2π × 궤도 반지름 ÷ 주기(초)", cd.px - 4, 180, cd.w + 8, null);
+        lt(ctx, "지구 반지름에 높이를 더해야 궤도 반지름", cd.px, 240, { s: 11, w: "600", c: LT.mute });
       }
       cv.canvas._redraw = draw;
       api.slider({ label: "정거장의 속력", min: 3, max: 12, step: 0.05, value: 3, fmt: function (x) { return x.toFixed(2) + " km/s"; }, onInput: function (x) { g = x; api.changed(); draw(); } });
@@ -76,19 +130,42 @@ window.sthLab({
     },
     task: "USGS 목록에서 가장 큰 지진을 고르고, 두 기관 값이 다른 까닭을 고르세요.",
     build: function (stage, api) {
-      var H = api.h, cv = api.canvas(280), ctx = cv.ctx, W = cv.W, i = 0, why = "none";
+      var H = api.h, cv = api.canvas(320), ctx = cv.ctx, W = cv.W, i = 0, why = "none";
       function draw() {
-        H.paper(ctx, W, cv.H);
-        var x0 = 60, x1 = 600, y0 = 26, y1 = cv.H - 36;
-        function X(d) { var y = +d.slice(0, 4) + (+d.slice(5, 7) - 1) / 12; return x0 + (y - 1990) / 36 * (x1 - x0); }
-        function Y(m) { return y1 - (m - 2.5) / 3.5 * (y1 - y0); }
-        H.axes(ctx, x0, y0, x1, y1);
-        [3, 4, 5, 6].forEach(function (m) { H.text(ctx, m, x0 - 6, Y(m) + 4, { s: 10, a: "right", c: H.v("--mist") }); });
-        [1990, 2000, 2010, 2020].forEach(function (y) { H.text(ctx, y, X(y + "-01"), y1 + 15, { s: 10, a: "center", c: H.v("--mist") }); });
-        EQ.forEach(function (r, j) { H.dot(ctx, X(r[0]), Y(r[1]), j === i ? 7 : 4, j === i ? H.v("--amber-700") : H.v("--brand")); });
-        H.text(ctx, "USGS가 기록한 남한 둘레 지진의 규모", x0 + 6, y0 - 10, { s: 11, w: "700", c: H.v("--mist") });
-        var r = EQ[i] || ["", 0, "", 0, 0, 0, ""];
-        H.rows(ctx, 640, 30, [["고른 지진", r[0], "--amber-700"], ["곳", where(r)], ["USGS 규모", r[1].toFixed(1) + " (" + r[2] + ")", null, true], ["깊이", r[5] + " km"]], 52);
+        /* 밝은 스튜디오: 연도별 지진 규모 그래프(고른 지진 강조) + 오른쪽 작은 땅 블록 모형에 고른 지진의 진원 깊이 표시, 판정 카드 */
+        var CH = cv.H, LW = 610, r = EQ[i] || ["", 0, "", 0, 0, 0, ""];
+        ctx.clearRect(0, 0, W, CH);
+        K.studio(ctx, 0, 0, LW, CH, null);
+        var gg = K.chart(ctx, { x: 8, y: 76, w: 440, h: CH - 82, light: true, pl: 40, x0: 1990, x1: 2026, y0: 2.5, y1: 6, xt: 4, yt: 7, xf: function (v) { return Math.round(v) + ""; }, yf: function (v) { return v.toFixed(1); } });
+        function Xd(d) { return gg.X(+d.slice(0, 4) + (+d.slice(5, 7) - 1) / 12); }
+        EQ.forEach(function (q, j) { if (j === i) return; ctx.fillStyle = "rgba(28,126,214,.55)"; ctx.beginPath(); ctx.arc(Xd(q[0]), gg.Y(q[1]), 3.6, 0, 6.2832); ctx.fill(); });
+        if (EQ[i]) { var hx = Xd(r[0]), hy = gg.Y(r[1]); ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.arc(hx, hy, 9, 0, 6.2832); ctx.fill(); ctx.fillStyle = LT.orange; ctx.beginPath(); ctx.arc(hx, hy, 6.5, 0, 6.2832); ctx.fill(); tag(ctx, r[1].toFixed(1), hx, hy - 14, LT.orange, "center", [gg.L, gg.R]); }
+        tag(ctx, "USGS가 기록한 남한 둘레 지진의 규모", gg.L + 6, gg.T + 18, LT.ink, "left", [gg.L, gg.R]);
+        var IB = K.iso({ ox: 530, oy: 120, s: 0.6, L: 120, D: 90 }), P = IB.P, Z = 120;
+        floorSh(ctx, 535, 270, 90, 12, .28);
+        [[0, 30, "#7a5c45"], [30, 70, "#9c7a5a"], [70, 110, "#b8956b"], [110, Z, "#7cae55"]].forEach(function (q) {
+          IB.quad(ctx, P(0, 90, q[0] - Z), P(120, 90, q[0] - Z), P(120, 90, q[1] - Z), P(0, 90, q[1] - Z), q[2]);
+          IB.quad(ctx, P(120, 0, q[0] - Z), P(120, 90, q[0] - Z), P(120, 90, q[1] - Z), P(120, 0, q[1] - Z), K.tint(q[2], .72));
+        });
+        IB.plane(ctx, 0, "#8fbf62");
+        var dz = -Math.min(40, r[5] || 0) / 40 * Z, hp = P(60, 90, dz), ep = P(60, 90, 0);
+        K.line(ctx, ep, hp, "rgba(224,49,49,.8)", 1.6, [3, 3]);
+        for (var w = 1; w <= 3; w++) { ctx.strokeStyle = "rgba(224,49,49," + (0.6 - w * .15) + ")"; ctx.lineWidth = 1.6; ctx.beginPath(); ctx.arc(hp.x, hp.y, w * 9, 0, 6.2832); ctx.stroke(); }
+        K.bigText(ctx, "✸", hp.x - 9, hp.y + 7, 18, "#ff6b6b");
+        tag(ctx, "깊이 " + (r[5] || 0) + " km", hp.x + 26, hp.y + 4, LT.red, "left", [440, LW]);
+        lt(ctx, "0 km", P(0, 90, 0).x - 6, P(0, 90, 0).y + 4, { s: 9.5, w: "600", a: "right", c: LT.mute });
+        lt(ctx, "40 km", P(0, 90, -Z).x - 6, P(0, 90, -Z).y + 4, { s: 9.5, w: "600", a: "right", c: LT.mute });
+        K.bigText(ctx, "규모 " + (r[1] ? r[1].toFixed(1) : "-") + " (" + (r[2] || "") + ")", 16, 40, 22, i === BIG ? "#8ff0c4" : "#ffffff");
+        K.bigText(ctx, r[0] + " · " + where(r), 16, 64, 14, "#ffd35a");
+        var cd = sideCard(ctx, LW + 10, W, CH, "고른 지진");
+        K.row(ctx, "날짜", r[0], cd.px, cd.R, 60, LT.orange);
+        K.row(ctx, "곳", where(r), cd.px, cd.R, 86);
+        K.row(ctx, "USGS 규모", r[1].toFixed(1) + " (" + r[2] + ")", cd.px, cd.R, 112, LT.blue);
+        K.row(ctx, "깊이", r[5] + " km", cd.px, cd.R, 138);
+        var WHY = { none: "고르지 않음", scale: "척도가 달라서", wrong: "한 기관이 잘못 재서", deep: "포항이 더 깊어서" };
+        K.row(ctx, "내가 고른 까닭", WHY[why] || "", cd.px, cd.R, 164, LT.violet);
+        K.tip(ctx, i === BIG ? "목록에서 가장 큰 지진입니다" : "더 큰 지진이 있습니다", cd.px - 4, 184, cd.w + 8, i === BIG ? true : null);
+        lt(ctx, "mww = 모멘트 규모 · 기상청 ML = 국지 규모", cd.px, 246, { s: 10.5, w: "600", c: LT.mute });
       }
       cv.canvas._redraw = draw;
       api.slider({ label: "지진 (날짜 순)", min: 0, max: Math.max(0, EQ.length - 1), step: 1, value: 0, fmt: function (x) { return EQ[x] ? EQ[x][0] + " " + where(EQ[x]) : ""; }, onInput: function (x) { i = x; api.changed(); draw(); } });
@@ -120,18 +197,36 @@ window.sthLab({
     },
     task: "<b>(마지막 고비 날 − 첫 고비 날) ÷ (고비 수 − 1)</b>을 슬라이더로 맞추세요(± 0.5일).",
     build: function (stage, api) {
-      var H = api.h, cv = api.canvas(290), ctx = cv.ctx, W = cv.W, k = 3;
+      var H = api.h, cv = api.canvas(320), ctx = cv.ctx, W = cv.W, k = 3;
       var x0 = 50, x1 = 640, y0 = 24, y1 = 250, n = ZW.length || 1;
       function X(i) { return x0 + i / (n - 1) * (x1 - x0); }
       function Y(t) { return y1 - (t + 6) / 22 * (y1 - y0); }
       function draw() {
-        H.paper(ctx, W, cv.H); H.axes(ctx, x0, y0, x1, y1);
-        [-5, 0, 5, 10, 15].forEach(function (t) { H.text(ctx, t + "°", x0 - 8, Y(t) + 4, { s: 10, a: "right", c: H.v("--mist") }); H.dash(ctx, x0, Y(t), x1, Y(t), H.v("--line"), 0.5); });
-        H.line(ctx, ZW.map(function (v, i) { return [X(i), Y(v)]; }), H.v("--mist"), 1.2);
-        H.line(ctx, ZWS.map(function (v, i) { return [X(i), Y(v)]; }), H.v("--coral-700"), 2.2);
-        ZMIN.forEach(function (i, j) { H.dot(ctx, X(i), Y(ZWS[i]), 5, H.v("--brand")); H.text(ctx, zW(i), X(i), Y(ZWS[i]) + 16, { s: 9, w: "800", a: "center", c: H.v("--brand") }); });
-        [0, 31, 62, 89].forEach(function (i) { if (i < n) H.text(ctx, zW(i), X(i), y1 + 15, { s: 10, a: "center", c: H.v("--mist") }); });
-        H.rows(ctx, 680, 34, [["추운 고비 수", ZMIN.length + "번", "--brand"], ["첫 고비 → 마지막", ZMIN.length ? zW(ZMIN[0]) + " → " + zW(ZMIN[ZMIN.length - 1]) : ""], ["그 사이 날 수", ZMIN.length ? (ZMIN[ZMIN.length - 1] - ZMIN[0]) + "일" : ""], ["내 답", k.toFixed(1) + "일마다", null, true]], 50);
+        /* 밝은 스튜디오: 창원 겨울 날마다 평균 기온(회색) + 사흘 평균(빨강) + 추운 고비(파란 점) 밝은 그래프, 오른쪽 판정 카드 */
+        var CH = cv.H, LW = 640, n = ZW.length || 1;
+        ctx.clearRect(0, 0, W, CH);
+        K.studio(ctx, 0, 0, LW, CH, null);
+        var gg = K.chart(ctx, { x: 8, y: 76, w: LW - 16, h: CH - 82, light: true, pl: 40, x0: 0, x1: Math.max(1, n - 1), y0: -6, y1: 16, xt: 3, yt: 4,
+          xf: function (v) { return zW(Math.round(v)); }, yf: function (v) { return Math.round(v) + "°"; } });
+        ctx.fillStyle = "rgba(28,126,214,.07)"; ctx.fillRect(gg.L, gg.Y(0), gg.R - gg.L, gg.B - gg.Y(0));
+        K.plot(ctx, gg, ZW.map(function (v, j) { return [j, v]; }), "#adb5bd", { light: true, w: 1.4, glow: false });
+        K.plot(ctx, gg, ZWS.map(function (v, j) { return [j, v]; }), LT.red, { light: true, w: 2.6 });
+        ZMIN.forEach(function (j, q) {
+          var px = gg.X(j), py = gg.Y(ZWS[j]);
+          ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.arc(px, py, 6.5, 0, 6.2832); ctx.fill(); ctx.fillStyle = LT.blue; ctx.beginPath(); ctx.arc(px, py, 4.6, 0, 6.2832); ctx.fill();
+          lt(ctx, zW(j), px, py + (q % 2 ? 30 : 18), { s: 9.5, w: "800", a: "center", c: LT.blue });
+        });
+        tag(ctx, "회색 = 날마다 · 빨강 = 사흘 평균 · 파란 점 = 추운 고비", gg.L + 6, gg.T + 18, LT.ink, "left", [gg.L, gg.R]);
+        K.bigText(ctx, "추운 고비 " + ZMIN.length + "번", 16, 40, 24, "#ffffff");
+        K.bigText(ctx, "창원 2025년 12월 ~ 2026년 2월", 16, 64, 14, "#ffd35a");
+        var cd = sideCard(ctx, LW + 10, W, CH, "삼한사온 검증");
+        K.row(ctx, "추운 고비 수", ZMIN.length + "번", cd.px, cd.R, 60, LT.blue);
+        K.row(ctx, "첫 → 마지막", ZMIN.length ? zW(ZMIN[0]) + " → " + zW(ZMIN[ZMIN.length - 1]) : "", cd.px, cd.R, 86);
+        K.row(ctx, "그 사이 날 수", ZMIN.length ? (ZMIN[ZMIN.length - 1] - ZMIN[0]) + "일" : "", cd.px, cd.R, 112);
+        lt(ctx, k.toFixed(1) + "일마다", cd.px, 160, { s: 24, w: "900", c: LT.violet });
+        lt(ctx, "내 답", cd.R, 160, { s: 11, a: "right", c: LT.mute });
+        K.tip(ctx, "간격 수 = 고비 수 − 1", cd.px - 4, 180, cd.w + 8, null);
+        lt(ctx, "속설도 예측으로 바꾸면 시험할 수 있습니다.", cd.px, 240, { s: 10.5, w: "600", c: LT.mute });
       }
       cv.canvas._redraw = draw;
       api.slider({ label: "추위가 오는 평균 간격", min: 2, max: 14, step: 0.1, value: 3, fmt: function (x) { return x.toFixed(1) + "일"; }, onInput: function (x) { k = x; api.changed(); draw(); } });

@@ -2,6 +2,33 @@
    이야기에서 찾은 개념을 처음 보는 상황에 써 본다. 공용 엔진: ../assets/lab.js (sthLab) */
 (function () {
 "use strict";
+/* ---- 밝은 스튜디오 + 입체 미니어처 (../assets/kit.js 의 K.studio · K.card) ---- */
+var K = window.sthKit, LT = K.LT;
+function lt(ctx, s, x, y, o) { o = o || {}; K.t(ctx, s, x, y, { s: o.s || 12, w: o.w || "700", a: o.a, c: o.c || LT.ink }); }
+function sideCard(ctx, x, W, H, title) { K.card(ctx, x, 0, W - x, H, title); return { px: x + 18, R: W - 18, w: W - x - 36 }; }
+function tag(ctx, s, x, y, c, a, box) { return K.pill(ctx, s, x, y, { s: 11.5, a: a, c: c || LT.ink, bg: "rgba(255,255,255,.92)", line: "rgba(20,40,90,.18)", box: box }); }
+function floorSh(ctx, x, y, rx, ry, a) {
+  var g = ctx.createRadialGradient(x, y, 2, x, y, rx);
+  g.addColorStop(0, "rgba(20,30,50," + (a || .28) + ")"); g.addColorStop(.6, "rgba(20,30,50,.07)"); g.addColorStop(1, "rgba(20,30,50,0)");
+  ctx.save(); ctx.translate(x, y); ctx.scale(1, ry / rx); ctx.translate(-x, -y); ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, rx, 0, 6.2832); ctx.fill(); ctx.restore();
+}
+function metalG(ctx, x0, y0, x1, y1) { var g = ctx.createLinearGradient(x0, y0, x1, y1); g.addColorStop(0, "#f6f8fb"); g.addColorStop(.5, "#aab3c3"); g.addColorStop(1, "#5b6476"); return g; }
+/* 앞에서 비스듬히 내려다본 판: 윗면 + 앞면 + 오른쪽 옆면 (x, y = 앞면 왼쪽 위) */
+function slab(ctx, x, y, w, h, d, cTop, cFront, cSide) {
+  ctx.fillStyle = cTop; ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + d, y - d * .55); ctx.lineTo(x + w + d, y - d * .55); ctx.lineTo(x + w, y); ctx.closePath(); ctx.fill();
+  if (cSide) { ctx.fillStyle = cSide; ctx.beginPath(); ctx.moveTo(x + w, y); ctx.lineTo(x + w + d, y - d * .55); ctx.lineTo(x + w + d, y + h - d * .55); ctx.lineTo(x + w, y + h); ctx.closePath(); ctx.fill(); }
+  ctx.fillStyle = cFront; ctx.fillRect(x, y, w, h);
+}
+/* 비스듬한 상자: 앞면 x..x+w, 바닥 y, 높이 h, 깊이 d */
+function box3(ctx, x, y, w, h, d, col, front) {
+  if (h < .5) return;
+  ctx.fillStyle = K.tint(col, 1.18); ctx.beginPath(); ctx.moveTo(x, y - h); ctx.lineTo(x + d, y - h - d * .55); ctx.lineTo(x + w + d, y - h - d * .55); ctx.lineTo(x + w, y - h); ctx.closePath(); ctx.fill();
+  ctx.fillStyle = K.tint(col, .72); ctx.beginPath(); ctx.moveTo(x + w, y - h); ctx.lineTo(x + w + d, y - h - d * .55); ctx.lineTo(x + w + d, y - d * .55); ctx.lineTo(x + w, y); ctx.closePath(); ctx.fill();
+  var g = ctx.createLinearGradient(0, y - h, 0, y); g.addColorStop(0, K.tint(col, 1.02)); g.addColorStop(1, K.tint(col, .85)); ctx.fillStyle = front || g; ctx.fillRect(x, y - h, w, h);
+}
+function wheel(ctx, x, y, r) { K.planet(ctx, x, y, r, "#6b7484", "#1f232b"); ctx.fillStyle = "#c9d0da"; ctx.beginPath(); ctx.arc(x, y, r * .38, 0, 6.2832); ctx.fill(); }
+/* 카드 안 가로 막대 + 기준 눈금 */
+function gauge(ctx, x, y, w, f, col, mark) { K.bar(ctx, x, y, w, f, col); if (mark != null) { ctx.fillStyle = LT.ink; ctx.fillRect(x + w * Math.max(0, Math.min(1, mark)) - 1, y - 4, 2, 18); } }
 
 window.sthLab({
   mount: "lab", key: "lab", result: "rLab",
@@ -19,20 +46,45 @@ window.sthLab({
     },
     task: "경보 기준 시간을 정해 <b>겨울과 여름 모두</b> 0.45~0.55 m에서 경보가 울리게 하세요.",
     build: function (stage, api) {
-      var H = api.h, cv = api.canvas(260), ctx = cv.ctx, W = cv.W, t = 5.0, season = "w";
+      var H = api.h, cv = api.canvas(300), ctx = cv.ctx, W = cv.W, t = 5.0, season = "w";
       function dist(vs) { return vs * t / 1000 / 2; }
       function draw() {
-        H.paper(ctx, W, cv.H);
-        [[331, "겨울 0 °C", 70], [349, "여름 30 °C", 170]].forEach(function (r) {
-          var d = dist(r[0]), y = r[2], x0 = 150, sc = 400;
-          H.text(ctx, r[1] + " (" + r[0] + " m/s)", 20, y - 30, { s: 12, w: "800" });
-          H.text(ctx, "🚗", x0 - 10, y + 8, { s: 22, a: "center" });
-          H.box(ctx, x0 + 0.45 * sc, y - 22, 0.1 * sc, 44, H.v("--green-700"), 0.15);
-          H.dash(ctx, x0 + d * sc, y - 26, x0 + d * sc, y + 26, H.v("--coral-700"), 2.5);
-          H.text(ctx, "경보 " + d.toFixed(2) + " m", Math.min(x0 + d * sc + 6, 590), y - 12, { s: 12, w: "900", c: d >= 0.45 && d <= 0.55 ? H.v("--green-700") : H.v("--rose-700") });
-          for (var m = 0; m <= 1.2; m += 0.25) H.text(ctx, m.toFixed(2), x0 + m * sc, y + 42, { s: 9.5, a: "center", c: H.v("--mist") });
+        /* 입체 미니어처: 스튜디오 위 주차 연습 레일 두 줄(겨울·여름). 범퍼 초음파 센서에서 소리가 퍼지고, 경보가 울리는 거리에 반투명 경보면이 선다. 초록 띠 = 목표 0.45~0.55 m */
+        var CH = cv.H, LW = 610, x0 = 128, sc = 380, okAll = true;
+        ctx.clearRect(0, 0, W, CH);
+        K.studio(ctx, 0, 0, LW, CH, null);
+        [[331, "겨울 0 °C", 150, "#1c7ed6"], [349, "여름 30 °C", 266, "#e8590c"]].forEach(function (r) {
+          var d = dist(r[0]), ly = r[2], good = d >= 0.45 && d <= 0.55, xd = Math.min(570, x0 + d * sc), m;
+          if (!good) okAll = false;
+          floorSh(ctx, 320, ly + 16, 300, 12, .22);
+          slab(ctx, 24, ly, 556, 12, 26, "#eef1f6", "#c3cad6", "#a7afbd");
+          var xa = x0 + 0.45 * sc, xb = x0 + 0.55 * sc;
+          ctx.fillStyle = "rgba(15,159,118,.30)"; ctx.beginPath(); ctx.moveTo(xa, ly); ctx.lineTo(xa + 26, ly - 14.3); ctx.lineTo(xb + 26, ly - 14.3); ctx.lineTo(xb, ly); ctx.closePath(); ctx.fill();
+          for (m = 0; m <= 1.2001; m += 0.25) { var tx = x0 + m * sc; ctx.fillStyle = "rgba(20,40,90,.45)"; ctx.fillRect(tx - .6, ly, 1.2, 6); lt(ctx, m.toFixed(2) + " m", tx, ly + 24, { s: 9.5, a: "center", w: "600", c: LT.mute }); }
+          ctx.save(); ctx.strokeStyle = "rgba(28,126,214,.55)"; ctx.lineWidth = 1.6;
+          for (var rr = 14; rr < xd - x0; rr += 20) { ctx.globalAlpha = Math.max(.15, 1 - rr / 300); var aa = Math.min(0.42, 30 / rr); ctx.beginPath(); ctx.arc(x0, ly - 20, rr, -aa, aa); ctx.stroke(); }
+          ctx.restore();
+          ctx.fillStyle = good ? "rgba(15,159,118,.20)" : "rgba(224,49,49,.18)"; ctx.strokeStyle = good ? LT.green : LT.red; ctx.lineWidth = 1.6;
+          ctx.beginPath(); ctx.moveTo(xd, ly); ctx.lineTo(xd + 26, ly - 14.3); ctx.lineTo(xd + 26, ly - 64); ctx.lineTo(xd, ly - 50); ctx.closePath(); ctx.fill(); ctx.stroke();
+          box3(ctx, 34, ly - 4, 92, 22, 20, r[3]);
+          box3(ctx, 54, ly - 26, 48, 16, 16, "#dfe7f1");
+          wheel(ctx, 52, ly - 4, 7); wheel(ctx, 108, ly - 4, 7);
+          ctx.fillStyle = "#2b2f3a"; ctx.fillRect(x0 - 4, ly - 22, 5, 7);
+          tag(ctx, r[1] + " · 소리 " + r[0] + " m/s", 140, ly - 70, LT.ink, "left", [0, LW]);
+          tag(ctx, "경보 " + d.toFixed(2) + " m", xd + 14, ly - 70, good ? LT.green : LT.red, "left", [0, LW]);
         });
-        H.rows(ctx, 700, 60, [["경보 기준 메아리 시간", t.toFixed(1) + " ms", null, true], ["목표 거리", "0.45~0.55 m"]], 70);
+        K.bigText(ctx, "기준 " + t.toFixed(1) + " ms", 16, 40, 24, okAll ? "#8ff0c4" : "#ffffff");
+        K.bigText(ctx, "거리 = 속력 × 시간 ÷ 2", 16, 62, 14, "#ffd35a");
+        var cd = sideCard(ctx, LW + 10, W, CH, "주차 경보 시험");
+        lt(ctx, t.toFixed(1) + " ms", cd.px, 64, { s: 24, w: "900", c: LT.blue });
+        lt(ctx, "경보 기준 메아리 시간", cd.R, 64, { s: 11, a: "right", c: LT.mute });
+        var dw = dist(331), ds = dist(349);
+        K.row(ctx, "겨울 경보 거리", dw.toFixed(3) + " m", cd.px, cd.R, 104, dw >= 0.45 && dw <= 0.55 ? LT.green : LT.red);
+        K.row(ctx, "여름 경보 거리", ds.toFixed(3) + " m", cd.px, cd.R, 132, ds >= 0.45 && ds <= 0.55 ? LT.green : LT.red);
+        K.row(ctx, "목표", "0.45 ~ 0.55 m", cd.px, cd.R, 160, LT.green);
+        K.tip(ctx, okAll ? "두 계절 모두 0.5 m 근처에서 울립니다" : "두 계절 모두 맞는 시간을 찾으세요", cd.px - 4, 180, cd.w + 8, okAll ? true : null);
+        lt(ctx, "기온이 오르면 소리가 빨라져", cd.px, 240, { s: 11, w: "600", c: LT.mute });
+        lt(ctx, "같은 시간에 더 먼 거리가 됩니다.", cd.px, 258, { s: 11, w: "600", c: LT.mute });
       }
       cv.canvas._redraw = draw;
       api.slider({ label: "경보 기준 메아리 시간", min: 1, max: 8, step: 0.1, value: 5, fmt: function (x) { return x.toFixed(1) + " ms"; }, onInput: function (x) { t = x; draw(); } });
@@ -67,23 +119,53 @@ window.sthLab({
     },
     task: "층 높이와 채움 밀도를 정해 <b>매끈함 · 튼튼함 · 4시간 이내</b>를 모두 맞추세요.",
     build: function (stage, api) {
-      var H = api.h, cv = api.canvas(250), ctx = cv.ctx, W = cv.W, lh = 0.3, den = 20;
+      var H = api.h, cv = api.canvas(300), ctx = cv.ctx, W = cv.W, lh = 0.3, den = 20;
       function layers() { return Math.round(60 / lh); }
       function minutes() { return layers() * (0.5 + 0.005 * den); }
       function draw() {
-        H.paper(ctx, W, cv.H);
-        var n = layers(), x0 = 80, by = 220, hpx = 180, step = hpx / n;
-        for (var i = 0; i < n; i += Math.max(1, Math.round(n / 60))) {
-          var y = by - i * step, wv = 60 + 40 * Math.sin(i / n * Math.PI);
-          H.box(ctx, x0 + 100 - wv, y - Math.max(1.5, step * Math.max(1, Math.round(n / 60))), 2 * wv, Math.max(1.5, step * Math.max(1, Math.round(n / 60))) - 0.6, i % 2 ? H.v("--brand") : H.v("--brand-700"), 0.8);
-        }
-        H.text(ctx, n + " 층", x0 + 100, by + 20, { s: 12, w: "800", a: "center" });
-        var m = minutes(), ok = lh <= 0.2 + 1e-9 && den >= 40 && m <= 240;
-        H.rows(ctx, 400, 36, [
-          ["층 높이 (표면)", lh.toFixed(2) + " mm " + (lh <= 0.2 + 1e-9 ? "매끈함" : "계단이 보임"), lh <= 0.2 + 1e-9 ? "--green-700" : "--rose-700"],
-          ["채움 밀도 (강도)", den + "% " + (den >= 40 ? "튼튼함" : "약함"), den >= 40 ? "--green-700" : "--rose-700"],
-          ["출력 시간", Math.floor(m / 60) + "시간 " + Math.round(m % 60) + "분", m <= 240 ? "--green-700" : "--rose-700", true]
-        ], 60);
+        /* 입체 미니어처: 금속 기둥과 받침의 3D 프린터 위에서 쌓인 로켓 모형. 층 높이가 두꺼우면 뾰족한 머리에 계단 무늬가 보이고, 잘라 낸 아래쪽 창으로 채움 격자가 보인다. */
+        var CH = cv.H, LW = 560, n = layers(), m = minutes(), ok = lh <= 0.2 + 1e-9 && den >= 40 && m <= 240, i;
+        ctx.clearRect(0, 0, W, CH);
+        K.studio(ctx, 0, 0, LW, CH, null);
+        floorSh(ctx, 300, 288, 210, 18, .3);
+        box3(ctx, 130, 286, 290, 24, 40, "#3b4252");
+        ctx.fillStyle = metalG(ctx, 140, 0, 152, 0); ctx.fillRect(140, 52, 12, 212);
+        ctx.fillStyle = metalG(ctx, 398, 0, 410, 0); ctx.fillRect(398, 52, 12, 212);
+        ctx.fillStyle = "#5b6476"; ctx.fillRect(134, 46, 282, 10);
+        box3(ctx, 170, 258, 210, 8, 34, "#c9d1dc");
+        var cx = 284, by = 250, hpx = 150, step = hpx / n, k = Math.max(1, Math.round(n / 90));
+        function wv(f) { return f < 0.62 ? 34 : 34 * Math.max(0, Math.cos((f - 0.62) / 0.38 * Math.PI / 2)); }
+        var bg = ctx.createLinearGradient(cx - 34, 0, cx + 34, 0); bg.addColorStop(0, "#c2410c"); bg.addColorStop(.35, "#ffa94d"); bg.addColorStop(1, "#a63a0a");
+        ctx.fillStyle = bg; ctx.beginPath();
+        for (i = 0; i < n; i += k) { var f = i / n, yy = by - i * step, hh = step * Math.min(k, n - i), ww = wv(f + (lh / 60) * k * .5); ctx.rect(cx - ww, yy - hh, ww * 2, hh + .4); }
+        ctx.fill();
+        if (step * k >= 1.6) { ctx.strokeStyle = "rgba(80,30,5,.35)"; ctx.lineWidth = .8; for (i = k; i < n; i += k) { var y2 = by - i * step, w2 = wv(i / n); if (w2 > 1) { ctx.beginPath(); ctx.moveTo(cx - w2, y2); ctx.lineTo(cx + w2, y2); ctx.stroke(); } } }
+        ctx.fillStyle = "#e8590c"; ctx.beginPath(); ctx.moveTo(cx - 34, by); ctx.lineTo(cx - 52, by); ctx.lineTo(cx - 34, by - 40); ctx.closePath(); ctx.fill();
+        ctx.beginPath(); ctx.moveTo(cx + 34, by); ctx.lineTo(cx + 52, by); ctx.lineTo(cx + 34, by - 40); ctx.closePath(); ctx.fill();
+        var wx0 = cx - 26, wy0 = by - 82, ww0 = 26, wh0 = 70;
+        ctx.fillStyle = "#fff4e6"; ctx.fillRect(wx0, wy0, ww0, wh0);
+        ctx.save(); ctx.beginPath(); ctx.rect(wx0, wy0, ww0, wh0); ctx.clip();
+        var gap = 3 + (100 - den) / 100 * 16; ctx.strokeStyle = "#e8590c"; ctx.lineWidth = 1.4;
+        for (i = -wh0; i < ww0 + wh0; i += gap) { ctx.beginPath(); ctx.moveTo(wx0 + i, wy0); ctx.lineTo(wx0 + i + wh0, wy0 + wh0); ctx.stroke(); ctx.beginPath(); ctx.moveTo(wx0 + i, wy0 + wh0); ctx.lineTo(wx0 + i + wh0, wy0); ctx.stroke(); }
+        ctx.restore();
+        ctx.strokeStyle = "rgba(80,30,5,.6)"; ctx.lineWidth = 1; ctx.strokeRect(wx0, wy0, ww0, wh0);
+        var ny = by - hpx - 16;
+        ctx.fillStyle = "#5b6476"; ctx.fillRect(146, ny - 6, 258, 7);
+        box3(ctx, cx - 22, ny + 6, 44, 22, 16, "#343a46");
+        ctx.fillStyle = metalG(ctx, cx - 4, 0, cx + 4, 0); ctx.beginPath(); ctx.moveTo(cx - 5, ny + 6); ctx.lineTo(cx + 5, ny + 6); ctx.lineTo(cx, ny + 14); ctx.closePath(); ctx.fill();
+        tag(ctx, "잘라 본 속: 채움 " + den + "%", wx0 - 10, wy0 + 30, LT.orange, "right", [0, LW]);
+        tag(ctx, "높이 60 mm", cx + 60, by - 120, LT.ink, "left", [0, LW]);
+        K.bigText(ctx, n + "층 쌓기", 16, 40, 24, "#ffffff");
+        K.bigText(ctx, "층 " + lh.toFixed(2) + " mm · " + Math.floor(m / 60) + "시간 " + Math.round(m % 60) + "분", 16, 62, 14, "#ffd35a");
+        K.warn(ctx, LW - 12, CH - 10, "⚠ 층 두께는 보기 쉽게 과장", "right");
+        var cd = sideCard(ctx, LW + 10, W, CH, "출력 설정 판정");
+        K.row(ctx, "층 높이 (표면)", lh.toFixed(2) + " mm · " + (lh <= 0.2 + 1e-9 ? "매끈함" : "계단이 보임"), cd.px, cd.R, 60, lh <= 0.2 + 1e-9 ? LT.green : LT.red);
+        K.row(ctx, "채움 밀도 (강도)", den + "% · " + (den >= 40 ? "튼튼함" : "약함"), cd.px, cd.R, 92, den >= 40 ? LT.green : LT.red);
+        K.row(ctx, "출력 시간", Math.floor(m / 60) + "시간 " + Math.round(m % 60) + "분", cd.px, cd.R, 124, m <= 240 ? LT.green : LT.red);
+        gauge(ctx, cd.px, 136, cd.w, m / 480, m <= 240 ? LT.green : LT.red, 0.5);
+        lt(ctx, "4시간", cd.px + cd.w * .5, 166, { s: 10.5, a: "center", w: "800", c: LT.yellow });
+        K.tip(ctx, ok ? "세 조건의 균형을 찾았습니다" : "매끈함 · 튼튼함 · 4시간을 모두 맞추세요", cd.px - 4, 184, cd.w + 8, ok ? true : null);
+        lt(ctx, "층이 얇을수록 층 수가 늘어 오래 걸립니다.", cd.px, 244, { s: 11, w: "600", c: LT.mute });
       }
       cv.canvas._redraw = draw;
       api.slider({ label: "층 높이", min: 0.05, max: 0.4, step: 0.05, value: 0.3, fmt: function (x) { return x.toFixed(2) + " mm"; }, onInput: function (x) { lh = x; draw(); } });
@@ -121,31 +203,51 @@ window.sthLab({
     },
     task: "안내 서열의 위치를 옮겨 <b>여덟 글자가 모두 같고 바로 뒤에 NGG가 있는</b> 자리를 찾으세요.",
     build: function (stage, api) {
-      var H = api.h, cv = api.canvas(250), ctx = cv.ctx, W = cv.W, pos = 0;
+      var H = api.h, cv = api.canvas(320), ctx = cv.ctx, W = cv.W, pos = 0;
       var DNA = "CTAGATTACAGTAGATCACAGTGGTCGATTACAGAGGA", GUIDE = "GATTACAG";
       var COL = { A: "#e4572e", T: "#f3a712", G: "#29a36a", C: "#1f8fbf" };
       function match() { var m = 0; for (var i = 0; i < 8; i++) if (DNA[pos + i] === GUIDE[i]) m++; return m; }
       function pam() { return DNA.substr(pos + 9, 2) === "GG"; }
       function draw() {
-        H.paper(ctx, W, cv.H);
-        var cw = 21, x0 = (W - cw * DNA.length) / 2, y = 120;
-        H.text(ctx, "DNA", x0, y + 34, { s: 11.5, w: "800", c: H.v("--mist") });
-        for (var i = 0; i < DNA.length; i++) {
-          var inG = i >= pos && i < pos + 8, inP = i >= pos + 8 && i < pos + 11;
-          H.box(ctx, x0 + i * cw + 1, y - 18, cw - 2, 30, COL[DNA[i]], inG ? 0.95 : (inP ? 0.7 : 0.35));
-          H.text(ctx, DNA[i], x0 + i * cw + cw / 2, y + 3, { s: 13, w: "900", a: "center", c: "#fff" });
+        /* 입체 미니어처: 스튜디오 위 DNA 두 가닥(염기 블록)과 그 위에 내려앉는 안내 RNA + 캐스9(보라 덩어리). 여덟 글자가 맞고 바로 뒤 NGG가 있으면 PAM 3칸 앞을 자른다. */
+        var CH = cv.H, SH = 232, cw = 21, x0 = (W - cw * DNA.length) / 2 - 6, y = 172, i;
+        var CMP = { A: "T", T: "A", G: "C", C: "G" }, m = match(), p = pam(), ok = m === 8 && p;
+  function pale(h, q) { var n = parseInt(h.slice(1), 16); function mm(v) { return Math.round(v + (255 - v) * q); } return "#" + ((1 << 24) + (mm((n >> 16) & 255) << 16) + (mm((n >> 8) & 255) << 8) + mm(n & 255)).toString(16).slice(1); }
+        ctx.clearRect(0, 0, W, CH);
+        K.studio(ctx, 0, 0, W, SH, null);
+        floorSh(ctx, W / 2, SH - 14, 420, 14, .22);
+        var cx9 = x0 + (pos + 5.5) * cw, cg = ctx.createRadialGradient(cx9 - 30, 110, 10, cx9, 140, 150);
+        cg.addColorStop(0, "rgba(177,151,252,.55)"); cg.addColorStop(1, "rgba(112,72,232,.12)");
+        ctx.fillStyle = cg; ctx.beginPath(); ctx.ellipse(cx9, 140, 150, 66, 0, 0, 6.2832); ctx.fill();
+        for (i = 0; i < DNA.length; i++) {
+          var inG = i >= pos && i < pos + 8, inP = i >= pos + 8 && i < pos + 11, bx = x0 + i * cw;
+          ctx.strokeStyle = "rgba(20,40,90,.25)"; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(bx + 9, y + 2); ctx.lineTo(bx + 9, y + 18); ctx.stroke();
+          box3(ctx, bx + 1, y + 34, cw - 4, 16, 6, pale(COL[CMP[DNA[i]]], .35));
+          K.t(ctx, CMP[DNA[i]], bx + 1 + (cw - 4) / 2, y + 30, { s: 10, w: "900", a: "center", c: "rgba(255,255,255,.95)" });
+          box3(ctx, bx + 1, y, cw - 4, 24, 7, inG || inP ? COL[DNA[i]] : pale(COL[DNA[i]], .45));
+          K.t(ctx, DNA[i], bx + 1 + (cw - 4) / 2, y - 7, { s: 12.5, w: "900", a: "center", c: "#fff" });
         }
         for (var k = 0; k < 8; k++) {
           var gx = x0 + (pos + k) * cw, same = DNA[pos + k] === GUIDE[k];
-          H.box(ctx, gx + 1, y - 64, cw - 2, 28, same ? H.v("--green-700") : H.v("--rose-700"), 0.85);
-          H.text(ctx, GUIDE[k], gx + cw / 2, y - 45, { s: 13, w: "900", a: "center", c: "#fff" });
+          box3(ctx, gx + 1, y - 46, cw - 4, 22, 7, same ? "#0f9f76" : "#e03131");
+          K.t(ctx, GUIDE[k], gx + 1 + (cw - 4) / 2, y - 52, { s: 12.5, w: "900", a: "center", c: "#fff" });
         }
-        H.text(ctx, "안내 RNA", x0 + pos * cw, y - 72, { s: 11, w: "800", c: H.v("--brand-700") });
-        if (pam()) H.text(ctx, "PAM", x0 + (pos + 9.5) * cw, y + 34, { s: 11, w: "900", a: "center", c: H.v("--green-700") });
-        var m = match(), ok = m === 8 && pam();
-        H.text(ctx, "같은 글자 " + m + " / 8", 60, 200, { s: 15, w: "900", c: m === 8 ? H.v("--green-700") : H.v("--ink") });
-        H.text(ctx, "바로 뒤 NGG 표지: " + (pam() ? "있음" : "없음"), 260, 200, { s: 15, w: "900", c: pam() ? H.v("--green-700") : H.v("--rose-700") });
-        H.text(ctx, ok ? "✂ 여기를 자른다" : (m === 7 && pam() ? "⚠ 잘못 자를 위험" : "자르지 않는다"), 560, 200, { s: 16, w: "900", c: ok ? H.v("--green-700") : (m === 7 && pam() ? H.v("--amber-700") : H.v("--mist")) });
+        tag(ctx, "안내 RNA", x0 + pos * cw, y - 82, LT.violet, "left", [0, W]);
+        if (pos > 14) tag(ctx, "DNA 두 가닥", x0 + 4, y - 36, LT.mute, "left", [0, W]); else tag(ctx, "DNA 두 가닥", W - 20, y - 36, LT.mute, "right", [0, W]);
+        if (p) { ctx.strokeStyle = LT.green; ctx.lineWidth = 2.4; ctx.beginPath(); ctx.roundRect(x0 + (pos + 8) * cw - 1, y - 30, cw * 3, 36, 6); ctx.stroke(); tag(ctx, "PAM (NGG)", x0 + (pos + 8) * cw + 2, y - 40, LT.green, "left", [0, W]); }
+        if (ok) {
+          var cxx = x0 + (pos + 5) * cw - 1;
+          ctx.strokeStyle = LT.red; ctx.lineWidth = 2.4; ctx.setLineDash([5, 4]); ctx.beginPath(); ctx.moveTo(cxx, y - 30); ctx.lineTo(cxx, y + 40); ctx.stroke(); ctx.setLineDash([]);
+          K.bigText(ctx, "✂", cxx - 12, y - 92, 28, "#ffffff");
+        }
+        K.bigText(ctx, "같은 글자 " + m + " / 8", 16, 40, 24, m === 8 ? "#8ff0c4" : "#ffffff");
+        K.bigText(ctx, (pos + 1) + "번째 글자부터 · 뒤에 NGG " + (p ? "있음" : "없음"), 16, 62, 14, "#ffd35a");
+        K.card(ctx, 0, SH + 8, W, CH - SH - 8, null);
+        var cy = SH + 44;
+        K.row(ctx, "같은 글자", m + " / 8", 24, 270, cy, m === 8 ? LT.green : LT.ink);
+        K.row(ctx, "바로 뒤 NGG 표지", p ? "있음" : "없음", 310, 560, cy, p ? LT.green : LT.red);
+        K.tip(ctx, ok ? "✂ 여기를 자른다" : (m === 7 && p ? "⚠ 잘못 자를 위험이 있는 자리" : "자르지 않는다"), 600, cy - 22, 282, ok ? true : (m === 7 && p ? false : null));
+        lt(ctx, "캐스9은 PAM 바로 앞 3칸 자리에서 DNA 두 가닥을 자릅니다.", 24, cy + 28, { s: 11, w: "600", c: LT.mute });
       }
       cv.canvas._redraw = draw;
       api.slider({ label: "안내 서열의 위치", min: 0, max: 27, step: 1, value: 0, fmt: function (x) { return (x + 1) + "번째 글자부터"; }, onInput: function (x) { pos = x; draw(); } });

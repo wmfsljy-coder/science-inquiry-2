@@ -41,13 +41,14 @@
         <section class="scene" data-title="할머니의 새벽">
           <div class="story narr"><div class="who">🍓</div><div class="say"><span class="name">이야기</span>겨울 딸기 온실. 할머니는 새벽 5시에 일어나 창문을 닫고, 한낮에는 다시 열고, 흙을 만져 보며 물을 줍니다. 조금만 늦어도 딸기가 얼거나 데고 맙니다.</div></div>
           <div class="story"><div class="who">👵</div><div class="say"><span class="name">할머니</span>“이 늙은이 대신 온실이 알아서 해 주면 좋으련만. 네가 학교에서 배운다는 그 센서라는 걸로 될까?”</div></div>
+          <figure class="hero-art"><img src="img/smart-greenhouse.webp" alt="겨울 딸기 온실을 블록처럼 잘라 낸 모형. 유리 온실의 지붕 창이 열려 있고, 딸기 두둑 위로 분홍빛 LED 막대가 켜져 있다. 기둥에 온도 센서와 빛 센서가 달려 있고 흙에는 수분 센서가 꽂혀 있으며, 펌프에서 이어진 가는 관이 두둑을 따라 물을 준다. 벽의 작은 제어 상자에서 전선이 장치들로 이어지고, 바깥 땅에는 눈이 쌓여 있다." width="900" height="900" loading="lazy"><figcaption><b>센서가 재고, 제어 장치가 비교하고, 작동기가 움직입니다</b> 온도·빛·흙 수분 센서가 잰 값을 마이크로컨트롤러가 미리 정해 둔 기준값과 비교해 지붕 창·LED·펌프를 켜고 끕니다. 그 기준값은 ‘딸기가 자라기 좋은 조건’이라는 과학 지식에서 나옵니다. <span class="art-note">⚠ 장치의 크기와 배치는 보기 쉽게 꾸민 것입니다.</span></figcaption></figure>
           <div class="gate loose" id="g1"></div>
         </section>
 
         <section class="scene" data-title="규칙 설계">
           <div class="story"><div class="who">🧑‍💻</div><div class="say"><span class="name">나 (온실 설계자)</span>“딸기는 28 °C를 넘으면 힘들어하고, 흐린 날에는 빛이 모자라며, 흙 수분이 30% 아래면 목말라해. 창문·LED·펌프가 켜지는 기준을 정해서, 온실에서 일어날 <b>여섯 가지 상황</b>에 모두 옳게 움직이게 해 보자.”</div></div>
           <div class="stage-card">
-            <div class="canvas-wrap stage"><canvas id="a-c-rule" width="900" height="340"></canvas></div>
+            <div class="canvas-wrap studio"><canvas id="a-c-rule" width="900" height="360"></canvas></div>
             <div class="controls">
               <div class="ctrl-group">
                 <div class="ctrl-label">이 온도보다 높으면 창문 열기<span class="val" id="a-t-val">32 °C</span></div>
@@ -70,7 +71,7 @@
         <section class="scene" data-title="센서가 고장 나면">
           <div class="story"><div class="who">⚠️</div><div class="say"><span class="name">나 (온실 설계자)</span>“큰일 날 뻔했어! 오늘 아침 온도 센서가 고장 나서 계속 <b>20 °C</b>만 가리켰대. 한낮 온실은 38 °C까지 올랐는데 창문이 안 열렸지 뭐야. 고장을 <b>1시간 안에</b> 알아채면서, 쓸데없이 창문을 열지도 않는 안전장치를 골라 보자.”</div></div>
           <div class="stage-card">
-            <div class="canvas-wrap stage"><canvas id="a-c-fail" width="900" height="330"></canvas></div>
+            <div class="canvas-wrap studio"><canvas id="a-c-fail" width="900" height="340"></canvas></div>
             <div class="sim-side">
               <div class="readout" id="a-fail-read"></div>
               <div style="display:flex;flex-direction:column;gap:14px">
@@ -130,13 +131,14 @@
         <section class="scene" data-title="졸린 5교시">
           <div class="story narr"><div class="who">😪</div><div class="say"><span class="name">이야기</span>5교시 수학 시간. 창문을 꼭 닫은 교실에서 서른 명이 하나둘 꾸벅꾸벅 좁니다. “점심을 먹어서 그래.” “아니야, 공기가 답답해서야.”</div></div>
           <div class="story"><div class="who">🧑‍🔬</div><div class="say"><span class="name">발명 동아리장</span>“이번 발명 대회 주제로 딱이야. 그런데 발명품 아이디어는 어디서부터 시작하면 좋을까?”</div></div>
+          <figure class="hero-art"><img src="img/co2-classroom.webp" alt="교실을 블록처럼 잘라 낸 모형. 책상마다 학생들이 앉아 있고 칠판 앞에 선생님이 서 있다. 벽에 붙은 작은 이산화 탄소 센서에 노란 알림등이 켜져 있고, 활짝 연 창문 하나로 바깥 공기가 하늘색 바람이 되어 들어온다." width="900" height="900" loading="lazy"><figcaption><b>닫힌 교실에서는 숨 쉴수록 이산화 탄소가 쌓입니다</b> 사람은 숨을 내쉴 때마다 이산화 탄소를 내보내므로, 창문을 닫은 교실에서는 농도가 계속 올라갑니다. 센서로 농도를 재어 알맞은 때에 환기를 알려 주면, 사람이 느끼기 전에 공기를 바꿀 수 있습니다. <span class="art-note">⚠ 공기의 흐름은 눈에 보이게 그린 것입니다.</span></figcaption></figure>
           <div class="gate loose" id="g2"></div>
         </section>
 
         <section class="scene" data-title="환기 알림 장치">
           <div class="story"><div class="who">🟢</div><div class="say"><span class="name">발명 동아리장</span>“이산화 탄소 센서로 재 보니 창문을 닫으면 1분에 약 25 ppm씩 오르더라. <b>1000 ppm</b>을 넘으면 환기가 부족하다는 신호라, 졸림·집중력 저하와 함께 나타나기 쉽대. 알림이 울리면 5분 동안 창문을 여는 거야. 50분 수업 동안 <b>1000 ppm을 넘지 않으면서</b>, 알림이 <b>3번 이하</b>로 울리게(너무 자주 울리면 귀찮으니까) 알림 기준을 정해 줘.”</div></div>
           <div class="stage-card">
-            <div class="canvas-wrap stage"><canvas id="b-c-co2" width="900" height="330"></canvas></div>
+            <div class="canvas-wrap studio"><canvas id="b-c-co2" width="900" height="340"></canvas></div>
             <div class="sim-side">
               <div class="readout" id="b-co2-read"></div>
               <div style="display:flex;flex-direction:column;gap:14px">
@@ -205,7 +207,7 @@
         <section class="scene" data-title="관점을 바꿔 보는 우주 개발사">
           <div class="story"><div class="who">🛰️</div><div class="say"><span class="name">지도 교사</span>“우주 개발의 다섯 사건을 세 가지 관점으로 살펴보자. <b>다섯 사건을 모두</b> 보고, <b>세 관점도 모두</b> 바꿔 보렴. 같은 사건이 관점에 따라 어떻게 달리 보이니?”</div></div>
           <div class="stage-card">
-            <div class="canvas-wrap stage"><canvas id="c-c-tl" width="900" height="260"></canvas></div>
+            <div class="canvas-wrap studio"><canvas id="c-c-tl" width="900" height="300"></canvas></div>
             <div class="controls">
               <div class="ctrl-group">
                 <div class="ctrl-label">사건<span class="val" id="c-ev-val">1957</span></div>

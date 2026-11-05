@@ -2,6 +2,21 @@
    이야기에서 찾은 개념을 처음 보는 상황에 써 본다. 공용 엔진: ../assets/lab.js (sthLab) */
 (function () {
 "use strict";
+var K = window.sthKit, LT = K.LT;
+/* 흰 판정 카드 한 장: rows = [[이름, 값, 색], …], tip = [글, 좋음] */
+function verdict(ctx, x, y, w, h, title, rows, tip, big) {
+  K.card(ctx, x, y, w, h, title);
+  var x0 = x + 16, x1 = x + w - 16, yy = y + 52;
+  if (big) { K.t(ctx, big[0], x0, yy + 6, { s: 24, w: "900", c: big[1] }); yy += 38; }
+  rows.forEach(function (r) { K.row(ctx, r[0], r[1], x0, x1, yy, r[2]); yy += 26; });
+  if (tip) K.tip(ctx, tip[0], x0 - 4, y + h - 44, x1 - x0 + 8, tip[1]);
+}
+function legend(ctx, items, x, y) {
+  items.forEach(function (it) {
+    K.t(ctx, "●", x, y, { s: 11, w: "900", c: it[1] }); K.t(ctx, it[0], x + 13, y, { s: 11, w: "800", c: LT.mute });
+    ctx.font = "800 11px " + K.FONT; x += 13 + ctx.measureText(it[0]).width + 16;
+  });
+}
 
 window.sthLab({
   mount: "lab", key: "lab", result: "rLab",
@@ -19,18 +34,36 @@ window.sthLab({
     },
     task: "여름과 겨울의 패널 기울기를 정해 <b>두 계절 모두 98% 이상</b>이 되게 하세요.",
     build: function (stage, api) {
-      var H = api.h, cv = api.canvas(270), ctx = cv.ctx, W = cv.W, ts = 37, tw = 37;
+      var H = api.h, cv = api.canvas(300), ctx = cv.ctx, W = cv.W, ts = 37, tw = 37;
       function eff(alt, tilt) { return Math.max(0, Math.cos((90 - alt - tilt) * Math.PI / 180)); }
+      /* 옥상 블록 위 태양광 패널(외쪽 = 남쪽). 패널은 아래 모서리를 축으로 tilt 만큼 세운다 */
       function panel(x, alt, tilt, name) {
-        var gy = 220, r = alt * Math.PI / 180, t = tilt * Math.PI / 180;
-        H.line(ctx, [[x - 110, gy], [x + 110, gy]], H.v("--ink"), 2);
-        H.line(ctx, [[x - 60 * Math.cos(t), gy - 10 + 60 * Math.sin(t) * 0], [x + 60 * Math.cos(t), gy - 10 - 120 * Math.sin(t) / 1]], H.v("--brand"), 7);
-        for (var k = -1; k <= 1; k++) H.arrow(ctx, x - 150 * Math.cos(r) + k * 30 * Math.sin(r), gy - 20 - 150 * Math.sin(r) - k * 30 * Math.cos(r), x - 40 * Math.cos(r) + k * 30 * Math.sin(r), gy - 20 - 40 * Math.sin(r) - k * 30 * Math.cos(r), H.v("--amber-700"), 2, 7);
-        var e = eff(alt, tilt);
-        H.text(ctx, name + " (태양 고도 " + alt + "°)", x, 26, { s: 12.5, w: "900", a: "center" });
-        H.text(ctx, "기울기 " + tilt + "° → " + (e * 100).toFixed(1) + "%", x, 250, { s: 13, w: "900", a: "center", c: e >= 0.98 ? H.v("--green-700") : H.v("--rose-700") });
+        var HW = 442, X0 = x < 450 ? 0 : 458, e = eff(alt, tilt), ok = e >= 0.98;
+        K.studio(ctx, X0, 0, HW, cv.H, { x: X0 + 150, y: 248, rx: 150, ry: 28 });
+        var I = K.iso({ ox: X0 + 150, oy: 168, s: 0.8, L: 190, D: 90 }), ZB = 18, PW = 92, t = tilt * Math.PI / 180, a = alt * Math.PI / 180;
+        I.box(ctx, 0, 0, 0, 190, 90, ZB, "#d9dee6", "#b9c0cc", "#9aa3b0");
+        var xl = 48, zl = ZB + 10, xh = xl + PW * Math.cos(t), zh = zl + PW * Math.sin(t);
+        K.line(ctx, I.P(xh, 25, ZB), I.P(xh, 25, zh), "#6b7280", 2.4); K.line(ctx, I.P(xh, 70, ZB), I.P(xh, 70, zh), "#6b7280", 2.4);
+        K.line(ctx, I.P(xl, 25, ZB), I.P(xl, 25, zl), "#6b7280", 2.4); K.line(ctx, I.P(xl, 70, ZB), I.P(xl, 70, zl), "#6b7280", 2.4);
+        var pg = ctx.createLinearGradient(I.P(xl, 15, zl).x, I.P(xl, 15, zl).y, I.P(xh, 80, zh).x, I.P(xh, 80, zh).y);
+        pg.addColorStop(0, "#5b8def"); pg.addColorStop(1, "#1b3a8a");
+        I.quad(ctx, I.P(xl, 15, zl), I.P(xh, 15, zh), I.P(xh, 80, zh), I.P(xl, 80, zl), pg, "#cfd8e6");
+        for (var k = 1; k < 4; k++) K.line(ctx, I.P(xl, 15 + k * 65 / 4, zl), I.P(xh, 15 + k * 65 / 4, zh), "rgba(220,230,255,.55)", 1);
+        K.line(ctx, I.P((xl + xh) / 2, 15, (zl + zh) / 2), I.P((xl + xh) / 2, 80, (zl + zh) / 2), "rgba(220,230,255,.55)", 1);
+        /* 태양과 햇빛(패널 도착) */
+        var cx = (xl + xh) / 2, cz = (zl + zh) / 2, sp = I.P(cx - 150 * Math.cos(a), 48, cz + 150 * Math.sin(a));
+        K.sun(ctx, sp.x, sp.y, 9);
+        [22, 48, 72].forEach(function (yy) { K.arrow(ctx, I.P(cx - 120 * Math.cos(a), yy, cz + 120 * Math.sin(a)), I.P(cx - 8 * Math.cos(a), yy, cz + 8 * Math.sin(a)), "#f59f00", 2.2, 8); });
+        /* 패널에 수직인 방향(법선) */
+        var nb = I.P(cx, 48, cz), ne = I.P(cx - 46 * Math.sin(t), 48, cz + 46 * Math.cos(t));
+        K.line(ctx, nb, ne, ok ? LT.green : "#8a96a8", 1.6, [4, 3]);
+        K.t(ctx, "패널에 수직", ne.x - 4, ne.y - 6, { s: 10.5, w: "800", a: "right", c: ok ? LT.green : LT.mute });
+        K.t(ctx, "남 ←", I.P(0, 90, 0).x + 2, I.P(0, 90, 0).y + 16, { s: 10.5, w: "800", c: LT.mute });
+        K.bigText(ctx, name, X0 + 14, 34, 18, "#ffffff");
+        K.t(ctx, "태양 고도 " + alt + "°", X0 + 14, 56, { s: 12, w: "800", c: "#b7791f" });
+        verdict(ctx, X0 + HW - 160, 76, 150, 200, "한낮 발전량", [["기울기", tilt + "°", LT.blue], ["기울기 + 고도", (tilt + alt) + "°", Math.abs(tilt + alt - 90) <= 12 ? LT.green : LT.ink]], [ok ? "98% 이상 달성" : "빛을 비스듬히 받음", ok], [(e * 100).toFixed(1) + "%", ok ? LT.green : LT.red]);
       }
-      function draw() { H.paper(ctx, W, cv.H); panel(230, 76.5, ts, "여름 한낮"); panel(660, 29.5, tw, "겨울 한낮"); }
+      function draw() { ctx.clearRect(0, 0, W, cv.H); panel(230, 76.5, ts, "여름 한낮"); panel(660, 29.5, tw, "겨울 한낮"); }
       cv.canvas._redraw = draw;
       api.slider({ label: "여름 패널 기울기", min: 0, max: 90, step: 5, value: 37, fmt: function (x) { return x + "°"; }, onInput: function (x) { ts = x; draw(); } });
       api.slider({ label: "겨울 패널 기울기", min: 0, max: 90, step: 5, value: 37, fmt: function (x) { return x + "°"; }, onInput: function (x) { tw = x; draw(); } });
@@ -62,26 +95,38 @@ window.sthLab({
     },
     task: "배터리 용량을 정해 <b>비행 시간 23분 이상</b>을 만드세요.",
     build: function (stage, api) {
-      var H = api.h, cv = api.canvas(260), ctx = cv.ctx, W = cv.W, C = 60;
+      var H = api.h, cv = api.canvas(280), ctx = cv.ctx, W = cv.W, C = 60;
       function tmin(c) { return 0.4 * c / Math.pow(1 + c / 150, 1.5); }
       function draw() {
         H.paper(ctx, W, cv.H);
-        var x0 = 60, x1 = 560, y0 = 20, y1 = 220;
-        function X(c) { return x0 + (c - 20) / 380 * (x1 - x0); }
-        function Y(t) { return y1 - Math.max(0, Math.min(1, (t - 15) / 10)) * (y1 - y0); }
-        H.axes(ctx, x0, y0, x1, y1);
-        [15, 20, 25].forEach(function (t) { H.text(ctx, t + "분", x0 - 6, Y(t) + 4, { s: 10, a: "right", c: H.v("--mist") }); });
-        [20, 100, 200, 300, 400].forEach(function (c) { H.text(ctx, c + " Wh", X(c), y1 + 16, { s: 10, a: "center", c: H.v("--mist") }); });
-        H.dash(ctx, x0, Y(23), x1, Y(23), H.v("--amber-700"), 1.5);
-        var pts = []; for (var c = 20; c <= 400; c += 10) pts.push([X(c), Y(tmin(c))]);
-        H.line(ctx, pts, H.v("--brand"), 2.5);
-        var t = tmin(C), ok = t >= 23;
-        H.dot(ctx, X(C), Y(t), 7, ok ? H.v("--green-700") : H.v("--rose-700"));
-        H.rows(ctx, 600, 50, [
-          ["배터리 무게", (C / 150).toFixed(2) + " kg"],
-          ["전체 무게", (1 + C / 150).toFixed(2) + " kg"],
-          ["비행 시간", t.toFixed(1) + " 분", ok ? "--green-700" : "--rose-700", true]
-        ], 62);
+        var t = tmin(C), ok = t >= 23, i;
+        /* ── 왼쪽: 떠 있는 구호 드론 미니어처(배터리 상자가 용량만큼 커진다) ── */
+        K.studio(ctx, 0, 0, 260, cv.H, { x: 130, y: 206, rx: 80, ry: 14 });
+        var I = K.iso({ ox: 130, oy: 124, s: 0.9, L: 80, D: 80 }), Z = 34, bl = 10 + 44 * Math.sqrt(C / 400);
+        [[0, 0], [80, 0], [0, 80], [80, 80]].forEach(function (q) { K.line(ctx, I.P(40, 40, Z + 6), I.P(q[0], q[1], Z + 8), "#495057", 3.2); });
+        I.box(ctx, 40 - bl / 2, 30, Z - 12, 40 + bl / 2, 50, Z, "#ffd43b", "#f59f00", "#c77d00");
+        I.box(ctx, 26, 26, Z, 54, 54, Z + 10, "#f1f3f5", "#ced4da", "#adb5bd");
+        I.box(ctx, 33, 33, Z - 24, 47, 47, Z - 12, "#ffffff", "#ff8787", "#e03131");
+        [[0, 0], [80, 0], [0, 80], [80, 80]].forEach(function (q) { var p = I.P(q[0], q[1], Z + 10); ctx.fillStyle = "rgba(120,140,170,.28)"; ctx.beginPath(); ctx.ellipse(p.x, p.y, 24, 11, 0, 0, 6.2832); ctx.fill(); ctx.strokeStyle = "rgba(60,70,90,.5)"; ctx.lineWidth = 1; ctx.stroke(); K.planet(ctx, p.x, p.y, 3, "#868e96", "#343a40"); });
+        var up = I.P(40, 40, Z + 18), dn = I.P(40, 40, Z - 26), lift = 16 + 30 * (1 + C / 150) / 3.7;
+        K.arrow(ctx, { x: up.x + 74, y: up.y + 30 }, { x: up.x + 74, y: up.y + 30 - lift }, LT.blue, 3, 9);
+        K.t(ctx, "들어 올리는 힘", up.x + 74, up.y + 46, { s: 10.5, w: "800", a: "center", c: LT.blue });
+        K.arrow(ctx, { x: dn.x - 74, y: dn.y - 8 }, { x: dn.x - 74, y: dn.y - 8 + lift }, LT.red, 3, 9);
+        K.t(ctx, "무게", dn.x - 82, dn.y + 4, { s: 10.5, w: "800", a: "right", c: LT.red });
+        K.t(ctx, "노란 상자 = 배터리 " + C + " Wh", 130, cv.H - 14, { s: 11, w: "800", a: "center", c: "#b7791f" });
+        K.bigText(ctx, t.toFixed(1) + "분", 14, 34, 22, ok ? "#7ee0a0" : "#ffffff");
+        /* ── 가운데: 밝은 그래프 ── */
+        K.studio(ctx, 268, 0, 372, cv.H, null);
+        var g = K.chart(ctx, { x: 272, y: 26, w: 364, h: cv.H - 30, pl: 42, pb: 30, pt: 8, pr: 12, x0: 20, x1: 400, y0: 15, y1: 25, xt: 4, yt: 5, light: true, xl: "배터리 용량 (Wh)", yf: function (v) { return Math.round(v) + "분"; } });
+        K.t(ctx, "용량에 따른 비행 시간", 284, 20, { s: 11.5, w: "800", c: LT.mute });
+        ctx.fillStyle = "rgba(15,159,118,.08)"; ctx.fillRect(g.L, g.T, g.R - g.L, g.Y(23) - g.T);
+        K.line(ctx, { x: g.L, y: g.Y(23) }, { x: g.R, y: g.Y(23) }, LT.orange, 1.5, [5, 4]);
+        K.t(ctx, "목표 23분", g.L + 6, g.Y(23) - 6, { s: 11, w: "800", c: LT.orange });
+        var pts = []; for (var c = 20; c <= 400; c += 10) pts.push([c, Math.max(15, tmin(c))]);
+        K.plot(ctx, g, pts, LT.blue, { w: 2.6, light: true });
+        K.planet(ctx, g.X(C), g.Y(Math.max(15, Math.min(25, t))), 6, ok ? "#69db7c" : "#ff8787", ok ? "#2b8a3e" : "#a61e1e");
+        /* ── 오른쪽: 판정 카드 ── */
+        verdict(ctx, 650, 0, 250, cv.H, "비행 기록", [["배터리 무게", (C / 150).toFixed(2) + " kg", LT.orange], ["전체 무게", (1 + C / 150).toFixed(2) + " kg", LT.ink], ["배터리 용량", C + " Wh", LT.blue]], [ok ? "23분 이상 난다" : (C < 260 ? "에너지가 모자람" : "너무 무거움"), ok], [t.toFixed(1) + " 분", ok ? LT.green : LT.red]);
       }
       cv.canvas._redraw = draw;
       api.slider({ label: "배터리 용량", min: 20, max: 400, step: 20, value: 60, fmt: function (x) { return x + " Wh"; }, onInput: function (x) { C = x; draw(); } });
@@ -113,24 +158,32 @@ window.sthLab({
     },
     task: "위성 수와 처리 규칙을 정해 <b>20,000 기 이상</b> 운영하면서 <b>충돌 위험 2% 이하</b>를 맞추세요.",
     build: function (stage, api) {
-      var H = api.h, cv = api.canvas(260), ctx = cv.ctx, W = cv.W, N = 30000, rule = "none";
+      var H = api.h, cv = api.canvas(280), ctx = cv.ctx, W = cv.W, N = 30000, rule = "none";
       var F = { none: 1.0, y25: 0.6, y5: 0.1 };
       function debris() { return 30000 + N * F[rule]; }
       function risk() { return N * debris() / 4e8; }
       function draw() {
         H.paper(ctx, W, cv.H);
-        var cx = 170, cy = 130, R = 70, d = debris();
-        H.dot(ctx, cx, cy, R, "#2f6fd6");
-        ctx.strokeStyle = "rgba(47,111,214,0.25)"; ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(cx, cy, R + 30, 0, Math.PI * 2); ctx.stroke();
-        var nd = Math.min(260, Math.round(d / 400));
-        for (var i = 0; i < nd; i++) { var a = i * 2.39996, rr = R + 12 + (i * 37 % 40); H.dot(ctx, cx + Math.cos(a) * rr, cy + Math.sin(a) * rr, 1.5, i < N * F[rule] / 400 ? H.v("--rose-700") : H.v("--mist")); }
-        var rk = risk(), ok = N >= 20000 && rk <= 2;
-        H.rows(ctx, 380, 40, [
-          ["운영 위성", N.toLocaleString() + " 기", N >= 20000 ? "--green-700" : "--rose-700"],
-          ["10년 뒤 우주 쓰레기", Math.round(d).toLocaleString() + " 개"],
-          ["한 해 충돌 위험", rk.toFixed(2) + " %", rk <= 2 ? "--green-700" : "--rose-700", true]
-        ], 62);
-        H.text(ctx, "빨간 점 = 다 쓴 위성이 남긴 쓰레기", 380, 240, { s: 11, w: "700", c: H.v("--mist") });
+        var cx = 270, cy = 150, R = 74, d = debris(), i, rk = risk(), ok = N >= 20000 && rk <= 2;
+        /* ── 왼쪽: 입체 지구와 낮은 궤도의 위성(파랑)·쓰레기(빨강·회색) ── */
+        K.studio(ctx, 0, 0, 560, cv.H, { x: cx, y: cy + R + 40, rx: 150, ry: 18 });
+        var nS = Math.round(N / 500), nOld = Math.round(N * F[rule] / 500), nBg = 60, Rq = K.rng(9);
+        function orbitPt(k, tot, rr, tilt) { var a = k / tot * 6.2832 + rr * .01; return { x: cx + Math.cos(a) * rr, y: cy + Math.sin(a) * rr * tilt, back: Math.sin(a) < 0 }; }
+        var pts = [];
+        for (i = 0; i < nBg; i++) pts.push([orbitPt(i, nBg, R + 18 + Rq() * 40, .36 + Rq() * .1), 0]);
+        for (i = 0; i < nOld; i++) pts.push([orbitPt(i * 1.7, nOld, R + 16 + Rq() * 38, .34 + Rq() * .12), 1]);
+        for (i = 0; i < nS; i++) pts.push([orbitPt(i, nS, R + 22 + (i % 4) * 7, .30 + (i % 3) * .05), 2]);
+        function dotP(q) { var p = q[0]; if (q[1] === 2) K.planet(ctx, p.x, p.y, 2.6, "#74c0fc", "#1864ab"); else if (q[1] === 1) K.planet(ctx, p.x, p.y, 2.2, "#ff8787", "#a61e1e"); else K.planet(ctx, p.x, p.y, 2, "#adb5bd", "#495057"); }
+        pts.filter(function (q) { return q[0].back; }).forEach(dotP);
+        K.earth(ctx, cx, cy, R);
+        ctx.strokeStyle = "rgba(28,126,214,.35)"; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.ellipse(cx, cy, R + 34, (R + 34) * .36, 0, 0, Math.PI); ctx.stroke();
+        pts.filter(function (q) { return !q[0].back; }).forEach(dotP);
+        K.bigText(ctx, "충돌 위험 " + rk.toFixed(2) + " %", 16, 36, 22, ok ? "#7ee0a0" : (rk <= 2 ? "#ffffff" : "#ff9a7a"));
+        legend(ctx, [["위성", LT.blue], ["다 쓴 위성이 남긴 쓰레기", LT.red], ["원래 있던 쓰레기", "#868e96"]], 16, cv.H - 14);
+        K.warn(ctx, 548, 30, "⚠ 점 하나 = 물체 500개, 궤도 높이는 과장", "right");
+        /* ── 오른쪽: 판정 카드 ── */
+        verdict(ctx, 572, 0, 328, cv.H, "10년 뒤 교통 상황", [["운영 위성", N.toLocaleString() + " 기", N >= 20000 ? LT.green : LT.red], ["우주 쓰레기", Math.round(d).toLocaleString() + " 개", LT.ink], ["다 쓴 위성 처리", { none: "그대로 둠", y25: "25년 안 제거", y5: "5년 안 제거" }[rule], LT.blue]],
+          [N < 20000 ? "위성이 계획보다 적음" : (rk <= 2 ? "서비스와 우주 환경을 함께 지킴" : "충돌 위험 2% 초과"), ok], [rk.toFixed(2) + " %", rk <= 2 ? LT.green : LT.red]);
         return ok;
       }
       cv.canvas._redraw = draw;

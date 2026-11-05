@@ -12,6 +12,23 @@ var LAST = C.rows[C.rows.length - 1] || [2026, 1, 427];
 var SR = S.rows;                                         /* [연도, 위성, 파편, 로켓 몸체·기타, 그해 새로 목록에 오른 위성] */
 function sat(y) { for (var i = 0; i < SR.length; i++) if (SR[i][0] === y) return SR[i]; return [y, 1, 0, 0, 0]; }
 var P15 = sat(2015)[1], P25 = sat(2025)[1], PR = P15 ? P25 / P15 : 4;
+var K = window.sthKit, LT = K.LT;
+/* 마우나로아 화산과 관측소 미니어처 */
+function volcano(ctx, ox, oy, s) {
+  var I = K.iso({ ox: ox, oy: oy, s: s, L: 200, D: 160 });
+  I.field(ctx, function (x, y) { var dx = (x - 100) / 70, dy = (y - 80) / 60, r = Math.sqrt(dx * dx + dy * dy); return 10 + 86 * Math.max(0, 1 - r) * Math.max(0, 1 - r * .6); },
+    function (x, y, z, lt) { return z > 70 ? K.tint("#8b7d70", lt) : (z > 30 ? K.tint("#6e5a4a", lt) : K.tint("#7a9a55", lt)); }, 26, 20);
+  I.box(ctx, 100, 74, 88, 116, 86, 100, "#ffffff", "#e6e9ee", "#b9c0cc");
+  var top = I.P(100, 80, 100); K.line(ctx, top, { x: top.x, y: top.y - 26 }, "#5b6272", 1.5); K.planet(ctx, top.x, top.y - 28, 3, "#ff6b6b", "#7a1f1f");
+  return top;
+}
+/* 흰 판정 카드 */
+function rcard(ctx, x, y, w, h, title, rows, big) {
+  K.card(ctx, x, y, w, h, title);
+  var x0 = x + 16, x1 = x + w - 16, yy = h - 26 * rows.length - 4;
+  rows.forEach(function (r) { K.row(ctx, r[0], r[1], x0, x1, yy, r[2]); yy += 26; });
+  if (big) K.t(ctx, big[0], x1, h - 26 * rows.length - 34, { s: 22, w: "900", a: "right", c: big[1] });
+}
 var SRC1 = "<small>출처: 미국 해양대기청(NOAA) 지구 감시 연구소 — 하와이 마우나로아 관측소(해발 3,397 m)의 달 평균 이산화 탄소 농도, 1958년 3월 ~ " + LAST[0] + "년 " + LAST[1] + "월. 사본은 data/co2-mlo.js.</small>";
 var SRC2 = "<small>출처: CelesTrak 위성 목록(SATCAT) — 쏘아 올린 날·떨어진 날로 해마다 말에 지구 둘레에 남아 있던 물체를 셈(추적되는 약 10 cm 이상만). ‘위성’에는 작동을 멈춘 위성도 들어 있습니다. 목록은 파편을 부모 위성의 발사일로 적어 두므로, 물체가 나타난 해는 카탈로그 번호가 매겨진 해로 다시 잡았습니다. 사본은 data/satcat.js.</small>";
 
@@ -30,19 +47,25 @@ window.sthLab({
     },
     task: "2015~2025년 한 해 평균 증가량을 슬라이더로 맞추세요(± 0.2 ppm/년).",
     build: function (stage, api) {
-      var H = api.h, cv = api.canvas(280), ctx = cv.ctx, W = cv.W, g = 0;
+      var H = api.h, cv = api.canvas(300), ctx = cv.ctx, W = cv.W, g = 0;
       function draw() {
         H.paper(ctx, W, cv.H);
-        var x0 = 60, x1 = 600, y0 = 26, y1 = cv.H - 36;
-        function X(y, m) { return x0 + (y + (m - 0.5) / 12 - 1958) / 69 * (x1 - x0); }
-        function Y(v) { return y1 - (v - 310) / 125 * (y1 - y0); }
-        H.axes(ctx, x0, y0, x1, y1);
-        [320, 350, 380, 410].forEach(function (v) { H.text(ctx, v, x0 - 6, Y(v) + 4, { s: 10, a: "right", c: H.v("--mist") }); });
-        [1960, 1980, 2000, 2020].forEach(function (y) { H.text(ctx, y, X(y, 1), y1 + 15, { s: 10, a: "center", c: H.v("--mist") }); });
-        H.line(ctx, C.rows.map(function (r) { return [X(r[0], r[1]), Y(r[2])]; }), H.v("--brand"), 1.4);
-        [2015, 2025].forEach(function (y) { var v = am(y); if (v) H.dot(ctx, X(y, 6.5), Y(v), 6, H.v("--amber-700")); });
-        H.text(ctx, "마우나로아의 이산화 탄소 (ppm)", x0 + 6, y0 - 10, { s: 11, w: "700", c: H.v("--mist") });
-        H.rows(ctx, 640, 30, [["2015년 평균", A15 ? A15.toFixed(2) + " ppm" : "-"], ["2025년 평균", A25 ? A25.toFixed(2) + " ppm" : "-"], ["내 답 (해마다)", "+" + g.toFixed(1) + " ppm", null, true]], 62);
+        K.studio(ctx, 0, 0, 630, cv.H, null);
+        K.bigText(ctx, (A15 ? A15.toFixed(0) : "400") + " → " + (A25 ? A25.toFixed(0) : "425") + " ppm", 16, 34, 22, "#ffffff");
+        K.t(ctx, "마우나로아의 이산화 탄소 (ppm, 달 평균)", 614, 30, { s: 11.5, w: "800", a: "right", c: LT.mute });
+        var gr = K.chart(ctx, { x: 4, y: 44, w: 622, h: cv.H - 48, pl: 46, pb: 28, pt: 8, pr: 14, x0: 1958, x1: 2027, y0: 310, y1: 435, xt: 6, yt: 5, light: true, xf: function (q) { return String(Math.round(q)); } });
+        var pts = C.rows.map(function (r) { return [r[0] + (r[1] - .5) / 12, r[2]]; });
+        if (pts.length) {
+          var ag = ctx.createLinearGradient(0, gr.T, 0, gr.B); ag.addColorStop(0, "rgba(232,89,12,.20)"); ag.addColorStop(1, "rgba(232,89,12,0)");
+          ctx.beginPath(); pts.forEach(function (p, i) { if (i) ctx.lineTo(gr.X(p[0]), gr.Y(p[1])); else ctx.moveTo(gr.X(p[0]), gr.Y(p[1])); });
+          ctx.lineTo(gr.X(pts[pts.length - 1][0]), gr.B); ctx.lineTo(gr.X(pts[0][0]), gr.B); ctx.closePath(); ctx.fillStyle = ag; ctx.fill();
+          K.plot(ctx, gr, pts, LT.orange, { w: 1.6, light: true });
+        }
+        [2015, 2025].forEach(function (y) { var v = am(y); if (v) { K.planet(ctx, gr.X(y + .5), gr.Y(v), 6, "#ffc94d", "#8a5a00"); K.t(ctx, y + "년 평균", gr.X(y + .5) - 10, gr.Y(v) - 10, { s: 11, w: "900", a: "right", c: "#8a5a00" }); } });
+        /* 오른쪽: 화산 위 관측소 모형 + 판정 카드 */
+        rcard(ctx, 642, 0, 258, cv.H, "해발 3,397 m 관측소", [["2015년 평균", A15 ? A15.toFixed(2) + " ppm" : "-", "#b7791f"], ["2025년 평균", A25 ? A25.toFixed(2) + " ppm" : "-", LT.red], ["내 답 (해마다)", "+" + g.toFixed(1) + " ppm", LT.blue]]);
+        volcano(ctx, 772, 70, 0.55);
+        K.t(ctx, "도시에서 먼 산꼭대기 공기", 771, 192, { s: 11, w: "800", a: "center", c: LT.mute });
       }
       cv.canvas._redraw = draw;
       api.slider({ label: "해마다 늘어난 양", min: 0, max: 5, step: 0.1, value: 0, fmt: function (x) { return "+" + x.toFixed(1) + " ppm/년"; }, onInput: function (x) { g = x; api.changed(); draw(); } });
@@ -72,21 +95,26 @@ window.sthLab({
     },
     task: "2025년 위성 수 ÷ 2015년 위성 수 를 슬라이더로 맞추세요(± 0.3).",
     build: function (stage, api) {
-      var H = api.h, cv = api.canvas(280), ctx = cv.ctx, W = cv.W, g = 1;
+      var H = api.h, cv = api.canvas(300), ctx = cv.ctx, W = cv.W, g = 1;
       function draw() {
         H.paper(ctx, W, cv.H);
-        var x0 = 60, x1 = 600, y0 = 26, y1 = cv.H - 36, bw = (x1 - x0) / Math.max(1, SR.length);
+        K.studio(ctx, 0, 0, 630, cv.H, null);
         var mx = Math.max.apply(null, SR.map(function (r) { return r[1] + r[2] + r[3]; })) * 1.08 || 1;
-        function Y(v) { return y1 - v / mx * (y1 - y0); }
-        H.axes(ctx, x0, y0, x1, y1);
-        [0, 10000, 20000, 30000].forEach(function (v) { if (v < mx) H.text(ctx, v.toLocaleString(), x0 - 6, Y(v) + 4, { s: 10, a: "right", c: H.v("--mist") }); });
+        var y0 = SR.length ? SR[0][0] : 1960, y1 = SR.length ? SR[SR.length - 1][0] + 1 : 2026;
+        var gr = K.chart(ctx, { x: 4, y: 44, w: 622, h: cv.H - 48, pl: 52, pb: 28, pt: 8, pr: 14, x0: y0, x1: y1, y0: 0, y1: mx, xt: 6, yt: 4, light: true, xf: function (q) { return String(Math.round(q)); }, yf: function (q) { return Math.round(q / 1000) + "천"; } });
+        var bw = (gr.R - gr.L) / Math.max(1, SR.length);
         SR.forEach(function (r, i) {
-          var x = x0 + i * bw, a = Y(r[1]), b = Y(r[1] + r[2]), c = Y(r[1] + r[2] + r[3]);
-          H.box(ctx, x, a, Math.max(1, bw - 1), y1 - a, H.v("--brand"), 0.9); H.box(ctx, x, b, Math.max(1, bw - 1), a - b, H.v("--rose-700"), 0.8); H.box(ctx, x, c, Math.max(1, bw - 1), b - c, H.v("--mist"), 0.7);
-          if (r[0] % 10 === 0) H.text(ctx, r[0], x + bw / 2, y1 + 15, { s: 10, a: "center", c: H.v("--mist") });
+          var x = gr.L + i * bw, a = gr.Y(r[1]), b = gr.Y(r[1] + r[2]), c = gr.Y(r[1] + r[2] + r[3]), ww = Math.max(1, bw - 1);
+          ctx.fillStyle = "#1c7ed6"; ctx.fillRect(x, a, ww, gr.B - a); ctx.fillStyle = "#ff6b6b"; ctx.fillRect(x, b, ww, a - b); ctx.fillStyle = "#adb5bd"; ctx.fillRect(x, c, ww, b - c);
+          if (r[0] === 2015 || r[0] === 2025) { ctx.strokeStyle = "#f59f00"; ctx.lineWidth = 2; ctx.strokeRect(x - 1, a - 1, ww + 2, gr.B - a + 2); }
         });
-        H.text(ctx, "해마다 말 지구 둘레의 물체 — 파랑: 위성, 빨강: 파편, 회색: 로켓 몸체 등", x0 + 6, y0 - 10, { s: 11, w: "700", c: H.v("--mist") });
-        H.rows(ctx, 640, 30, [["2015년 말 위성", P15.toLocaleString()], ["2025년 말 위성", P25.toLocaleString()], ["내 답 (몇 배)", g.toFixed(1) + " 배", null, true]], 62);
+        K.bigText(ctx, P15.toLocaleString() + " → " + P25.toLocaleString() + " 기", 16, 34, 22, "#ffffff");
+        var lx = 340; [["위성", "#1c7ed6"], ["파편", "#ff6b6b"], ["로켓 몸체 등", "#868e96"]].forEach(function (it) { K.t(ctx, "■", lx, 30, { s: 12, w: "900", c: it[1] }); K.t(ctx, it[0], lx + 14, 30, { s: 11.5, w: "800", c: LT.mute }); ctx.font = "800 11.5px " + K.FONT; lx += 14 + ctx.measureText(it[0]).width + 16; });
+        rcard(ctx, 642, 0, 258, cv.H, "해마다 말 지구 둘레의 위성", [["2015년 말 위성", P15.toLocaleString(), "#1c7ed6"], ["2025년 말 위성", P25.toLocaleString(), "#1c7ed6"], ["내 답 (몇 배)", g.toFixed(1) + " 배", LT.orange]]);
+        /* 카드 위쪽: 입체 지구와 군집 위성 */
+        var ex = 771, ey = 110; ctx.strokeStyle = "rgba(28,126,214,.35)"; ctx.lineWidth = 1; ctx.beginPath(); ctx.ellipse(ex, ey, 70, 22, -.2, 0, 6.2832); ctx.stroke();
+        K.earth(ctx, ex, ey, 40);
+        for (var k = 0; k < 18; k++) { var a2 = k / 18 * 6.2832; if (Math.sin(a2) < 0) continue; K.planet(ctx, ex + Math.cos(a2) * 70 * Math.cos(-.2) - Math.sin(a2) * 22 * Math.sin(-.2), ey + Math.cos(a2) * 70 * Math.sin(-.2) + Math.sin(a2) * 22 * Math.cos(-.2), 2.4, "#74c0fc", "#1864ab"); }
       }
       cv.canvas._redraw = draw;
       api.slider({ label: "2025년은 2015년의 몇 배", min: 1, max: 10, step: 0.1, value: 1, fmt: function (x) { return x.toFixed(1) + " 배"; }, onInput: function (x) { g = x; api.changed(); draw(); } });

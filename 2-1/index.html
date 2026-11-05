@@ -40,13 +40,14 @@
         <section class="scene" data-title="엔진 소리가 사라졌다">
           <div class="story narr"><div class="who">✈️</div><div class="say"><span class="name">이야기</span>제주로 가는 비행기. 엔진이 내는 낮은 ‘웅—’ 소리가 계속 귀를 누릅니다. 옆자리 친구가 건넨 헤드폰의 노이즈 캔슬링 단추를 누르자, 음악을 틀지 않았는데도 엔진 소리가 확 줄었습니다.</div></div>
           <div class="story"><div class="who">🧑‍🎓</div><div class="say"><span class="name">친구</span>“신기하지? 헤드폰 바깥에 작은 마이크가 달려 있대. 그런데 마이크로 소음을 들어서 어떻게 소음을 없앤다는 거지?”</div></div>
+          <figure class="hero-art"><img src="img/anc-cabin.webp" alt="여객기 동체 한 토막을 블록처럼 잘라 낸 모형. 잘린 동체 안으로 파란 좌석 두 줄과 둥근 창이 보이고, 날개 아래 큰 제트 엔진에서 주황색 소리 물결이 퍼진다. 앞쪽에는 귀덮개형 헤드폰 한쪽을 반으로 갈라 놓아 귀 쿠션, 플라스틱 껍데기, 바깥 마이크, 초록 회로판, 귀 쪽을 향한 스피커 진동판이 보인다." width="900" height="900" loading="lazy"><figcaption><b>비행기 안에서 엔진 소리는 줄고 안내 방송은 들립니다</b> 비행기 엔진은 낮고 큰 소리를 끊임없이 냅니다. 노이즈 캔슬링 헤드폰의 귀덮개 속에는 바깥 마이크, 작은 회로판, 스피커가 들어 있습니다. 이 작은 부품들이 어떻게 소리로 소리를 지울까요?</figcaption></figure>
           <div class="gate loose" id="g1"></div>
         </section>
 
         <section class="scene" data-title="소리로 소리를 지우기">
           <div class="story"><div class="who">🎧</div><div class="say"><span class="name">음향 엔지니어 (기내 방송 인터뷰)</span>“헤드폰은 마이크로 들은 소음을 바탕으로 새 소리를 만들어 함께 들려줍니다. 새 소리의 <b>위상</b>(파동이 어느 단계에 있는지)과 <b>세기</b>를 조절해, 귀에 들리는 소리의 <b>진폭</b>을 원래 소음의 <b>10% 이하</b>로 줄여 보세요.”</div></div>
           <div class="stage-card">
-            <div class="canvas-wrap stage"><canvas id="a-c-wave" width="900" height="380"></canvas></div>
+            <div class="canvas-wrap studio"><canvas id="a-c-wave" width="900" height="460"></canvas></div>
             <div class="sim-side">
               <div class="readout" id="a-wave-read"></div>
               <div style="display:flex;flex-direction:column;gap:14px">
@@ -71,7 +72,7 @@
           <div class="story"><div class="who">🗣️</div><div class="say"><span class="name">친구</span>“이상해. 엔진 소리는 거의 안 들리는데 승무원 안내 방송은 들려.”</div></div>
           <div class="story"><div class="who">🧭</div><div class="say"><span class="name">탐구 과제</span>헤드폰은 마이크로 소리를 듣고 새 소리를 만들기까지 <b>0.1 ms</b>(1만분의 1초)가 걸립니다. 소음의 진동수를 바꿔 가며, 소음을 <b>절반 이상 줄일 수 있는 가장 높은 진동수</b>를 찾아보세요.</div></div>
           <div class="stage-card">
-            <div class="canvas-wrap stage"><canvas id="a-c-lag" width="900" height="330"></canvas></div>
+            <div class="canvas-wrap studio"><canvas id="a-c-lag" width="900" height="380"></canvas></div>
             <div class="sim-side">
               <div class="readout" id="a-lag-read"></div>
               <div style="display:flex;flex-direction:column;gap:14px">
@@ -129,7 +130,7 @@
         <section class="scene" data-title="가습기를 몇 분 틀까">
           <div class="story"><div class="who">💧</div><div class="say"><span class="name">보건 선생님</span>“습도계로 재 보니 교실 습도가 25%예요. 건강에는 <b>40~60%</b>가 좋고, 60%를 넘으면 창문에 물이 맺혀 곰팡이가 생기기 쉬워요. 가습기 세기와 가동 시간을 바꿔 보며 <b>30분 안에</b> 40~60%에 이르게 해 주세요. 그리고 강하게 계속 틀어 두면 어떻게 되는지도 확인해 보세요.”</div></div>
           <div class="stage-card">
-            <div class="canvas-wrap stage"><canvas id="b-c-hum" width="900" height="330"></canvas></div>
+            <div class="canvas-wrap studio"><canvas id="b-c-hum" width="900" height="420"></canvas></div>
             <div class="sim-side">
               <div class="readout" id="b-hum-read"></div>
               <div style="display:flex;flex-direction:column;gap:14px">
@@ -155,7 +156,7 @@
           <div class="story"><div class="who">🧭</div><div class="say"><span class="name">탐구 과제</span>좋은 생각이지만 <b>가설</b>로 시험해 봐야 합니다. 수건 한 장은 한 시간에 물 약 50 g을 증발시킵니다. 창문을 닫은 채 한 시간 동안 습도를 <b>10%p 이상</b> 올리려면 수건이 적어도 몇 장 필요할까요? 가장 적은 수를 찾고, 환기하면 어떻게 되는지도 보세요.</div></div>
           <figure class="hero-art"><img src="img/wet-towel-classroom.webp" alt="겨울 교실을 블록처럼 잘라 낸 모형. 칠판과 창문이 있는 두 벽 사이에 책상과 의자가 놓여 있고, 가운데 빨래 건조대에 젖은 수건 여러 장이 걸려 물방울이 떨어진다. 벽에는 작은 습도계가 걸려 있고, 바닥 단면이 보인다." width="900" height="900" loading="lazy"><figcaption><b>교실 공기 속 물을 다 모아도 1 L 병 하나를 채우지 못합니다</b> 공기에 섞인 수증기는 눈에 보이지 않지만 무게가 있습니다. 20 °C 공기 1 m³는 수증기를 약 17 g까지 품을 수 있는데, 습도 25%인 교실 공기 180 m³에는 모두 합쳐 800 g쯤만 들어 있습니다. 젖은 수건에서 날아간 물이 이 숫자를 얼마나 바꿀 수 있는지 아래 모형에서 따져 보세요.</figcaption></figure>
           <div class="stage-card">
-            <div class="canvas-wrap" style="background:#e4eaf1"><canvas id="b-c-towel" width="900" height="580"></canvas></div>
+            <div class="canvas-wrap studio"><canvas id="b-c-towel" width="900" height="580"></canvas></div>
             <div class="sim-side">
               <div class="readout" id="b-towel-read"></div>
               <div style="display:flex;flex-direction:column;gap:14px">

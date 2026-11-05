@@ -4,6 +4,62 @@
    자료: data/et0-seoul.js (ERA5 재분석, Open-Meteo) */
 (function () {
 "use strict";
+/* ---- 밝은 스튜디오 + 입체 미니어처 (../assets/kit.js 의 K.studio · K.card) ---- */
+var K = window.sthKit, LT = K.LT;
+function lt(ctx, s, x, y, o) { o = o || {}; K.t(ctx, s, x, y, { s: o.s || 12, w: o.w || "700", a: o.a, c: o.c || LT.ink }); }
+function sideCard(ctx, x, W, H, title) { K.card(ctx, x, 0, W - x, H, title); return { px: x + 18, R: W - 18, w: W - x - 36 }; }
+function tag(ctx, s, x, y, c, a, box) { return K.pill(ctx, s, x, y, { s: 11.5, a: a, c: c || LT.ink, bg: "rgba(255,255,255,.92)", line: "rgba(20,40,90,.18)", box: box }); }
+function floorSh(ctx, x, y, rx, ry, a) {
+  var g = ctx.createRadialGradient(x, y, 2, x, y, rx);
+  g.addColorStop(0, "rgba(20,30,50," + (a || .28) + ")"); g.addColorStop(.6, "rgba(20,30,50,.07)"); g.addColorStop(1, "rgba(20,30,50,0)");
+  ctx.save(); ctx.translate(x, y); ctx.scale(1, ry / rx); ctx.translate(-x, -y); ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, rx, 0, 6.2832); ctx.fill(); ctx.restore();
+}
+function metalG(ctx, x0, y0, x1, y1) { var g = ctx.createLinearGradient(x0, y0, x1, y1); g.addColorStop(0, "#f6f8fb"); g.addColorStop(.5, "#aab3c3"); g.addColorStop(1, "#5b6476"); return g; }
+/* 앞에서 비스듬히 내려다본 판: 윗면 + 앞면 + 오른쪽 옆면 (x, y = 앞면 왼쪽 위) */
+function slab(ctx, x, y, w, h, d, cTop, cFront, cSide) {
+  ctx.fillStyle = cTop; ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + d, y - d * .55); ctx.lineTo(x + w + d, y - d * .55); ctx.lineTo(x + w, y); ctx.closePath(); ctx.fill();
+  if (cSide) { ctx.fillStyle = cSide; ctx.beginPath(); ctx.moveTo(x + w, y); ctx.lineTo(x + w + d, y - d * .55); ctx.lineTo(x + w + d, y + h - d * .55); ctx.lineTo(x + w, y + h); ctx.closePath(); ctx.fill(); }
+  ctx.fillStyle = cFront; ctx.fillRect(x, y, w, h);
+}
+/* 비스듬한 상자: 앞면 x..x+w, 바닥 y, 높이 h, 깊이 d */
+function box3(ctx, x, y, w, h, d, col, front) {
+  if (h < .5) return;
+  ctx.fillStyle = K.tint(col, 1.18); ctx.beginPath(); ctx.moveTo(x, y - h); ctx.lineTo(x + d, y - h - d * .55); ctx.lineTo(x + w + d, y - h - d * .55); ctx.lineTo(x + w, y - h); ctx.closePath(); ctx.fill();
+  ctx.fillStyle = K.tint(col, .72); ctx.beginPath(); ctx.moveTo(x + w, y - h); ctx.lineTo(x + w + d, y - h - d * .55); ctx.lineTo(x + w + d, y - d * .55); ctx.lineTo(x + w, y); ctx.closePath(); ctx.fill();
+  var g = ctx.createLinearGradient(0, y - h, 0, y); g.addColorStop(0, K.tint(col, 1.02)); g.addColorStop(1, K.tint(col, .85)); ctx.fillStyle = front || g; ctx.fillRect(x, y - h, w, h);
+}
+function wheel(ctx, x, y, r) { K.planet(ctx, x, y, r, "#6b7484", "#1f232b"); ctx.fillStyle = "#c9d0da"; ctx.beginPath(); ctx.arc(x, y, r * .38, 0, 6.2832); ctx.fill(); }
+/* 카드 안 가로 막대 + 기준 눈금 */
+function gauge(ctx, x, y, w, f, col, mark) { K.bar(ctx, x, y, w, f, col); if (mark != null) { ctx.fillStyle = LT.ink; ctx.fillRect(x + w * Math.max(0, Math.min(1, mark)) - 1, y - 4, 2, 18); } }
+
+/* 밝은 막대그래프(하루 기준 증발산량) */
+function etChart(ctx, x, y, w, h, a, mx, col, label) {
+  var g = K.chart(ctx, { x: x, y: y, w: w, h: h, light: true, pl: 40, x0: 0, x1: Math.max(1, a.length), y0: 0, y1: mx, xt: 4, yt: 3,
+    xf: function (v) { var r = a[Math.min(a.length - 1, Math.round(v))]; return r ? dko(r[0]) : ""; }, yf: function (v) { return Math.round(v) + " mm"; } });
+  a.forEach(function (r, i) {
+    var x0 = g.X(i) + .6, x1 = g.X(i + 1) - .6, yt = g.Y(Math.min(mx, r[1]));
+    var bg = ctx.createLinearGradient(0, yt, 0, g.B); bg.addColorStop(0, col); bg.addColorStop(1, K.tint(col, 1.35));
+    ctx.fillStyle = bg; ctx.fillRect(x0, yt, Math.max(1, x1 - x0), g.B - yt);
+  });
+  tag(ctx, label, g.L + 6, g.T + 18, LT.ink, "left", [g.L, g.R]);
+  return g;
+}
+/* 유리 물통 미니어처: 가운데 x, 바닥 y, 반지름 r, 높이 h, 물 비율 f */
+function tank(ctx, cx, by, r, h, f, label, col) {
+  floorSh(ctx, cx + 6, by + 6, r * 1.5, 8, .3);
+  var wy = by - h * Math.max(0, Math.min(1, f));
+  ctx.save(); ctx.beginPath(); ctx.moveTo(cx - r, by - h); ctx.lineTo(cx - r, by); ctx.ellipse(cx, by, r, r * .3, 0, Math.PI, 0, true); ctx.lineTo(cx + r, by - h); ctx.closePath(); ctx.clip();
+  var wg = ctx.createLinearGradient(cx - r, 0, cx + r, 0); wg.addColorStop(0, "rgba(28,126,214,.75)"); wg.addColorStop(.5, "rgba(116,192,252,.75)"); wg.addColorStop(1, "rgba(24,100,171,.8)");
+  ctx.fillStyle = wg; ctx.fillRect(cx - r, wy, 2 * r, by - wy + r);
+  ctx.restore();
+  if (f > 0) { ctx.fillStyle = "rgba(165,216,255,.9)"; ctx.beginPath(); ctx.ellipse(cx, wy, r, r * .3, 0, 0, 6.2832); ctx.fill(); }
+  ctx.strokeStyle = "rgba(80,110,150,.8)"; ctx.lineWidth = 1.8;
+  ctx.beginPath(); ctx.moveTo(cx - r, by - h); ctx.lineTo(cx - r, by); ctx.moveTo(cx + r, by - h); ctx.lineTo(cx + r, by); ctx.stroke();
+  ctx.beginPath(); ctx.ellipse(cx, by, r, r * .3, 0, 0, Math.PI); ctx.stroke();
+  ctx.beginPath(); ctx.ellipse(cx, by - h, r, r * .3, 0, 0, 6.2832); ctx.stroke();
+  ctx.fillStyle = "rgba(255,255,255,.5)"; ctx.fillRect(cx - r + 6, by - h + 8, 5, h - 14);
+  if (label) tag(ctx, label, cx, by + 30, col || LT.blue, "center");
+}
 var E = window.REAL_ET0 || { summer: [], winter: [] };
 var SU = E.summer, WI = E.winter;
 function tot(a) { return a.reduce(function (s, r) { return s + r[1]; }, 0); }
@@ -40,10 +96,24 @@ window.sthLab({
     },
     task: "방학 동안 화분 하나가 잃는 물(L)을 슬라이더로 맞추세요(± 0.2 L).",
     build: function (stage, api) {
-      var H = api.h, cv = api.canvas(270), ctx = cv.ctx, W = cv.W, g = 0;
+      var H = api.h, cv = api.canvas(300), ctx = cv.ctx, W = cv.W, g = 0;
       function draw() {
-        bars(H, ctx, W, cv.H, SU, 6, H.v("--brand"), "여름 방학 하루 기준 증발산량 (mm)");
-        H.rows(ctx, 640, 30, [["방학 동안 합", TS.toFixed(1) + " mm"], ["화분 넓이 (지름 20 cm)", AREA.toFixed(4) + " m²"], ["내 답 (잃는 물)", g.toFixed(1) + " L", null, true]], 62);
+        /* 밝은 스튜디오: 여름 방학 하루 기준 증발산량 막대그래프 + 오른쪽에 내 답만큼 물이 찬 유리 물통(10 L 눈금) 미니어처, 판정 카드 */
+        var CH = cv.H, LW = 640;
+        ctx.clearRect(0, 0, W, CH);
+        K.studio(ctx, 0, 0, LW, CH, null);
+        etChart(ctx, 8, 78, 470, CH - 84, SU, 6, "#1c7ed6", "여름 방학 하루 기준 증발산량 (mm)");
+        tank(ctx, 560, 236, 44, 150, g / 10, "내 답 " + g.toFixed(1) + " L", LT.blue);
+        for (var q = 0; q <= 10; q += 2) { var ty = 236 - 150 * q / 10; ctx.fillStyle = "rgba(20,40,90,.55)"; ctx.fillRect(604, ty, 7, 1.4); lt(ctx, q + " L", 614, ty + 4, { s: 9.5, w: "600", c: LT.mute }); }
+        K.bigText(ctx, "방학 동안 " + TS.toFixed(1) + " mm", 16, 40, 22, "#ffffff");
+        K.bigText(ctx, "지름 20 cm 화분이 잃는 물은?", 16, 64, 14, "#ffd35a");
+        var cd = sideCard(ctx, LW + 10, W, CH, "화분 하나가 잃는 물");
+        K.row(ctx, "방학 동안 합", TS.toFixed(1) + " mm", cd.px, cd.R, 62);
+        K.row(ctx, "화분 넓이 (지름 20 cm)", AREA.toFixed(4) + " m²", cd.px, cd.R, 90);
+        lt(ctx, g.toFixed(1) + " L", cd.px, 140, { s: 26, w: "900", c: LT.blue });
+        lt(ctx, "내 답", cd.R, 140, { s: 11, a: "right", c: LT.mute });
+        K.tip(ctx, "부피(L) = 깊이(mm) × 넓이(m²)", cd.px - 4, 162, cd.w + 8, null);
+        lt(ctx, "1 m² 땅에서 1 mm 날아가면 1 L", cd.px, 222, { s: 11, w: "600", c: LT.mute });
       }
       cv.canvas._redraw = draw;
       api.slider({ label: "화분 하나가 잃는 물", min: 0, max: 10, step: 0.1, value: 0, fmt: function (x) { return x.toFixed(1) + " L"; }, onInput: function (x) { g = x; api.changed(); draw(); } });
@@ -72,10 +142,25 @@ window.sthLab({
     },
     task: "여름 하루 평균 ÷ 겨울 하루 평균 을 슬라이더로 맞추세요(± 0.3).",
     build: function (stage, api) {
-      var H = api.h, cv = api.canvas(270), ctx = cv.ctx, W = cv.W, g = 1;
+      var H = api.h, cv = api.canvas(300), ctx = cv.ctx, W = cv.W, g = 1;
       function draw() {
-        bars(H, ctx, W, cv.H, WI, 6, H.v("--green-700"), "겨울 방학 하루 기준 증발산량 (mm) — 여름과 같은 눈금");
-        H.rows(ctx, 640, 30, [["여름 " + SU.length + "일 합", TS.toFixed(1) + " mm"], ["겨울 " + WI.length + "일 합", TW.toFixed(1) + " mm"], ["내 답 (몇 배)", g.toFixed(1) + " 배", null, true]], 62);
+        /* 밝은 스튜디오: 겨울 방학 막대그래프(여름과 같은 눈금) + 두 방학 동안 날아간 물의 합을 담은 유리 물통 두 개, 판정 카드 */
+        var CH = cv.H, LW = 640;
+        ctx.clearRect(0, 0, W, CH);
+        K.studio(ctx, 0, 0, LW, CH, null);
+        etChart(ctx, 8, 78, 470, CH - 84, WI, 6, "#0f9f76", "겨울 방학 하루 기준 증발산량 (mm) — 여름과 같은 눈금");
+        var mxT = Math.max(TS, TW, 1);
+        tank(ctx, 528, 236, 26, 140, TS / mxT, "여름 " + SU.length + "일", LT.orange);
+        tank(ctx, 598, 236, 26, 140, TW / mxT, "겨울 " + WI.length + "일", LT.green);
+        K.bigText(ctx, "여름은 겨울의 " + g.toFixed(1) + "배?", 16, 40, 22, "#ffffff");
+        K.bigText(ctx, "날수가 다르니 하루 평균으로 비교", 16, 64, 14, "#ffd35a");
+        var cd = sideCard(ctx, LW + 10, W, CH, "두 방학 비교");
+        K.row(ctx, "여름 " + SU.length + "일 합", TS.toFixed(1) + " mm", cd.px, cd.R, 62, LT.orange);
+        K.row(ctx, "겨울 " + WI.length + "일 합", TW.toFixed(1) + " mm", cd.px, cd.R, 90, LT.green);
+        lt(ctx, g.toFixed(1) + " 배", cd.px, 140, { s: 26, w: "900", c: LT.blue });
+        lt(ctx, "내 답 (몇 배)", cd.R, 140, { s: 11, a: "right", c: LT.mute });
+        K.tip(ctx, "하루 평균 = 합 ÷ 날수", cd.px - 4, 162, cd.w + 8, null);
+        lt(ctx, "물통 높이 = 방학 동안 날아간 물의 합", cd.px, 222, { s: 11, w: "600", c: LT.mute });
       }
       cv.canvas._redraw = draw;
       api.slider({ label: "여름은 겨울의 몇 배", min: 0.5, max: 8, step: 0.1, value: 1, fmt: function (x) { return x.toFixed(1) + " 배"; }, onInput: function (x) { g = x; api.changed(); draw(); } });

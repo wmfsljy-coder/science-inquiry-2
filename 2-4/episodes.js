@@ -76,6 +76,93 @@ function greenhouse(ctx, x, y, w, h, o) {
   if (o.led) for (i = 0; i < 6; i++) K.glow(ctx, x + 30 + i * (w - 60) / 5, y + roofH + 13, 2.4, "rgba(255,140,220,.95)", 3.4);
 }
 
+/* ---- 스튜디오 블록 모형 도구 ---- */
+var LT = K.LT;
+function tri(ctx, a, b, c, fill, stroke) { ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.lineTo(c.x, c.y); ctx.closePath(); if (fill) { ctx.fillStyle = fill; ctx.fill(); } if (stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = 1; ctx.stroke(); } }
+function ell(ctx, x, y, rx, ry) { ctx.beginPath(); ctx.ellipse(x, y, rx, ry, 0, 0, 6.2832); }
+/* 땅 블록(옆면 = 흙 단면) */
+function soilBlock(ctx, I, zg, topFill, seed) {
+  var bands = [[0, zg * .3, "#7c818a", "#6c7079"], [zg * .3, zg * .66, "#9a7650", "#876744"], [zg * .66, zg, "#5a3d26", "#4c3320"]];
+  ["front", "right"].forEach(function (sd, k) {
+    I.face(ctx, sd, function (Lw) {
+      bands.forEach(function (b) { ctx.fillStyle = b[2 + k]; ctx.fillRect(0, b[0], Lw, b[1] - b[0]); });
+      var R = K.rng((seed || 3) + k); ctx.fillStyle = "rgba(255,255,255,.28)";
+      for (var q = 0; q < Lw / 3; q++) { ctx.beginPath(); ctx.arc(R() * Lw, R() * zg * .3, .8 + R() * 1.3, 0, 6.2832); ctx.fill(); }
+    });
+  });
+  I.shade(ctx, "right", function () { return zg; });
+  I.top(ctx, function () { return zg; }, topFill, 20);
+  I.edges(ctx, zg, zg);
+}
+/* 딸기 포기 하나 */
+function berry(ctx, p, sc) {
+  sc = sc || 1;
+  ctx.fillStyle = "rgba(0,0,0,.18)"; ell(ctx, p.x + 2, p.y + 1, 7 * sc, 2.4 * sc); ctx.fill();
+  [[-5, -4, "#3f9a3f"], [5, -4, "#2f7f34"], [0, -8, "#4fb34a"]].forEach(function (q) { ctx.fillStyle = q[2]; ell(ctx, p.x + q[0] * sc, p.y + q[1] * sc, 5 * sc, 3.2 * sc); ctx.fill(); });
+  K.planet(ctx, p.x + 3 * sc, p.y - 1 * sc, 2.6 * sc, "#ff5a6e", "#a3102a");
+}
+/* 아이소메트릭 유리 온실: o.open 0~1 지붕 창, o.led, o.pump, o.heat 0~1(안이 뜨거움), o.inside(ctx, I, ZG) 센서 등, o.ph 물방울 위상 */
+function ghIso(ctx, I, o) {
+  o = o || {};
+  var ZG = 24, X0 = 30, X1 = 270, Y0 = 25, Y1 = 145, ZW = 92, ZR = 126, YR = 85, b, x;
+  var glass = "rgba(190,225,255,.20)", frame = "rgba(110,130,155,.95)";
+  function zr(y) { return ZR - (y - YR) / (Y1 - YR) * (ZR - ZW); }
+  soilBlock(ctx, I, ZG, function (j) { return j % 2 ? "#eef3f8" : "#e4ebf3"; }, 5);
+  [[8, 12], [290, 18], [292, 150], [6, 160]].forEach(function (t) { I.tree(ctx, t[0], t[1], ZG, .9); });
+  I.plane(ctx, ZG + .3, "#7a5a3c", null, X0, X1, Y0, Y1);
+  /* 뒤쪽 유리벽·박공·지붕 */
+  I.quad(ctx, I.P(X0, Y0, ZG), I.P(X1, Y0, ZG), I.P(X1, Y0, ZW), I.P(X0, Y0, ZW), glass, frame);
+  I.quad(ctx, I.P(X0, Y0, ZG), I.P(X0, Y1, ZG), I.P(X0, Y1, ZW), I.P(X0, Y0, ZW), glass, frame);
+  tri(ctx, I.P(X0, Y0, ZW), I.P(X0, Y1, ZW), I.P(X0, YR, ZR), "rgba(190,225,255,.16)", frame);
+  I.quad(ctx, I.P(X0, Y0, ZW), I.P(X1, Y0, ZW), I.P(X1, YR, ZR), I.P(X0, YR, ZR), "rgba(190,225,255,.14)", frame);
+  /* 두둑·딸기·점적 관 */
+  for (b = 0; b < 3; b++) {
+    var y0 = 38 + b * 36, y1 = y0 + 20;
+    I.box(ctx, 44, y0, ZG, 256, y1, ZG + 10, "#6a4428", "#8a5a36", "#5a3920");
+    K.line(ctx, I.P(44, y1 - 3, ZG + 10.5), I.P(256, y1 - 3, ZG + 10.5), o.pump ? "#1c7ed6" : "#3d4b5c", 1.6);
+    for (x = 54; x <= 246; x += 24) berry(ctx, I.P(x, (y0 + y1) / 2, ZG + 10), .95);
+    if (o.pump) for (x = 58; x <= 246; x += 24) { var dp = I.P(x, y1 - 3, ZG + 10.5 - ((o.ph || 0) * 6 + x) % 6); K.planet(ctx, dp.x, dp.y + 2, 1.8, "#8fd0ff", "#1864ab"); }
+  }
+  /* LED 막대 */
+  for (b = 0; b < 3; b++) {
+    var yc = 46 + b * 36;
+    if (o.led) {
+      var a1 = I.P(50, yc, 84), a2 = I.P(250, yc, 84), a3 = I.P(250, yc + 14, ZG + 10), a4 = I.P(50, yc + 14, ZG + 10);
+      var lg = ctx.createLinearGradient(0, a1.y, 0, a3.y); lg.addColorStop(0, "rgba(255,120,220,.30)"); lg.addColorStop(1, "rgba(255,120,220,.03)");
+      I.quad(ctx, a1, a2, a3, a4, lg);
+    }
+    I.box(ctx, 50, yc - 2, 84, 250, yc + 2, 87, o.led ? "#ffd6f3" : "#5a6075", o.led ? "#ff8ad8" : "#3a3f55", o.led ? "#d25bb0" : "#2b3044");
+    if (o.led) for (x = 62; x <= 240; x += 30) { var lp = I.P(x, yc + 2, 84); K.glow(ctx, lp.x, lp.y, 1.8, "rgba(255,140,220,.95)", 3); }
+  }
+  /* 펌프와 물통 */
+  I.box(ctx, 252, 150, ZG, 268, 164, ZG + 14, "#7fa6d6", "#4f78a8", "#3a5f8a");
+  if (o.inside) o.inside(ctx, I, ZG);
+  /* 안이 뜨거우면 붉은 기운 */
+  var hf = o.heat ? "rgba(255,90,50," + (o.heat * .26).toFixed(3) + ")" : null;
+  /* 앞쪽 유리벽(창살) */
+  I.quad(ctx, I.P(X0, Y1, ZG), I.P(X1, Y1, ZG), I.P(X1, Y1, ZW), I.P(X0, Y1, ZW), hf || glass, frame);
+  I.quad(ctx, I.P(X1, Y0, ZG), I.P(X1, Y1, ZG), I.P(X1, Y1, ZW), I.P(X1, Y0, ZW), hf || "rgba(170,210,245,.24)", frame);
+  tri(ctx, I.P(X1, Y0, ZW), I.P(X1, Y1, ZW), I.P(X1, YR, ZR), hf || "rgba(170,210,245,.26)", frame);
+  for (x = X0 + 48; x < X1; x += 48) K.line(ctx, I.P(x, Y1, ZG), I.P(x, Y1, ZW), frame, 1.2);
+  [55, 85, 115].forEach(function (y) { K.line(ctx, I.P(X1, y, ZG), I.P(X1, y, y === 85 ? ZR : ZW), frame, 1.2); });
+  /* 앞 지붕(창 자리 비움) + 지붕 창 */
+  var WX0 = 170, WX1 = 236, ya = YR + 5, yb = YR + 36, za = zr(ya), zb = zr(yb);
+  ctx.save(); ctx.beginPath();
+  [I.P(X0, Y1, ZW), I.P(X1, Y1, ZW), I.P(X1, YR, ZR), I.P(X0, YR, ZR)].forEach(function (p, i) { if (i) ctx.lineTo(p.x, p.y); else ctx.moveTo(p.x, p.y); }); ctx.closePath();
+  [I.P(WX0, ya, za), I.P(WX0, yb, zb), I.P(WX1, yb, zb), I.P(WX1, ya, za)].forEach(function (p, i) { if (i) ctx.lineTo(p.x, p.y); else ctx.moveTo(p.x, p.y); }); ctx.closePath();
+  ctx.fillStyle = "rgba(200,232,255,.30)"; ctx.fill("evenodd"); ctx.strokeStyle = frame; ctx.lineWidth = 1.2; ctx.stroke(); ctx.restore();
+  var op = Math.max(0, Math.min(1, o.open || 0)), ang = Math.atan2(zb - za, yb - ya) + op * 0.75, len = Math.sqrt((yb - ya) * (yb - ya) + (zb - za) * (zb - za));
+  var ye = ya + Math.cos(ang) * len, ze = za + Math.sin(ang) * len;
+  I.quad(ctx, I.P(WX0, ya, za), I.P(WX1, ya, za), I.P(WX1, ye, ze), I.P(WX0, ye, ze), op > .05 ? "rgba(160,215,255,.62)" : "rgba(200,232,255,.42)", "#5b6d85");
+  if (op > .05) { K.line(ctx, I.P((WX0 + WX1) / 2, yb, zb), I.P((WX0 + WX1) / 2, ye, ze), "#5b6d85", 1.6); K.arrow(ctx, I.P(WX0 + 30, ya + 18, za + 4), I.P(WX0 + 6, ya + 6, za + 46), "#e8590c", 2.2, 8); }
+  return { X0: X0, X1: X1, Y0: Y0, Y1: Y1, ZG: ZG, ZW: ZW, ZR: ZR, YR: YR, win: I.P(WX1, ye, ze) };
+}
+/* 센서 기둥(흰 상자) */
+function sensorPost(ctx, I, x, y, z, hgt, col) {
+  K.line(ctx, I.P(x, y, z), I.P(x, y, z + hgt), "#6b7280", 2);
+  I.box(ctx, x - 5, y - 5, z + hgt, x + 5, y + 5, z + hgt + 10, "#ffffff", col || "#e9edf3", "#c3cad6");
+}
+
 /* =========================================================================
    이야기 ① 겨울 딸기 온실
    ========================================================================= */
@@ -107,34 +194,60 @@ function greenhouse(ctx, x, y, w, h, o) {
       else if (kind === "LED") { K.glow(ctx, x, y, 4, "rgba(255,140,220,.95)", 3); }
       else { ctx.fillStyle = "#5fb6f0"; ctx.beginPath(); ctx.moveTo(x, y - 9); ctx.quadraticCurveTo(x + 8, y + 2, x, y + 7); ctx.quadraticCurveTo(x - 8, y + 2, x, y - 9); ctx.fill(); }
     }
+    /* 장치별 눈금(기준값 슬라이더 범위)과 두 시험 값 */
+    var DEV = [
+      { n: "🌡 창문", rule: function () { return "온도 > " + T + " °C → 열기"; }, lo: 20, hi: 36, v: function () { return T; }, cs: [1, 0], f: function (x) { return x + "°"; } },
+      { n: "💡 LED", rule: function () { return "밝기 < " + fmt(L) + " lux → 켜기"; }, lo: 1000, hi: 20000, v: function () { return L; }, cs: [2, 3], f: function (x) { return Math.round(x / 1000) + "천"; } },
+      { n: "💧 펌프", rule: function () { return "흙 수분 < " + S + "% → 켜기"; }, lo: 10, hi: 60, v: function () { return S; }, cs: [4, 5], f: function (x) { return x + "%"; } }
+    ];
+    var TESTV = [29, 24, 3000, 15000, 25, 45];
+    var IG = K.iso({ ox: 236, oy: 126, s: 0.86, L: 300, D: 170 });
     function draw() {
       ctx.clearRect(0, 0, W, H);
-      var LW = 300, n = nOk();
-      /* ── 왼쪽: 온실과 세 규칙 ── */
-      K.stage(ctx, 0, 0, LW, H, "night", { seed: 5, title: "온실의 세 규칙" });
-      greenhouse(ctx, 26, 56, LW - 52, 170, { open: false, led: false });
-      [["창문", "온도 > " + T + " °C → 열기", KC.orange], ["LED", "밝기 < " + fmt(L) + " lux → 켜기", "#ff8ad8"], ["펌프", "흙 수분 < " + S + "% → 켜기", KC.blue]].forEach(function (q, i) {
-        var y = 262 + i * 27; icon(q[0], 24, y - 5);
-        K.pill(ctx, q[0] + " · " + q[1], 42, y, { s: 11.5, c: q[2], box: [0, LW] });
+      var LW = 560, n = nOk();
+      var res = CASES.map(function (c) { return { a: c.act(), ok: c.act() === c.want }; });
+      /* ── 왼쪽: 겨울 온실 블록 모형 (기준대로라면 ‘필요한 상황’에서 장치가 켜지는지) ── */
+      var fc = IG.P(150, 85, 0);
+      K.studio(ctx, 0, 0, LW, H, { x: fc.x + 14, y: fc.y + 30, rx: 250, ry: 46 });
+      ctx.save(); ctx.beginPath(); ctx.roundRect(0, 0, LW, H, 14); ctx.clip();
+      var g = ghIso(ctx, IG, { open: res[0].a ? 1 : 0, led: res[2].a, pump: res[4].a, ph: 0, inside: function (c2, I2, zg) {
+        sensorPost(c2, I2, 36, 150, zg, 46);
+        sensorPost(c2, I2, 150, 20, zg, 70, "#fff3bf");
+        var pr = I2.P(120, 128, zg + 10); K.line(c2, pr, { x: pr.x, y: pr.y + 9 }, "#9aa3b0", 2); K.line(c2, { x: pr.x + 4, y: pr.y - 2 }, { x: pr.x + 4, y: pr.y + 7 }, "#9aa3b0", 2);
+        I2.box(c2, 272, 60, 52, 276, 76, 66, "#2f9e44", "#2b8a3e", "#1e6b30");
+      } });
+      ctx.restore();
+      var BX = [0, LW];
+      IG.label(ctx, 203, 92, g.ZR - 2, "지붕 창 " + (res[0].a ? "열림" : "닫힘") + " (29 °C일 때)", 70, -40, res[0].ok ? "#c3f5dc" : "#ffd0c0", BX);
+      IG.label(ctx, 50, 118, 86, "LED " + (res[2].a ? "켜짐" : "꺼짐") + " (3,000 lux일 때)", -56, 40, res[2].ok ? "#c3f5dc" : "#ffd0c0", BX);
+      IG.label(ctx, 260, 157, g.ZG + 14, "펌프 " + (res[4].a ? "켜짐" : "꺼짐") + " (흙 수분 25%일 때)", 40, 34, res[4].ok ? "#c3f5dc" : "#ffd0c0", BX);
+      IG.label(ctx, 36, 150, g.ZG + 56, "온도 센서", -30, 92, "#e8ecff", BX);
+      IG.label(ctx, 274, 68, 66, "마이크로컨트롤러", 34, -18, "#e8ecff", BX);
+      K.bigText(ctx, "옳게 움직인 상황 " + n + " / 6", 18, 40, 24, n === 6 ? "#7ee0a0" : "#ffffff");
+      K.bigText(ctx, n === 6 ? "딸기가 편안한 온실" : "기준값을 고쳐 보세요", 18, 66, 15, "#ffd35a");
+      K.warn(ctx, LW - 12, H - 12, "⚠ 장치 크기는 보기 쉽게 과장", "right");
+      /* ── 오른쪽: 흰 판정 카드 — 장치마다 눈금 위 기준값과 두 시험 상황 ── */
+      var RX = LW + 12, x0 = RX + 18, x1 = W - 18;
+      K.card(ctx, RX, 0, W - RX, H, "여섯 상황으로 시험하기");
+      DEV.forEach(function (d, k) {
+        var y = 58 + k * 94, val = d.v(), okD = res[d.cs[0]].ok && res[d.cs[1]].ok;
+        K.t(ctx, d.n, x0, y, { s: 12.5, w: "900", c: LT.ink });
+        K.t(ctx, d.rule(), x1, y, { s: 11.5, w: "800", a: "right", c: okD ? LT.green : LT.orange });
+        var gy = y + 12, gw = x1 - x0;
+        function GX(q) { return x0 + (q - d.lo) / (d.hi - d.lo) * gw; }
+        ctx.fillStyle = "#e3e9f1"; ctx.beginPath(); ctx.roundRect(x0, gy, gw, 8, 4); ctx.fill();
+        d.cs.forEach(function (ci) { var tv = TESTV[ci], px = GX(tv); K.planet(ctx, px, gy + 4, 5, CASES[ci].want ? "#ff922b" : "#74c0fc", CASES[ci].want ? "#a33f00" : "#1864ab"); K.t(ctx, d.f(tv), px, gy + 24, { s: 10, w: "800", a: "center", c: LT.mute }); });
+        var tx = GX(val); ctx.fillStyle = okD ? LT.green : LT.red; ctx.beginPath(); ctx.moveTo(tx, gy + 9); ctx.lineTo(tx - 6, gy - 3); ctx.lineTo(tx + 6, gy - 3); ctx.closePath(); ctx.fill();
+        ctx.fillRect(tx - 1, gy - 3, 2, 14);
+        d.cs.forEach(function (ci, j) {
+          var r = res[ci];
+          K.t(ctx, CASES[ci].d.replace(/, /, " · "), x0, gy + 44 + j * 18, { s: 11, w: "700", c: LT.mute });
+          K.t(ctx, (r.a ? "켜짐" : "꺼짐") + (r.ok ? " ✔" : " ✘"), x1, gy + 44 + j * 18, { s: 11.5, w: "900", a: "right", c: r.ok ? LT.green : LT.red });
+        });
       });
-      /* ── 오른쪽: 여섯 상황 시험 ── */
-      var RX = LW + 8, RW = W - RX, c0 = RX + 50, c1 = RX + 240, c2 = RX + 300, c3 = RX + 410;
-      K.stage(ctx, RX, 0, RW, H, "lab", { seed: 2, title: "여섯 상황으로 시험하기" });
-      [["상황", c0], ["장치", c1], ["딸기에게 필요", c2], ["온실의 동작", c3]].forEach(function (h) { K.t(ctx, h[0], h[1], 58, { s: 11, c: KC.mute }); });
-      CASES.forEach(function (c, i) {
-        var y = 68 + i * 40, a = c.act(), ok = a === c.want, col = ok ? KC.green : KC.red;
-        var rg = ctx.createLinearGradient(RX + 12, 0, W - 12, 0); rg.addColorStop(0, A(col, 0.16)); rg.addColorStop(1, "rgba(255,255,255,.03)");
-        ctx.fillStyle = rg; ctx.beginPath(); ctx.roundRect(RX + 12, y, RW - 24, 32, 9); ctx.fill();
-        ctx.fillStyle = col; ctx.beginPath(); ctx.roundRect(RX + 12, y, 4, 32, 2); ctx.fill();
-        icon(c.dev, RX + 32, y + 16);
-        K.t(ctx, c.d, c0, y + 21, { s: 12.5, c: KC.ink });
-        K.t(ctx, c.dev, c1, y + 21, { s: 12.5, w: "800", c: KC.mute });
-        K.t(ctx, c.want ? "켜기(열기)" : "끄기(닫기)", c2, y + 21, { s: 12.5, c: KC.ink });
-        if (a) K.glow(ctx, c3 + 6, y + 16, 3, ok ? "rgba(63,211,163,.95)" : "rgba(255,107,129,.95)", 3);
-        else { ctx.strokeStyle = col; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(c3 + 6, y + 16, 4, 0, 6.2832); ctx.stroke(); }
-        K.t(ctx, (a ? "켜짐(열림)" : "꺼짐(닫힘)") + (ok ? "  ✔" : "  ✘"), c3 + 18, y + 21, { s: 12.5, w: "900", c: col });
-      });
-      K.pill(ctx, "옳게 움직인 상황 " + n + " / 6", RX + RW / 2, H - 12, { a: "center", s: 13, c: n === 6 ? KC.green : KC.yellow, box: [RX, W] });
+      K.t(ctx, "●", x0, H - 12, { s: 11, w: "900", c: "#e8590c" }); K.t(ctx, "켜야 할 상황", x0 + 13, H - 12, { s: 10.5, w: "700", c: LT.mute });
+      K.t(ctx, "●", x0 + 104, H - 12, { s: 11, w: "900", c: "#1c7ed6" }); K.t(ctx, "꺼야 할 상황", x0 + 117, H - 12, { s: 10.5, w: "700", c: LT.mute });
+      K.t(ctx, "▼ 기준값", x1, H - 12, { s: 10.5, w: "800", a: "right", c: LT.red });
       return n === 6;
     }
     function update() {
@@ -163,6 +276,7 @@ function greenhouse(ctx, x, y, w, h, o) {
     function real(h) { return 10 + 28 * Math.max(0, Math.sin(Math.PI * (h - 6) / 13)); }
     function detect() { return f1 ? 6.2 : (f2 ? 9 : null); }
     var hc = 6, playing = !REDUCE;
+    var IF = K.iso({ ox: 146, oy: 128, s: 0.7, L: 300, D: 170 });
     function calc() {
       var td = detect(), mx = 0, pts = [];
       for (var h = 6; h <= 18.001; h += 0.1) { var t = real(h); if (td !== null && h > td + 0.5) t = Math.min(t, 26); mx = Math.max(mx, t); pts.push([h, t]); }
@@ -170,39 +284,50 @@ function greenhouse(ctx, x, y, w, h, o) {
     }
     function draw() {
       ctx.clearRect(0, 0, W, H);
-      var c = calc(), LW = 300, i, hr = hc, tNow = c.pts[Math.min(c.pts.length - 1, Math.round((hr - 6) * 10))][1];
+      var c = calc(), LW = 340, hr = hc, tNow = c.pts[Math.min(c.pts.length - 1, Math.round((hr - 6) * 10))][1];
       var alarm = c.td !== null && hr >= c.td, open = (c.td !== null && hr > c.td + 0.5) || (f3 && hr >= 12 && hr < 13);
-      /* ── 왼쪽: 온실 속 두 센서 ── */
-      K.stage(ctx, 0, 0, LW, H, "night", { seed: 12, title: (hr < 10 ? "0" : "") + Math.floor(hr) + ":" + (Math.floor((hr % 1) * 6)) + "0 · 온실 안" });
-      greenhouse(ctx, 22, 70, LW - 44, 178, { open: open, led: false });
-      var hot = Math.max(0, Math.min(1, (tNow - 20) / 18));
-      ctx.fillStyle = "rgba(255,90,60," + (hot * 0.28).toFixed(2) + ")"; ctx.beginPath(); ctx.moveTo(22, 70 + 178 * 0.32); ctx.lineTo(22 + (LW - 44) / 2, 70); ctx.lineTo(LW - 22, 70 + 178 * 0.32); ctx.lineTo(LW - 22, 248); ctx.lineTo(22, 248); ctx.closePath(); ctx.fill();
-      function thermo(x, y, val, broken, label) {
-        ctx.fillStyle = "#1b2033"; ctx.beginPath(); ctx.roundRect(x - 34, y - 18, 68, 30, 7); ctx.fill();
-        ctx.strokeStyle = broken ? KC.blue : KC.orange; ctx.lineWidth = 1.5; ctx.stroke();
-        K.t(ctx, val.toFixed(0) + " °C", x, y + 3, { s: 14, w: "900", a: "center", c: broken ? KC.blue : (val > 28 ? KC.red : KC.orange) });
-        K.t(ctx, label, x, y + 28, { s: 10.5, a: "center", c: KC.mute });
+      /* ── 왼쪽: 온실 블록 모형 — 두 센서와 고장 알림등, 실제 온도만큼 붉어지는 안 공기 ── */
+      var hot = Math.max(0, Math.min(1, (tNow - 20) / 18)), fc = IF.P(150, 85, 0);
+      K.studio(ctx, 0, 0, LW, H, { x: fc.x + 10, y: fc.y + 22, rx: 165, ry: 32 });
+      ctx.save(); ctx.beginPath(); ctx.roundRect(0, 0, LW, H, 14); ctx.clip();
+      var g0 = ghIso(ctx, IF, { open: open ? 1 : 0, heat: hot, inside: function (c2, I2, zg) {
+        sensorPost(c2, I2, 70, 120, zg, 44, "#d0ebff");
+        if (f1) sensorPost(c2, I2, 200, 120, zg, 44, "#ffe8cc");
+        I2.box(c2, 272, 60, 52, 276, 76, 66, "#2f9e44", "#2b8a3e", "#1e6b30");
+      } });
+      ctx.restore();
+      var lamp = IF.P(276, 68, 74);
+      K.planet(ctx, lamp.x, lamp.y, 5, alarm ? "#ff6b6b" : "#c9ced6", alarm ? "#8a1c1c" : "#6b7280");
+      if (alarm && Math.floor(hr * 6) % 2 === 0) K.glow(ctx, lamp.x, lamp.y, 5, "rgba(255,107,129,.95)", 3.4);
+      function screen(x, y, val, broken, lab, dx) {
+        var p = IF.P(x, y, g0.ZG + 56);
+        K.line(ctx, p, { x: p.x + dx, y: p.y - 26 }, "rgba(20,25,40,.7)", 1.2);
+        K.pill(ctx, lab + " " + val.toFixed(0) + " °C", p.x + dx, p.y - 26, { a: "center", s: 11.5, c: broken ? "#a5d8ff" : (val > 28 ? "#ffc9c9" : "#ffe8cc"), box: [0, LW] });
       }
-      thermo(86, 150, 20, true, "센서 ① (고장)");
-      if (f1) thermo(214, 150, tNow, false, "센서 ②");
-      ctx.fillStyle = "#2b3150"; ctx.beginPath(); ctx.arc(LW - 34, 54, 12, 0, 6.2832); ctx.fill();
-      if (alarm && Math.floor(hr * 6) % 2 === 0) K.glow(ctx, LW - 34, 54, 7, "rgba(255,107,129,.95)", 3);
-      K.pill(ctx, alarm ? "고장 알림!" : "알림 없음", LW - 52, 58, { a: "right", s: 11, c: alarm ? KC.red : KC.mute, box: [0, LW] });
-      K.pill(ctx, "실제 온도 " + tNow.toFixed(0) + " °C" + (open ? " · 창문 열림" : ""), LW / 2, H - 16, { a: "center", s: 12, c: tNow > 28 ? KC.red : KC.green, box: [0, LW] });
-      /* ── 오른쪽: 하루 온도 기록 ── */
-      var RX = LW + 8;
-      K.stage(ctx, RX, 0, W - RX, H, "lab", { seed: 3, title: "온실 온도 (6시~18시)" });
-      var g = K.chart(ctx, { x: RX + 4, y: 40, w: W - RX - 12, h: H - 46, x0: 6, x1: 18, y0: 5, y1: 45, xt: 4, yt: 4, xl: "시각", xf: function (h) { return Math.round(h) + "시"; }, yf: function (t) { return Math.round(t) + "°C"; } });
-      ctx.fillStyle = A(KC.red, 0.1); ctx.fillRect(g.L, g.T, g.R - g.L, g.Y(28) - g.T);
-      hline(ctx, g.L, g.R, g.Y(28), A(KC.yellow, 0.9));
-      K.pill(ctx, "딸기 한계 28 °C", g.L + 8, g.Y(28) + 20, { s: 10.5, c: KC.yellow });
-      hline(ctx, g.L, g.R, g.Y(20), KC.blue, [7, 5]);
-      K.pill(ctx, "고장 난 센서 ①: 늘 20 °C", g.R - 8, g.Y(20) + 22, { a: "right", s: 10.5, c: KC.blue });
-      K.plot(ctx, g, c.pts, KC.red);
-      if (c.td !== null) { vline(ctx, g.X(c.td), g.T, g.B, KC.green, [1, 0]); K.pill(ctx, "고장 알림", g.X(c.td) + 6, g.T + 18, { s: 10.5, c: KC.green }); }
-      if (f3) { vline(ctx, g.X(12), g.T, g.B, A(KC.mute, 0.8)); K.pill(ctx, "정오 강제 개방", g.X(12) + 6, g.T + 44, { s: 10.5, c: KC.mute }); }
-      vline(ctx, g.X(hr), g.T, g.B, A(KC.yellow, 0.6));
-      K.glow(ctx, g.X(hr), g.Y(tNow), 4.5, "rgba(255,211,107,.95)", 4);
+      screen(70, 120, 20, true, "① 고장", -24);
+      if (f1) screen(200, 120, tNow, false, "②", 26);
+      K.pill(ctx, alarm ? "고장 알림!" : "알림 없음", lamp.x - 10, lamp.y - 14, { a: "right", s: 11, c: alarm ? "#ffc9c9" : "#e8ecff", box: [0, LW] });
+      var hh = Math.floor(hr), mm = Math.floor((hr % 1) * 6) * 10;
+      K.bigText(ctx, (hh < 10 ? "0" : "") + hh + ":" + (mm < 10 ? "0" : "") + mm, 16, 38, 24, "#ffffff");
+      K.bigText(ctx, "실제 " + tNow.toFixed(0) + " °C" + (open ? " · 창 열림" : ""), 16, 62, 15, tNow > 28 ? "#ff9a7a" : "#7ee0a0");
+      K.warn(ctx, LW - 10, H - 10, "⚠ 크기는 보기 쉽게 과장", "right");
+      /* ── 오른쪽: 밝은 하루 온도 그래프 + 판정 띠 ── */
+      var RX = LW + 10;
+      K.studio(ctx, RX, 0, W - RX, H, null);
+      K.t(ctx, "온실 온도 (6시~18시)", RX + 16, 26, { s: 12.5, w: "800", c: LT.mute });
+      K.tip(ctx, c.ok ? "안전장치 합격 · 1시간 안에 알아챔" : (c.td === null ? "고장을 알아챌 방법이 없음" : (f3 ? "쓸데없는 동작이 있음" : "너무 늦게 알아챔")), W - 262, 8, 248, c.ok);
+      var g = K.chart(ctx, { x: RX + 4, y: 44, w: W - RX - 10, h: H - 48, pl: 46, pb: 30, pt: 8, pr: 14, x0: 6, x1: 18, y0: 5, y1: 45, xt: 4, yt: 4, light: true, xf: function (h) { return Math.round(h) + "시"; }, yf: function (t) { return Math.round(t) + "°"; } });
+      ctx.fillStyle = "rgba(224,49,49,.08)"; ctx.fillRect(g.L, g.T, g.R - g.L, g.Y(28) - g.T);
+      hline(ctx, g.L, g.R, g.Y(28), LT.orange);
+      K.t(ctx, "딸기 한계 28 °C", g.L + 8, g.Y(28) + 16, { s: 11, w: "800", c: LT.orange });
+      hline(ctx, g.L, g.R, g.Y(20), LT.blue, [7, 5]);
+      K.t(ctx, "고장 난 센서 ①: 늘 20 °C", g.R - 8, g.Y(20) + 18, { s: 11, w: "800", a: "right", c: LT.blue });
+      K.plot(ctx, g, c.pts, LT.red, { w: 2.8, light: true });
+      if (c.td !== null) { K.line(ctx, { x: g.X(c.td), y: g.T }, { x: g.X(c.td), y: g.B }, LT.green, 2); K.t(ctx, "고장 알림", g.X(c.td) + 6, g.T + 14, { s: 11, w: "900", c: LT.green }); }
+      if (f3) { K.line(ctx, { x: g.X(12), y: g.T }, { x: g.X(12), y: g.B }, LT.mute, 1.4, [4, 4]); K.t(ctx, "정오 강제 개방", g.X(12) + 6, g.T + 32, { s: 11, w: "800", c: LT.mute }); }
+      K.line(ctx, { x: g.X(hr), y: g.T }, { x: g.X(hr), y: g.B }, "rgba(245,159,0,.7)", 1.4, [4, 4]);
+      K.planet(ctx, g.X(hr), g.Y(tNow), 5.5, "#ffc94d", "#8a5a00");
+      K.t(ctx, "최고 " + c.mx.toFixed(0) + " °C", g.R - 8, g.T + 14, { s: 12, w: "900", a: "right", c: c.mx <= 28.5 ? LT.green : LT.red });
       return c.ok;
     }
     function update() {
@@ -304,51 +429,65 @@ function greenhouse(ctx, x, y, w, h, o) {
     var mc = 0, playing = !REDUCE;
     function draw() {
       ctx.clearRect(0, 0, W, H);
-      var r = sim(), ok = r.mx <= 1000 && r.alarms <= 3, LW = 300, i, m = Math.min(50, Math.floor(mc)), Cn = r.pts[m], vent = r.vs[m];
+      var r = sim(), ok = r.mx <= 1000 && r.alarms <= 3, LW = 340, i, m = Math.min(50, Math.floor(mc)), Cn = r.pts[m], vent = r.vs[m];
       var ring = !r.vs[m] && m < 50 && r.vs[m + 1];
-      /* ── 왼쪽: 5교시 교실 ── */
-      K.stage(ctx, 0, 0, LW, H, "night", { seed: 7, title: "5교시 " + m + "분 · 교실 안" });
+      /* ── 왼쪽: 교실 블록 모형(두 벽·바닥만 남기고 잘라 냄) ── */
+      var IC = K.iso({ ox: 156, oy: 112, s: 0.6, L: 260, D: 200 }), ZF = 14, ZT = 118, fc = IC.P(130, 100, 0);
+      K.studio(ctx, 0, 0, LW, H, { x: fc.x + 8, y: fc.y + 24, rx: 160, ry: 30 });
       ctx.save(); ctx.beginPath(); ctx.roundRect(0, 0, LW, H, 14); ctx.clip();
-      var fl = ctx.createLinearGradient(0, H - 70, 0, H); fl.addColorStop(0, "#3d2e22"); fl.addColorStop(1, "#1d140d"); ctx.fillStyle = fl; ctx.fillRect(0, H - 70, LW, 70);
-      ctx.restore();
-      var wx = 178, wy = 62, ww = 100, wh = 92;
-      ctx.fillStyle = "#6b5a48"; ctx.fillRect(wx - 5, wy - 5, ww + 10, wh + 10);
-      var gl = ctx.createLinearGradient(wx, wy, wx + ww, wy + wh); gl.addColorStop(0, vent ? "#5a8fd0" : "#24477c"); gl.addColorStop(1, vent ? "#9cc8f0" : "#0b1a38");
-      ctx.fillStyle = gl; ctx.fillRect(wx, wy, ww, wh);
-      if (vent) { ctx.fillStyle = "rgba(20,30,60,.85)"; ctx.beginPath(); ctx.moveTo(wx, wy); ctx.lineTo(wx + 34, wy + 10); ctx.lineTo(wx + 34, wy + wh - 10); ctx.lineTo(wx, wy + wh); ctx.closePath(); ctx.fill(); K.arrow(ctx, { x: wx + 40, y: wy + wh / 2 }, { x: wx + ww - 6, y: wy + wh / 2 }, KC.blue, 2.2, 9); }
-      K.pill(ctx, vent ? "창문 열고 환기 중" : "창문 닫힘", wx + ww / 2, wy + wh + 24, { a: "center", s: 10.5, c: vent ? KC.blue : KC.mute, box: [0, LW] });
-      /* 이산화 탄소 센서와 알림등 */
-      ctx.fillStyle = "#1b2033"; ctx.beginPath(); ctx.roundRect(24, 62, 112, 52, 9); ctx.fill(); ctx.strokeStyle = Cn > 1000 ? KC.red : KC.green; ctx.lineWidth = 1.5; ctx.stroke();
-      K.t(ctx, Cn + " ppm", 80, 92, { s: 17, w: "900", a: "center", c: Cn > 1000 ? KC.red : (Cn >= th ? KC.yellow : KC.green) });
-      K.t(ctx, "CO₂ 센서", 80, 108, { s: 10, a: "center", c: KC.mute });
-      K.glow(ctx, 148, 72, ring ? 7 : 3, ring ? "rgba(255,211,107,.98)" : "rgba(120,130,160,.6)", 3);
-      if (ring) K.pill(ctx, "환기 알림!", 80, 138, { a: "center", s: 11, c: KC.yellow, box: [0, LW] });
-      /* 학생들과 이산화 탄소 */
-      var Rq = K.rng(5), nd = Math.round((Cn - 400) / 14);
-      for (i = 0; i < nd; i++) { var px = 16 + Rq() * (LW - 32), py = 150 + Rq() * (H - 230) + Math.sin(mc * 0.6 + i) * 3; K.glow(ctx, px, py, 1.6, "rgba(182,156,255,.85)", 2.6); }
-      for (i = 0; i < 6; i++) {
-        var sx = 40 + (i % 3) * 110, sy = H - 96 + Math.floor(i / 3) * 38;
-        ctx.fillStyle = "#6b4a2c"; ctx.fillRect(sx - 26, sy + 12, 52, 8);
-        var hg = ctx.createRadialGradient(sx - 3, sy - 4, 1, sx, sy, 12); hg.addColorStop(0, "#f6cfae"); hg.addColorStop(1, "#c47f5e");
-        ctx.fillStyle = "#2a1d16"; ctx.beginPath(); ctx.arc(sx, sy - 2, 11, Math.PI, 0); ctx.fill();
-        ctx.fillStyle = hg; ctx.beginPath(); ctx.arc(sx, sy + 2, 9, 0, 6.2832); ctx.fill();
+      ["front", "right"].forEach(function (sd, k) { IC.face(ctx, sd, function (Lw) { [[0, 5, "#8b8f96"], [5, 9, "#e0c36b"], [9, ZF, "#a3a7ae"]].forEach(function (b) { ctx.fillStyle = k ? K.tint(b[2], .82) : b[2]; ctx.fillRect(0, b[0], Lw, b[1] - b[0]); }); }); });
+      IC.top(ctx, function () { return ZF; }, function (j) { return j % 2 ? "#e9dcc4" : "#e1d2b6"; }, 20);
+      IC.edges(ctx, ZF, ZF);
+      /* 뒤쪽 두 벽: 왼쪽(x = 0) 칠판 벽, 오른쪽(y = 0) 창문 벽 */
+      IC.quad(ctx, IC.P(0, 0, ZF), IC.P(0, IC.D, ZF), IC.P(0, IC.D, ZT), IC.P(0, 0, ZT), "#e9e1d2");
+      IC.quad(ctx, IC.P(0, 0, ZF), IC.P(IC.L, 0, ZF), IC.P(IC.L, 0, ZT), IC.P(0, 0, ZT), "#f3ece0");
+      IC.quad(ctx, IC.P(0, 40, 52), IC.P(0, 150, 52), IC.P(0, 150, 96), IC.P(0, 40, 96), "#2f6b4f", "#8a6a42");
+      var gl = ctx.createLinearGradient(0, IC.P(150, 0, 100).y, 0, IC.P(150, 0, 50).y); gl.addColorStop(0, vent ? "#bfe3ff" : "#8fb7d8"); gl.addColorStop(1, vent ? "#e7f5ff" : "#c5dbe9");
+      IC.quad(ctx, IC.P(140, 0, 50), IC.P(236, 0, 50), IC.P(236, 0, 100), IC.P(140, 0, 100), gl, "#6b7280");
+      K.line(ctx, IC.P(188, 0, 50), IC.P(188, 0, 100), "#6b7280", 1.4);
+      if (vent) {
+        IC.quad(ctx, IC.P(188, 0, 50), IC.P(206, 26, 50), IC.P(206, 26, 100), IC.P(188, 0, 100), "rgba(200,230,255,.75)", "#6b7280");
+        for (i = 0; i < 3; i++) { var fa = (mc * 0.5 + i / 3) % 1; K.arrow(ctx, IC.P(160 - i * 6, 2 + fa * 60, 62 + i * 12), IC.P(150 - i * 6, 40 + fa * 70, 58 + i * 12), "#1c7ed6", 2.4, 9); }
       }
-      K.pill(ctx, "보라 점 = 이산화 탄소 (많아질수록 답답)", LW / 2, H - 12, { a: "center", s: 10.5, c: KC.violet, box: [0, LW] });
-      /* ── 오른쪽: 이산화 탄소 농도 기록 ── */
-      var RX = LW + 8;
-      K.stage(ctx, RX, 0, W - RX, H, "lab", { seed: 10, title: "이산화 탄소 농도 (ppm)" });
-      var g = K.chart(ctx, { x: RX + 4, y: 40, w: W - RX - 12, h: H - 46, x0: 0, x1: 50, y0: 400, y1: 1600, xt: 5, yt: 3, xl: "수업 시간 (분)", xf: function (t) { return Math.round(t) + "분"; }, yf: function (c) { return Math.round(c) + ""; } });
+      /* 이산화 탄소 센서(창문 벽) */
+      IC.quad(ctx, IC.P(56, 0, 74), IC.P(96, 0, 74), IC.P(96, 0, 96), IC.P(56, 0, 96), "#1f2433", "#9aa3b0");
+      var sp = IC.P(76, 0, 85); K.t(ctx, String(Cn), sp.x, sp.y + 4, { s: 10, w: "900", a: "center", c: Cn > 1000 ? "#ff8787" : (Cn >= th ? "#ffd43b" : "#69db7c") });
+      var lmp = IC.P(104, 0, 92); K.planet(ctx, lmp.x, lmp.y, 3.4, ring ? "#ffd43b" : "#c9ced6", ring ? "#a36b00" : "#6b7280"); if (ring) K.glow(ctx, lmp.x, lmp.y, 4, "rgba(255,211,107,.98)", 3.6);
+      /* 책상과 학생(뒤에서 앞 순서) */
+      [[60, 60], [130, 60], [200, 60], [60, 130], [130, 130], [200, 130]].forEach(function (q, k) {
+        IC.box(ctx, q[0] - 15, q[1] - 9, ZF, q[0] + 15, q[1] + 9, ZF + 18, "#dcbc8c", "#b8955a", "#9a7a48");
+        IC.person(ctx, q[0] + 4, q[1] + 22, ZF, ["#4dabf7", "#ff8787", "#69db7c", "#ffa94d", "#9775fa", "#38d9a9"][k], 1.7);
+      });
+      /* 이산화 탄소 분자(농도만큼) */
+      var Rq = K.rng(5), nd = Math.max(0, Math.round((Cn - 400) / 16));
+      for (i = 0; i < nd; i++) {
+        var mp = IC.P(10 + Rq() * 240, 10 + Rq() * 180, 34 + Rq() * 76 + Math.sin(mc * 0.6 + i) * 3);
+        K.planet(ctx, mp.x - 3.4, mp.y, 1.9, "#ff6b6b", "#7a1f1f"); K.planet(ctx, mp.x, mp.y, 2.2, "#5c6378", "#1f2330"); K.planet(ctx, mp.x + 3.4, mp.y, 1.9, "#ff6b6b", "#7a1f1f");
+      }
+      ctx.restore();
+      var BX = [0, LW];
+      IC.label(ctx, 76, 0, 96, "CO₂ 센서" + (ring ? " · 환기 알림!" : ""), -30, -30, ring ? "#ffe8a3" : "#e8ecff", BX);
+      IC.label(ctx, 214, 0, 76, vent ? "창문 열고 환기 중" : "창문 닫힘", 30, -40, vent ? "#a5d8ff" : "#e8ecff", BX);
+      K.bigText(ctx, Cn + " ppm", 16, 38, 24, Cn > 1000 ? "#ff9a7a" : (Cn >= th ? "#ffd35a" : "#7ee0a0"));
+      K.bigText(ctx, "5교시 " + m + "분", 16, 62, 15, "#ffd35a");
+      K.pill(ctx, "●●● = 이산화 탄소 분자 (많을수록 답답)", LW / 2, H - 12, { a: "center", s: 10.5, c: "#e4dcff", box: BX });
+      /* ── 오른쪽: 밝은 농도 그래프 + 판정 띠 ── */
+      var RX = LW + 10;
+      K.studio(ctx, RX, 0, W - RX, H, null);
+      K.t(ctx, "이산화 탄소 농도 (ppm)", RX + 16, 26, { s: 12.5, w: "800", c: LT.mute });
+      K.tip(ctx, ok ? "공기는 맑게, 알림은 알맞게" : (r.mx > 1000 ? "기준이 너무 높아 1000 넘음" : "알림이 너무 잦음 (" + r.alarms + "번)"), W - 252, 8, 238, ok);
+      var g = K.chart(ctx, { x: RX + 4, y: 44, w: W - RX - 10, h: H - 48, pl: 46, pb: 30, pt: 8, pr: 14, x0: 0, x1: 50, y0: 400, y1: 1600, xt: 5, yt: 3, light: true, xl: "수업 시간 (분)", xf: function (t) { return Math.round(t) + "분"; }, yf: function (c) { return Math.round(c) + ""; } });
       var cw = (g.R - g.L) / 50;
-      r.vs.forEach(function (on, t) { if (on) { ctx.fillStyle = A(KC.blue, 0.16); ctx.fillRect(g.X(t), g.T, cw + 0.5, g.B - g.T); } });
-      ctx.fillStyle = A(KC.red, 0.09); ctx.fillRect(g.L, g.T, g.R - g.L, g.Y(1000) - g.T);
-      hline(ctx, g.L, g.R, g.Y(1000), KC.red);
-      K.pill(ctx, "1000 ppm 넘으면 답답·졸림", g.L + 8, g.Y(1000) - 8, { s: 10.5, c: KC.red });
-      hline(ctx, g.L, g.R, g.Y(th), KC.yellow, [3, 4]);
-      K.pill(ctx, "알림 기준 " + th, g.R - 8, g.Y(th) + (th >= 1000 ? 20 : -8), { a: "right", s: 10.5, c: KC.yellow });
-      K.plot(ctx, g, r.pts.map(function (c, t) { return [t, c]; }), KC.ink, { w: 2.4 });
-      vline(ctx, g.X(m), g.T, g.B, A(KC.yellow, 0.6));
-      K.glow(ctx, g.X(m), g.Y(Cn), 4.5, "rgba(255,211,107,.95)", 4);
-      K.t(ctx, "파란 띠 = 창문을 연 시간", RX + 16, H - 6, { s: 10, c: KC.blue });
+      r.vs.forEach(function (on, t) { if (on) { ctx.fillStyle = "rgba(28,126,214,.14)"; ctx.fillRect(g.X(t), g.T, cw + 0.5, g.B - g.T); } });
+      ctx.fillStyle = "rgba(224,49,49,.07)"; ctx.fillRect(g.L, g.T, g.R - g.L, g.Y(1000) - g.T);
+      hline(ctx, g.L, g.R, g.Y(1000), LT.red);
+      K.t(ctx, "1000 ppm 넘으면 답답·졸림", g.L + 8, g.Y(1000) - 7, { s: 11, w: "800", c: LT.red });
+      hline(ctx, g.L, g.R, g.Y(th), LT.yellow, [3, 4]);
+      K.t(ctx, "알림 기준 " + th, g.R - 8, g.Y(th) + (th >= 1000 ? 16 : -7), { s: 11, w: "900", a: "right", c: "#b7791f" });
+      K.plot(ctx, g, r.pts.map(function (c, t) { return [t, c]; }), LT.violet, { w: 2.6, light: true });
+      K.line(ctx, { x: g.X(m), y: g.T }, { x: g.X(m), y: g.B }, "rgba(245,159,0,.7)", 1.4, [4, 4]);
+      K.planet(ctx, g.X(m), g.Y(Cn), 5.5, "#ffc94d", "#8a5a00");
+      K.t(ctx, "파란 띠 = 창문을 연 시간 · 최고 " + r.mx + " ppm · 알림 " + r.alarms + "번", g.R - 4, g.T + 14, { s: 10.5, w: "800", a: "right", c: LT.blue });
       return ok;
     }
     function update() {
@@ -465,6 +604,36 @@ function greenhouse(ctx, x, y, w, h, o) {
       { y: "2020년대", n: "저궤도 위성 인터넷망 구축", tech: "수천 개의 소형 위성으로 지상 통신망이 닿지 않는 곳까지 인터넷을 공급합니다.", cost: "초기 투자가 막대하지만, 오지·바다·항공 통신 같은 새 수요로 사업성을 검증받는 중입니다.", coop: "수천 개의 위성이 같은 궤도와 주파수를 나눠 써야 해서, 국제전기통신연합(ITU) 같은 국제기구에서 나라와 기업이 함께 주파수·궤도를 조정하고 우주 쓰레기를 줄일 규범을 논의합니다." }
     ];
     var LN = { tech: "기술 파급 효과", cost: "비용과 실효성", coop: "국제 협력" };
+    var SHORT = ["스푸트니크", "아폴로 11호", "국제 우주 정거장", "재사용 로켓", "위성 인터넷망"];
+    /* 밝은 스튜디오용 입체 미니어처(받침대 위 x, y 가 바닥 가운데) */
+    function mini(i, x, y) {
+      ctx.fillStyle = "rgba(0,0,0,.16)"; ctx.beginPath(); ctx.ellipse(x + 3, y, 22, 6, 0, 0, 6.2832); ctx.fill();
+      if (i === 0) {
+        ctx.strokeStyle = "#4b5263"; ctx.lineWidth = 1.6;
+        [[-1, 1], [-1, .55], [1, 1], [1, .55]].forEach(function (q) { ctx.beginPath(); ctx.moveTo(x + q[0] * 5, y - 22); ctx.lineTo(x + q[0] * 26, y - 22 + q[1] * 20); ctx.stroke(); });
+        K.planet(ctx, x, y - 26, 12, "#e3e7ef", "#5b6378");
+      } else if (i === 1) {
+        ctx.fillStyle = "#b9bcc4"; ctx.beginPath(); ctx.ellipse(x, y - 2, 26, 7, 0, 0, 6.2832); ctx.fill();
+        ctx.strokeStyle = "#6b6f78"; ctx.lineWidth = 1.8; ctx.beginPath(); ctx.moveTo(x - 12, y - 16); ctx.lineTo(x - 20, y - 2); ctx.moveTo(x + 12, y - 16); ctx.lineTo(x + 20, y - 2); ctx.stroke();
+        var lg = ctx.createLinearGradient(x - 14, 0, x + 14, 0); lg.addColorStop(0, "#a8862a"); lg.addColorStop(.5, "#ffe08a"); lg.addColorStop(1, "#8a6a1a");
+        ctx.fillStyle = lg; ctx.beginPath(); ctx.moveTo(x - 14, y - 12); ctx.lineTo(x - 10, y - 26); ctx.lineTo(x + 10, y - 26); ctx.lineTo(x + 14, y - 12); ctx.closePath(); ctx.fill();
+        ctx.fillStyle = "#d7dbe3"; ctx.beginPath(); ctx.roundRect(x - 8, y - 38, 16, 12, 3); ctx.fill(); ctx.strokeStyle = "#7a808c"; ctx.lineWidth = 1; ctx.stroke();
+      } else if (i === 2) {
+        ctx.strokeStyle = "#6b7280"; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x, y - 18); ctx.stroke();
+        ctx.fillStyle = "#c9ced6"; ctx.fillRect(x - 32, y - 30, 64, 4); ctx.fillStyle = "#e9edf3"; ctx.beginPath(); ctx.roundRect(x - 7, y - 36, 14, 16, 3); ctx.fill(); ctx.strokeStyle = "#8a919c"; ctx.stroke();
+        [-30, -20, 12, 22].forEach(function (dx) { var sp = ctx.createLinearGradient(0, y - 48, 0, y - 10); sp.addColorStop(0, "#4c7be0"); sp.addColorStop(1, "#1b2f6a"); ctx.fillStyle = sp; ctx.fillRect(x + dx, y - 48, 8, 15); ctx.fillRect(x + dx, y - 25, 8, 15); });
+      } else if (i === 3) {
+        ctx.fillStyle = "#6b7280"; ctx.beginPath(); ctx.moveTo(x - 26, y - 4); ctx.lineTo(x + 26, y - 4); ctx.lineTo(x + 20, y + 2); ctx.lineTo(x - 20, y + 2); ctx.closePath(); ctx.fill();
+        ctx.strokeStyle = "#3d4250"; ctx.lineWidth = 1.8; ctx.beginPath(); ctx.moveTo(x - 5, y - 14); ctx.lineTo(x - 14, y - 4); ctx.moveTo(x + 5, y - 14); ctx.lineTo(x + 14, y - 4); ctx.stroke();
+        var rg = ctx.createLinearGradient(x - 6, 0, x + 6, 0); rg.addColorStop(0, "#9aa3ba"); rg.addColorStop(.5, "#ffffff"); rg.addColorStop(1, "#7a8399");
+        ctx.fillStyle = rg; ctx.fillRect(x - 6, y - 52, 12, 44); ctx.fillStyle = "rgba(40,35,30,.55)"; ctx.fillRect(x - 6, y - 22, 12, 12);
+        ctx.fillStyle = "#3d4250"; ctx.fillRect(x - 9, y - 50, 3, 4); ctx.fillRect(x + 6, y - 50, 3, 4);
+      } else {
+        K.earth(ctx, x, y - 22, 14);
+        ctx.strokeStyle = "rgba(30,60,120,.35)"; ctx.lineWidth = 1; ctx.beginPath(); ctx.ellipse(x, y - 22, 27, 10, -.3, 0, 6.2832); ctx.stroke();
+        for (var k2 = 0; k2 < 12; k2++) { var a2 = k2 / 12 * 6.2832; var px = x + Math.cos(a2) * 27, py = y - 22 + Math.sin(a2) * 10 - Math.cos(a2) * 27 * Math.sin(-.3) * .3; ctx.fillStyle = "#1f2a44"; ctx.fillRect(px - 1.5, py - 1, 3, 2); }
+      }
+    }
     function glyph(i, x, y, on) {
       ctx.save(); ctx.globalAlpha = on ? 1 : 0.6;
       if (i === 0) {
@@ -493,21 +662,31 @@ function greenhouse(ctx, x, y, w, h, o) {
     }
     function draw() {
       ctx.clearRect(0, 0, W, H);
-      K.stage(ctx, 0, 0, W, H, "space", { seed: 41, title: "우주 개발 다섯 장면 · 관점: " + LN[lens] });
-      var x0 = 110, x1 = 790, y = 150;
-      ctx.save(); ctx.shadowColor = KC.blue; ctx.shadowBlur = 8; ctx.strokeStyle = "rgba(127,211,255,.6)"; ctx.lineWidth = 3;
-      ctx.beginPath(); ctx.moveTo(x0 - 40, y); ctx.lineTo(x1 + 40, y); ctx.stroke(); ctx.restore();
+      var LW = 620, BY = 206;
+      /* ── 왼쪽: 다섯 받침대 위 우주 개발 미니어처 (고른 사건의 받침대가 올라온다) ── */
+      K.studio(ctx, 0, 0, LW, H, { x: 310, y: BY + 26, rx: 300, ry: 36 });
+      K.line(ctx, { x: 40, y: BY + 14 }, { x: LW - 40, y: BY + 14 }, "rgba(28,126,214,.35)", 3);
       EV.forEach(function (e, i) {
-        var x = x0 + i / 4 * (x1 - x0), on = i === ev, seen = got.evs.indexOf(i) >= 0;
-        if (on) { var hg = ctx.createRadialGradient(x, 100, 4, x, 100, 70); hg.addColorStop(0, "rgba(127,211,255,.22)"); hg.addColorStop(1, "rgba(127,211,255,0)"); ctx.fillStyle = hg; ctx.fillRect(x - 80, 40, 160, 130); }
-        glyph(i, x, 96, on);
-        if (on) K.glow(ctx, x, y, 7, "rgba(127,211,255,.98)", 3.6);
-        else K.planet(ctx, x, y, 6, seen ? "#3fd3a3" : "#6f7fb0", seen ? "#145a46" : "#2b3256");
-        K.pill(ctx, e.y, x, y + 34, { a: "center", s: on ? 13 : 11.5, c: on ? KC.ink : (seen ? KC.green : KC.mute) });
-        K.t(ctx, e.n, x, y + 60, { s: on ? 11.5 : 10.5, w: on ? "800" : "600", a: "center", c: on ? KC.ink : KC.mute });
+        var x = 74 + i * 118, on = i === ev, seen = got.evs.indexOf(i) >= 0, hp = on ? 44 : 22;
+        var IP = K.iso({ ox: x, oy: BY - 12, s: 0.62, L: 50, D: 50 });
+        IP.box(ctx, 0, 0, 0, 50, 50, hp, on ? "#d0ebff" : (seen ? "#d3f9d8" : "#eef1f5"), on ? "#74c0fc" : (seen ? "#8ce99a" : "#c9ced6"), on ? "#4dabf7" : (seen ? "#51cf66" : "#adb5bd"));
+        var tp = IP.P(25, 25, hp);
+        if (on) { var hg = ctx.createRadialGradient(tp.x, tp.y - 26, 4, tp.x, tp.y - 26, 56); hg.addColorStop(0, "rgba(77,171,247,.30)"); hg.addColorStop(1, "rgba(77,171,247,0)"); ctx.fillStyle = hg; ctx.fillRect(tp.x - 60, tp.y - 86, 120, 110); }
+        ctx.save(); ctx.globalAlpha = on ? 1 : .8; mini(i, tp.x, tp.y); ctx.restore();
+        K.pill(ctx, e.y, x, BY + 42, { a: "center", s: on ? 13 : 11.5, c: on ? "#ffffff" : (seen ? "#0b5d3b" : LT.mute), bg: on ? "#1c7ed6" : "rgba(255,255,255,.9)", line: on ? null : "rgba(20,40,90,.18)" });
+        K.t(ctx, SHORT[i], x, BY + 64, { s: on ? 12 : 11, w: on ? "900" : "700", a: "center", c: on ? LT.ink : LT.mute });
       });
-      K.pill(ctx, "살펴본 사건 " + got.evs.length + " / 5 · 관점 " + got.ls.length + " / 3", W - 16, H - 14, { a: "right", s: 11.5, c: got.evs.length >= 5 && got.ls.length >= 3 ? KC.green : KC.mute });
-      K.t(ctx, "초록 = 살펴본 사건", 16, H - 12, { s: 10.5, c: KC.green });
+      K.bigText(ctx, "관점: " + LN[lens], 18, 40, 22, "#ffffff");
+      K.bigText(ctx, "우주 개발 다섯 장면", 18, 64, 14, "#ffd35a");
+      /* ── 오른쪽: 흰 카드 — 고른 사건과 살펴본 정도 ── */
+      var RX = LW + 12, x0 = RX + 18, x1 = W - 18, nE = got.evs.length, nL = got.ls.length, all = nE >= 5 && nL >= 3;
+      K.card(ctx, RX, 0, W - RX, H, "고른 사건");
+      K.t(ctx, EV[ev].y, x0, 70, { s: 26, w: "900", c: LT.blue });
+      K.t(ctx, EV[ev].n, x0, 96, { s: 13, w: "900", c: LT.ink });
+      K.pill(ctx, "관점 · " + LN[lens], x0 + 2, 126, { s: 12, c: "#ffffff", bg: lens === "tech" ? LT.violet : (lens === "cost" ? LT.orange : LT.teal), box: [RX, W] });
+      K.row(ctx, "살펴본 사건", nE + " / 5", x0, x1, 168, nE >= 5 ? LT.green : LT.ink); K.bar(ctx, x0, 176, x1 - x0, nE / 5, nE >= 5 ? LT.green : LT.blue);
+      K.row(ctx, "살펴본 관점", nL + " / 3", x0, x1, 210, nL >= 3 ? LT.green : LT.ink); K.bar(ctx, x0, 218, x1 - x0, nL / 3, nL >= 3 ? LT.green : LT.blue);
+      K.tip(ctx, all ? "다섯 사건 · 세 관점 모두 봄" : "사건과 관점을 더 바꿔 보세요", x0 - 4, 244, x1 - x0 + 8, all ? true : null);
     }
     function update() {
       if (got.evs.indexOf(ev) < 0) got.evs.push(ev);

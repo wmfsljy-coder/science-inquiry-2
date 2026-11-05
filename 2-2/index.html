@@ -40,13 +40,14 @@
         <section class="scene" data-title="입양 앱의 고민">
           <div class="story narr"><div class="who">🐈</div><div class="say"><span class="name">이야기</span>동물 보호소는 매주 새로 들어온 동물 사진을 수백 장씩 올립니다. 동아리는 사진 속 동물이 고양이인지 자동으로 알아보는 인공지능을 앱에 넣기로 했습니다.</div></div>
           <div class="story"><div class="who">🧑‍💻</div><div class="say"><span class="name">동아리 부장</span>“그런데 인공지능은 ‘고양이란 귀가 뾰족하고…’ 같은 규칙을 누가 가르쳐 주는 걸까?”</div></div>
+          <figure class="hero-art"><img src="img/ai-shelter.webp" alt="동물 보호소 방을 블록처럼 잘라 낸 모형. 흰 고양이, 검은 고양이, 주황 줄무늬 고양이가 방석과 캣타워에 있고, 책상 위 노트북 화면에는 고양이 사진이 바둑판처럼 떠 있으며, 옆에 인쇄한 사진 더미와 삼각대 위 카메라가 있다." width="900" height="900" loading="lazy"><figcaption><b>인공지능은 보여 준 사진만큼 배웁니다</b> 보호소에는 털색이 다른 고양이들이 함께 살지만, 인공지능이 배운 사진 더미가 한쪽 털색으로만 쌓여 있다면 나머지 고양이는 잘 알아보지 못합니다. 사진을 몇 장이나, 어떤 고양이로 모아야 하는지 아래 장면에서 직접 찾아보세요.</figcaption></figure>
           <div class="gate loose" id="g1"></div>
         </section>
 
         <section class="scene" data-title="사진을 몇 장이나 보여 줘야 할까">
           <div class="story"><div class="who">📸</div><div class="say"><span class="name">정보 선생님</span>“인공지능에게 ‘고양이’, ‘고양이 아님’ 이름표가 붙은 사진을 보여 주면, 스스로 구별하는 특징을 찾아 배웁니다. 학습 사진 수를 늘려 가며, 처음 보는 사진을 <b>90% 이상</b> 맞히는 <b>가장 적은 사진 수</b>를 찾아보세요. 사진을 모으고 이름표를 붙이는 데도 시간이 드니까요.”</div></div>
           <div class="stage-card">
-            <div class="canvas-wrap stage"><canvas id="a-c-data" width="900" height="320"></canvas></div>
+            <div class="canvas-wrap studio"><canvas id="a-c-data" width="900" height="320"></canvas></div>
             <div class="sim-side">
               <div class="readout" id="a-data-read"></div>
               <div class="ctrl-group">
@@ -63,7 +64,7 @@
         <section class="scene" data-title="검은 고양이는 왜 못 알아볼까">
           <div class="story"><div class="who">🐈‍⬛</div><div class="say"><span class="name">보호소 봉사자</span>“앱이 우리 보호소 검은 고양이들을 ‘고양이 아님’이라고 해요!” 알고 보니 학습 사진 대부분이 인터넷에서 모은 <b>흰 고양이</b> 사진이었습니다. 학습 사진 가운데 흰 고양이의 비율을 바꿔, <b>흰 고양이와 검은 고양이 모두</b> 85% 이상 알아보게 해 주세요.</div></div>
           <div class="stage-card">
-            <div class="canvas-wrap stage"><canvas id="a-c-bias" width="900" height="300"></canvas></div>
+            <div class="canvas-wrap studio"><canvas id="a-c-bias" width="900" height="300"></canvas></div>
             <div class="controls">
               <div class="ctrl-group">
                 <div class="ctrl-label">학습 사진 중 흰 고양이 비율<span class="val" id="a-p-val">90%</span></div>
@@ -117,7 +118,7 @@
         <section class="scene" data-title="센서 보정">
           <div class="story"><div class="who">📟</div><div class="say"><span class="name">메이커 동아리장</span>“센서는 흙의 수분을 0~1023 사이의 숫자로 알려 줘. 그런데 이 숫자가 몇 % 인지는 우리가 정해 줘야 해(<b>보정</b>). 바싹 마른 흙과 물에 흠뻑 적신 흙에 꽂았을 때 나온 값을 입력하고, 수분이 50% 인 흙과 30% 인 흙으로 확인해 보자.”</div></div>
           <div class="stage-card">
-            <div class="canvas-wrap stage"><canvas id="b-c-cal" width="900" height="320"></canvas></div>
+            <div class="canvas-wrap studio"><canvas id="b-c-cal" width="900" height="360"></canvas></div>
             <div class="controls">
               <div class="ctrl-group">
                 <div class="ctrl-label">‘마른 흙(0%)’으로 입력한 값<span class="val" id="b-dry-val">1000</span></div>
@@ -138,7 +139,7 @@
           <div class="story"><div class="who">⚙️</div><div class="say"><span class="name">메이커 동아리장</span>“‘30% 아래면 켜고, 30% 넘으면 끈다’로 해 봤더니, 센서 값이 30% 근처에서 오르락내리락할 때마다 펌프가 <b>딸깍딸깍</b> 켜졌다 꺼졌다 해. 이러면 펌프가 금방 고장 나. 켜는 기준과 끄는 기준을 따로 정해서, 하루 동안 <b>펌프 켜짐 4번 이하</b>, 흙 수분은 늘 <b>25~70%</b> 안에 있게 해 줘.”</div></div>
           <figure class="hero-art"><img src="img/auto-water.webp" alt="창가 선반을 블록처럼 잘라 낸 모형. 앞을 잘라 낸 화분 속 흙에 뿌리가 뻗어 있고, 두 갈래 토양 수분 센서가 흙에 꽂혀 있다. 센서는 선반 위 작은 마이크로컨트롤러 기판과 이어져 있고, 기판은 물통 속 작은 펌프와 이어져 있다. 펌프에서 나온 투명한 관이 화분 위로 물방울을 떨어뜨린다." width="900" height="900" loading="lazy"><figcaption><b>자동 급수 장치는 흙을 보지 않고, 흙이 전기를 얼마나 잘 통하는지를 봅니다</b> 흙에 꽂은 두 갈래 센서는 흙에 물이 많을수록 전기가 잘 통하는 성질을 숫자로 바꿉니다. 마이크로컨트롤러는 이 숫자를 미리 정한 기준과 비교해 펌프를 켜고 끕니다. 그 기준을 어떻게 정해야 펌프가 쉴 새 없이 켜졌다 꺼졌다 하지 않는지는 아래 모형에서 직접 찾아보세요.</figcaption></figure>
           <div class="stage-card">
-            <div class="canvas-wrap" style="background:#e4eaf1"><canvas id="b-c-hys" width="900" height="640"></canvas></div>
+            <div class="canvas-wrap studio"><canvas id="b-c-hys" width="900" height="640"></canvas></div>
             <div class="sim-side">
               <div class="readout" id="b-hys-read"></div>
               <div style="display:flex;flex-direction:column;gap:14px">
