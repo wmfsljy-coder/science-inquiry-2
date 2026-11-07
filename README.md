@@ -10,8 +10,8 @@
 |---|---|---|---|---|
 | [2-1](https://wmfsljy-coder.github.io/science-inquiry-2/2-1/) | 생활 속의 과학 탐구 | 일상 속 과학 원리 · 과학적 문제 해결 과정 | ○ | ○ |
 | [2-2](https://wmfsljy-coder.github.io/science-inquiry-2/2-2/) | 미래 사회와 첨단 과학 탐구 | 첨단 과학 기술 · 센서를 활용한 탐구 설계 | ○ | ○ |
-| [2-3](https://wmfsljy-coder.github.io/science-inquiry-2/2-3/) | Ⅰ. 생활 속의 과학 탐구 | 동결 건조와 생활 제품 · 놀이공원과 운동 안전 · 건축물 내진 설계 · 우리 동네 환경과 유사과학 | ○ | ○ |
-| [2-4](https://wmfsljy-coder.github.io/science-inquiry-2/2-4/) | Ⅱ. 미래 사회와 첨단 과학 탐구 | 스마트 온실 설계 · 센서 발명품과 연구 윤리 · 우주 개발 사례 평가 | ○ | ○ |
+| [2-3](https://wmfsljy-coder.github.io/science-inquiry-2/2-3/) | Ⅰ-2 생활 속의 과학 탐구 (2) | 동결 건조와 생활 제품 · 놀이공원과 운동 안전 · 건축물 내진 설계 · 우리 동네 환경과 유사과학 | ○ | ○ |
+| [2-4](https://wmfsljy-coder.github.io/science-inquiry-2/2-4/) | Ⅱ-2 미래 사회와 첨단 과학 탐구 (2) | 스마트 온실 설계 · 센서 발명품과 연구 윤리 · 우주 개발 사례 평가 | ○ | ○ |
 
 ## 한 단원의 구성
 
